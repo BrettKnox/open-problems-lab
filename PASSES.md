@@ -10,7 +10,7 @@ session plan; criteria are restated here at completion time.
 | 0 | Tooling | P0 | done | networkx 3.6.1 ✓ (trees(7)=11); pysat+cadical153 ✓ UNSAT+proofs; nauty 2.8.9 via WSL user-space deb extract, geng gated (conn8=11117, cubic8=5, cubic10=19) |
 | 1 | Integer complexity | IC-1 statement+proofs | done | Selfridge, n ≤ 9, defect layer, axiom-clean |
 | 1 | Integer complexity | IC-2 table | done | exact to 2^32, k ≤ 32, 4 gates, reproduced |
-| 1 | Integer complexity | IC-3 defect API | queued | — |
+| 1 | Integer complexity | IC-3 defect API | done | defect_mul_le subadditivity + Altman's k≤48 stability theorem stated verbatim (altmanStability); criterion met |
 | 1 | Integer complexity | IC-4 Altman k≤48 repro | queued | — |
 | 1 | Integer complexity | IC-5 k=49+ [FORGE] | queued | — |
 | 2 | Separating words | SW-1 Lean reduction | done | accept-set irrelevance, sep≤n+2, sep≥2 |
@@ -38,7 +38,7 @@ session plan; criteria are restated here at completion time.
 | 8 | W(2,7) | VW-2 record attempt | queued | — |
 | 9 | Odd covering | OC-1 Lean API | done | IsCovering + finite-check reduction (period lemma) + classic 5-congruence system verified by decide + not-odd sanity; axiom-clean; density lemma deferred to OC-2 |
 | 9 | Odd covering | OC-2 shape search | queued | — |
-| 10 | Subset sums | DS-1 repro | done (≤ 28; 29–31 running) | Conway–Guy sets from A005318 verified distinct exactly by saturating DP; gated vs brute force ≤ 20 + negative control; ratios reproduce literature |
+| 10 | Subset sums | DS-1 repro | done | Conway–Guy verified distinct exactly for ALL n ≤ 31 (blocked saturating DP, 10.4 GB at 31; n=32 barrier documented); gated vs brute force + negative controls; ratios 0.255→0.2427 reproduce the 0.23513 march |
 | 10 | Subset sums | DS-2 search | queued [FORGE] | beat Bohman 0.22002 |
 | 10 | Subset sums | DS-3 Lean witness | done | conwayGuy16: distinct subset sums, max 17305 < 2^15 (one native_decide, Python-cross-verified) |
 | 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | started | k = 1 case COMPLETE (k_eq_one_case, axiom-clean); odd k ≥ 3 is the remaining multi-pass target |

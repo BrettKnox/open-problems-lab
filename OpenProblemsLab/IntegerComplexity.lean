@@ -421,6 +421,30 @@ theorem isStable_three_pow {j : ℕ} (hj : 1 ≤ j) : IsStable (3 ^ j) := by
   rw [← pow_add, complexity_three_pow (by omega), complexity_three_pow hj]
   ring
 
+/-- The defect is subadditive under multiplication:
+`δ(mn) ≤ δ(m) + δ(n)`. Equality is the interesting case — Altman's theory is
+about when products are "efficient". -/
+theorem defect_mul_le {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :
+    defect (m * n) ≤ defect m + defect n := by
+  have hc := complexity_mul_le hm hn
+  have hcast : ((complexity (m * n) : ℝ)) ≤ (complexity m : ℝ) + (complexity n : ℝ) := by
+    exact_mod_cast hc
+  have hlog : Real.logb 3 ((m : ℕ) * n : ℕ) = Real.logb 3 m + Real.logb 3 n := by
+    push_cast
+    exact Real.logb_mul (by positivity) (by positivity)
+  simp only [defect]
+  rw [hlog]
+  push_cast
+  linarith
+
+/-- **Altman's stability theorem, stated verbatim**
+(arXiv:1606.03635; extended in arXiv:2111.00671): `‖2^k · 3^l‖ = 2k + 3l`
+for all `k ≤ 48` and all `l` (with `k + l ≥ 1`). Proving this here — or
+extending the `48` — is the IC ladder's main formalization target; the
+computational lane (IC-4/IC-5) attacks the same statement numerically. -/
+def altmanStability : Prop :=
+  ∀ k l : ℕ, k ≤ 48 → 1 ≤ k + l → complexity (2 ^ k * 3 ^ l) = 2 * k + 3 * l
+
 /-- **Open conjecture** (Rawsthorne/Guy): `‖2^n‖ = 2n` for all `n ≥ 1`. -/
 def conjecture : Prop := ∀ n : ℕ, 1 ≤ n → complexity (2 ^ n) = 2 * n
 

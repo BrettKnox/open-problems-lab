@@ -290,11 +290,13 @@ Erdős's conjecture demands of every covering system, it is not odd (`classic_no
 
 ### 10. Distinct subset sums
 
-**The Conway–Guy construction is verified exactly** ([computations/subset_sums/](computations/subset_sums/)):
-the n-element sets built from OEIS A005318 have all 2ⁿ subset sums pairwise distinct,
-checked by a saturating polynomial-coefficient DP for **n ≤ 28** so far (ratios max/2ⁿ
-descending 0.255 → 0.2447, marching toward the 0.23513 limit), cross-gated against
-brute-force enumeration for n ≤ 20 with negative controls. **In Lean**
+**The Conway–Guy construction is verified exactly** ([computations/subset_sums/](computations/subset_sums/),
+log in [RESULTS.md](computations/subset_sums/RESULTS.md)): the n-element sets built from
+OEIS A005318 have all 2ⁿ subset sums pairwise distinct, checked by a blocked saturating
+polynomial-coefficient DP for every **n ≤ 31** (ratios max/2ⁿ descending 0.255 → 0.2427,
+marching toward the 0.23513 limit; n = 31 needs a 10.4 GB coefficient array, n = 32 is past
+this machine), cross-gated against brute-force enumeration for n ≤ 20 with negative
+controls. **In Lean**
 ([DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean)): the 16-element
 Conway–Guy set has distinct subset sums with max 17305 < 2¹⁵ — a machine-checked witness
 that the trivial powers-of-two construction is beaten by a factor ~1.9 (one `native_decide`
