@@ -1,0 +1,62 @@
+OEIS submission draft — separating words sequence (SW-3)
+Submission is a manual step (needs an OEIS account): paste the fields below
+into the submission form at https://oeis.org/Submit.html. The b-file is
+oeis_b_draft.txt.
+
+NAME
+a(n) is the least k such that every pair of distinct binary words of length n
+is separated by some deterministic finite automaton with k states (the
+automaton accepts exactly one of the two words).
+
+DATA
+2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5,
+5, 5, 5, 5, 5
+
+OFFSET
+1,1
+
+COMMENTS
+The "separating words" function of Goralcik and Koubek. Known bounds:
+a(n) = Omega(log n) and a(n) = O(n^(1/3) (log n)^7) (Chase); determining the
+growth rate is open, conjecturally O(log n).
+a(n) first reaches 3, 4, 5 at n = 4, 10, 18. Extremal pairs at the jumps
+include 0110/1010 (n=4), 1^2 0^8 / 1^8 0^2 (n=10), 1^3 0^15 / 1^15 0^3
+(n=18).
+round(sqrt(n+3)) agrees with a(n) for all n <= 27 but fails at n = 28, where
+a(28) = 5 while round(sqrt(31)) = 6.
+Values for n <= 18 agree with Table 1 (D_exists) of Tran (2023). Values for
+n = 19..30 computed by exhaustive search over canonical transition functions
+(accept states are irrelevant: a k-state separating DFA exists iff some
+k-state transition function sends the two words to different end states).
+
+REFERENCES
+P. Goralcik and V. Koubek, On discerning words by automata, ICALP 1986,
+LNCS 226, 116-122.
+
+LINKS
+E. D. Demaine, S. Eisenstat, J. Shallit and D. A. Wilson, <a
+href="https://arxiv.org/abs/1103.4513">Remarks on separating words</a>,
+DCFS 2011.
+Z. Chase, <a href="https://doi.org/10.1145/3406325.3451118">Separating words
+and trace reconstruction</a>, STOC 2021.
+N. Tran, <a href="https://arxiv.org/abs/2309.02766">Separating words from
+every start state with Horner automata</a>, AFL 2023, EPTCS 386, 243-252.
+B. Knox, <a
+href="https://github.com/BrettKnox/open-problems-lab">open-problems-lab</a>:
+exhaustive computation, certificates and validation gates for n <= 30
+(computations/separating_words).
+
+EXAMPLE
+a(4) = 3: the words 0110 and 1010 are not separated by any 2-state DFA, but
+every pair of distinct length-4 binary words is separated by some 3-state
+DFA.
+
+CROSSREFS
+(none proposed)
+
+KEYWORD
+nonn,hard,more
+
+OFFSET-NOTE
+a(n) >= 5 is exact through n = 30; the search stopped at a memory wall, not
+at a hard pair.

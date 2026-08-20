@@ -15,7 +15,7 @@ session plan; criteria are restated here at completion time.
 | 1 | Integer complexity | IC-5 k=49+ [FORGE] | queued | — |
 | 2 | Separating words | SW-1 Lean reduction | done | accept-set irrelevance, sep≤n+2, sep≥2 |
 | 2 | Separating words | SW-2 exact table | done | n ≤ 30, Tran reproduced, √-law killed at 28 |
-| 2 | Separating words | SW-3 OEIS package | queued | — |
+| 2 | Separating words | SW-3 OEIS package | done | oeis_draft.txt + oeis_b_draft.txt in computations/separating_words; submission itself is a user action (needs an OEIS account) |
 | 2 | Separating words | SW-4 formal sep values | queued | — |
 | 2 | Separating words | SW-5 n=31+ wall | queued | — |
 | 3 | Erdős–Gyárfás | EG-1 source-verify records | done | folklore-17 debunked (no primary source; Royle checked ≤ 15); real records: general ≥ 32 (Balaji 2026 unrefereed), cubic ≥ 30 (Markström 2004), cubic bipartite ≥ 60 (Tranquilli 2026); README table sourced |
