@@ -34,7 +34,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn; exact values n ≤ 18 (Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)) | **In progress — see [Results](#results).** Extend the exact table; log n vs n^⅓ gap wide open |
 | 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | General: ≥ 32 (Balaji 2026, unrefereed SAT); cubic: ≥ 30 (Markström 2004); cubic bipartite: ≥ 60 (Tranquilli, [2608.02675](https://arxiv.org/abs/2608.02675)) | **In progress — see [Results](#results).** Extend the cubic record; independently verify the unrefereed general record |
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | **In progress — see [Results](#results).** Zero competition. Census + parity structure |
-| 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Egan 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | Rule out 871 via modern SAT + proof logging (untried) |
+| 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **In progress — see [Results](#results).** Rule out 871 via modern SAT + proof logging (untried) |
 | 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | Systematic small-graph verification (none published); degree-2-heavy trees |
 | 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | Push exhaustive verification to 36–37 (embarrassingly parallel) |
 | 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); lb 3703 (Rabung–Lotts) | Lower-bound records via SAT + cyclic zipper |
@@ -177,6 +177,17 @@ trajectories of 11 and 2 meet at 38 after 8 steps each). As far as we could dete
 these are the first machine-checked instances of EP #414. A full census to 10⁷ is in
 progress; the τ-parity lemma (τ(n) odd ⟺ n square — absent from mathlib, an upstreamable
 target) is next on the ladder.
+
+### 5. Superpermutations
+
+**`L 6 ≤ 872` is now a Lean theorem** ([Superpermutations.lean](OpenProblemsLab/Superpermutations.lean)):
+Houston's 2014 word ships as data ([SuperpermData.lean](OpenProblemsLab/SuperpermData.lean)),
+its 720-permutation coverage is checked by `native_decide` (the one theorem in this repo
+leaning on the compiled evaluator — stated plainly here; the word length is kernel-checked,
+and the word is independently verified by
+[verify_word.py](computations/superpermutations/verify_word.py), which also confirms a
+corrupted word is rejected). Next on the ladder: SAT calibration on L(5) = 153, then the
+length-871 feasibility verdict for n = 6.
 
 ### Bench (documented, not active)
 

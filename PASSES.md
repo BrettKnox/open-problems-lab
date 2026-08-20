@@ -18,14 +18,14 @@ session plan; criteria are restated here at completion time.
 | 2 | Separating words | SW-3 OEIS package | queued | — |
 | 2 | Separating words | SW-4 formal sep values | queued | — |
 | 2 | Separating words | SW-5 n=31+ wall | queued | — |
-| 3 | Erdős–Gyárfás | EG-1 source-verify records | in progress | — |
-| 3 | Erdős–Gyárfás | EG-2 baseline repro | queued | — |
-| 3 | Erdős–Gyárfás | EG-3 extension [FORGE] | queued | — |
-| 3 | Erdős–Gyárfás | EG-4 Lean lemmas | queued | — |
-| 4 | EP #414 | TT-1 stream census | queued | — |
-| 4 | EP #414 | TT-2 Lean structure | queued | — |
-| 4 | EP #414 | TT-3 merge theorems | queued | — |
-| 5 | Superpermutations | SP-1 Egan word in Lean | queued | — |
+| 3 | Erdős–Gyárfás | EG-1 source-verify records | done | folklore-17 debunked (no primary source; Royle checked ≤ 15); real records: general ≥ 32 (Balaji 2026 unrefereed), cubic ≥ 30 (Markström 2004), cubic bipartite ≥ 60 (Tranquilli 2026); README table sourced |
+| 3 | Erdős–Gyárfás | EG-2 baseline repro | in progress | general sweep: 0 counterexamples to n = 16 done, n = 17 running; C4-free-cubic curve being measured (n=20: 36101 graphs/41 s) |
+| 3 | Erdős–Gyárfás | EG-3 extension [FORGE] | queued | target: cubic n = 30 via res/mod-parallel geng (beats peer-reviewed record) |
+| 3 | Erdős–Gyárfás | EG-4 Lean lemmas | done | sweep_reduction (C4-free restriction justified) + exists_cycle_of_two_le_degree; axiom-clean; criterion (≥ 2 real lemmas) met |
+| 4 | EP #414 | TT-1 stream census | in progress | agent running (target 10^7 starts) |
+| 4 | EP #414 | TT-2 Lean structure | done | lt_step, step_add_two_le, merged_of_eq; τ-parity lemma identified as absent from mathlib (next pass, upstreamable) |
+| 4 | EP #414 | TT-3 merge theorems | done | merge_pairs_upTo30: all pairs 2 ≤ m,n ≤ 30 merge, kernel decide, no native_decide; first machine-checked EP #414 instances as far as determinable |
+| 5 | Superpermutations | SP-1 Houston word in Lean | done | L 6 ≤ 872 proved; single native_decide axiom (720-perm check), length kernel-checked, word independently Python-verified |
 | 5 | Superpermutations | SP-2 SAT calibration n=5 | queued | — |
 | 5 | Superpermutations | SP-3 871 verdict [FORGE] | queued | — |
 | 6 | Antimagic | AM-1 sweep | queued | — |
