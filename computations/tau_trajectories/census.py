@@ -244,9 +244,9 @@ def census(M: int, B: int = 2_000_000_000, chunk: int = 1 << 23,
         sieve_s += time.perf_counter() - t_s
 
         # ---- dense phase: every n <= M spawns a start -------------------
+        # arrivals[v] is always a list of the streams whose next landing is v
         n_top = min(hi, M + 1)
         pop = arrivals.pop
-        aget = arrivals.get
         for n, t in zip(range(lo, n_top), tl):
             entry = pop(n, None)
             if entry is None:
@@ -279,32 +279,20 @@ def census(M: int, B: int = 2_000_000_000, chunk: int = 1 << 23,
                     bs2[2] = 1
                     if v1 is not None:
                         v1[2] = 2
-                slot = aget(nxt)
-                if slot is None:
-                    arrivals[nxt] = S
-                elif type(slot) is list:
-                    slot.append(S)
-                else:
-                    arrivals[nxt] = [slot, S]
+                arrivals.setdefault(nxt, []).append(S)
                 continue
             # occupied: walker(s) landed on n
-            events += 1
-            if type(entry) is list:
-                events += len(entry) - 1
-                A = entry[0]
-                A[_ST] += 1
-                for S in entry[1:]:
-                    S[_ST] += 1
-                    if S[_L] < A[_L]:
-                        A = S
-                for S in entry:
-                    if S is not A:
-                        die(S, A, n)
-                        alive -= 1
-                        apar[n & 1] -= 1
-            else:
-                A = entry
-                A[_ST] += 1
+            events += len(entry)
+            A = entry[0]
+            for S in entry:
+                S[_ST] += 1
+                if S[_L] < A[_L]:
+                    A = S
+            for S in entry:
+                if S is not A:
+                    die(S, A, n)
+                    alive -= 1
+                    apar[n & 1] -= 1
             # start n rides the stream passing through it (depth 0)
             d1[n] = 0
             if (n & 1) == parity2:
@@ -335,13 +323,7 @@ def census(M: int, B: int = 2_000_000_000, chunk: int = 1 << 23,
                     squaresR.append(n)
             if A is stream2 and len(Rlist) < collect_R:
                 Rlist.append(nxt)
-            slot = aget(nxt)
-            if slot is None:
-                arrivals[nxt] = S if False else A  # keep name A
-            elif type(slot) is list:
-                slot.append(A)
-            else:
-                arrivals[nxt] = [slot, A]
+            arrivals.setdefault(nxt, []).append(A)
 
         # ---- sparse phase: above M, only walker events ------------------
         if hi > M:
@@ -354,23 +336,17 @@ def census(M: int, B: int = 2_000_000_000, chunk: int = 1 << 23,
                     break
                 entry = pop(n)
                 t = tl[n - lo]
-                events += 1
-                if type(entry) is list:
-                    events += len(entry) - 1
-                    A = entry[0]
-                    A[_ST] += 1
-                    for S in entry[1:]:
-                        S[_ST] += 1
-                        if S[_L] < A[_L]:
-                            A = S
-                    for S in entry:
-                        if S is not A:
-                            die(S, A, n)
-                            alive -= 1
-                            apar[n & 1] -= 1
-                else:
-                    A = entry
-                    A[_ST] += 1
+                events += len(entry)
+                A = entry[0]
+                for S in entry:
+                    S[_ST] += 1
+                    if S[_L] < A[_L]:
+                        A = S
+                for S in entry:
+                    if S is not A:
+                        die(S, A, n)
+                        alive -= 1
+                        apar[n & 1] -= 1
                 nxt = n + t
                 if t & 1:
                     if isqrt(n) ** 2 != n:
@@ -386,13 +362,7 @@ def census(M: int, B: int = 2_000_000_000, chunk: int = 1 << 23,
                         squaresR.append(n)
                 if A is stream2 and len(Rlist) < collect_R:
                     Rlist.append(nxt)
-                slot = aget(nxt)
-                if slot is None:
-                    arrivals[nxt] = A
-                elif type(slot) is list:
-                    slot.append(A)
-                else:
-                    arrivals[nxt] = [slot, A]
+                arrivals.setdefault(nxt, []).append(A)
 
         samples.append((hi, alive, apar[0], apar[1]))
         if not quiet:
@@ -403,10 +373,9 @@ def census(M: int, B: int = 2_000_000_000, chunk: int = 1 << 23,
 
     # ---- invariants -----------------------------------------------------
     assert alive == 1 and len(arrivals) == 1, "sweep ended without one stream"
-    survivor = next(iter(arrivals.values()))
-    assert type(survivor) is list is False or True
-    if type(survivor) is list:
-        raise AssertionError("survivor slot is a list")
+    slot = next(iter(arrivals.values()))
+    assert len(slot) == 1, "survivor slot holds several streams"
+    survivor = slot[0]
     assert survivor is stream2 and survivor[_L] == 2, \
         "surviving stream is not the one containing 2"
     nd1 = np.frombuffer(d1, dtype=np.int32)

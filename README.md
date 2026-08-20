@@ -35,7 +35,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | General: ≥ 32 (Balaji 2026, unrefereed SAT); cubic: ≥ 30 (Markström 2004); cubic bipartite: ≥ 60 (Tranquilli, [2608.02675](https://arxiv.org/abs/2608.02675)) | **In progress — see [Results](#results).** Extend the cubic record; independently verify the unrefereed general record |
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | **In progress — see [Results](#results).** Zero competition. Census + parity structure |
 | 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **In progress — see [Results](#results).** Rule out 871 via modern SAT + proof logging (untried) |
-| 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | Systematic small-graph verification (none published); degree-2-heavy trees |
+| 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | **In progress — see [Results](#results).** Small-graph sweep; degree-2-heavy trees |
 | 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | Push exhaustive verification to 36–37 (embarrassingly parallel) |
 | 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); W(2,7) > 3703 (Rabung–Lotts, [E-JC 19(2) #P35](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v19i2p35)) | **In progress — see [Results](#results).** Lower-bound records via SAT + cyclic zipper |
 | 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | Search admissible lcm shapes; LP density bounds |
@@ -215,6 +215,16 @@ of the published records (3702 and 1130 cells — they certify one less). The fu
 certificates here were reconstructed by unrolling the cyclic patterns one further cell and
 flipping one boundary symbol, which removes the unique wraparound progression whose
 difference equals the period — then re-verified from the literal definition.
+
+### 6. Antimagic labeling
+
+**The first graph family is proved antimagic in Lean** (`isAntimagic_starGraph` in
+[Antimagic.lean](OpenProblemsLab/Antimagic.lean), no `sorry`, standard axioms): stars
+`K_{1,m}` with m ≥ 2, by the labeling that gives the edge to leaf i the label i — the leaves
+then carry the distinct sums 1,…,m and the center carries their total, which exceeds every
+leaf sum exactly when m ≥ 2. The pleasing part: **the m = 1 failure of this argument is
+precisely the K₂ exception** in the Hartsfield–Ringel conjecture — the exception is visible
+in the arithmetic.
 
 ### Bench (documented, not active)
 
