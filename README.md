@@ -32,8 +32,8 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 |---|---------|------|-----------|---------------------------|-------------|
 | 1 | **Integer complexity** ‖2ⁿ‖ = 2n | A | [IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean) | Altman–Arias de Reyna 2026 ([2111.00671](https://arxiv.org/abs/2111.00671)); search to 2¹²⁶ (He, [2308.10301](https://arxiv.org/abs/2308.10301)) | **In progress — see [Results](#results).** Extend Altman k≤48 stability + He's search. ~2 researchers worldwide |
 | 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn; exact values n ≤ 18 (Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)) | **In progress — see [Results](#results).** Extend the exact table; log n vs n^⅓ gap wide open |
-| 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | P₁₃-free ([2410.22842](https://arxiv.org/abs/2410.22842)); minimal counterexample "predominantly cubic" (2026) | Raise minimal-counterexample bounds (>17 vertices, cubic >30 — old, low) via geng/nauty + SAT |
-| 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | Zero competition. Large-scale trajectory computation + parity-of-τ structure |
+| 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | General: ≥ 32 (Balaji 2026, unrefereed SAT); cubic: ≥ 30 (Markström 2004); cubic bipartite: ≥ 60 (Tranquilli, [2608.02675](https://arxiv.org/abs/2608.02675)) | **In progress — see [Results](#results).** Extend the cubic record; independently verify the unrefereed general record |
+| 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | **In progress — see [Results](#results).** Zero competition. Census + parity structure |
 | 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Egan 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | Rule out 871 via modern SAT + proof logging (untried) |
 | 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | Systematic small-graph verification (none published); degree-2-heavy trees |
 | 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | Push exhaustive verification to 36–37 (embarrassingly parallel) |
@@ -137,6 +137,46 @@ also reproduced by a separate from-scratch brute force.
 
 `sep(n) ≥ 5` is exact through n = 30; the search stopped at a 9 GiB memory wall, not at a hard
 pair, so where the next jump lies is unknown.
+
+### 3. Erdős–Gyárfás
+
+**Records, verified at source** (every secondary claim below was checked against the actual
+paper or archived page — details in the docstring of
+[ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean)):
+
+| Class | Counterexample needs | Source |
+|---|---|---|
+| min deg ≥ 3 | ≥ 16 vertices | Royle, "The 2ⁿ conjecture" webpage (≤ 2000, archived; checked ≤ 15) |
+| min deg ≥ 3 | ≥ 32 vertices | Balaji 2026, SAT (Zenodo [10.5281/zenodo.21190438](https://doi.org/10.5281/zenodo.21190438)) — **unrefereed** |
+| cubic | ≥ 30 vertices | Markström, Congr. Numer. 171 (2004) — all cubic ≤ 28 checked |
+| cubic bipartite | ≥ 60 vertices | Tranquilli, [arXiv:2608.02675](https://arxiv.org/abs/2608.02675) (2026) |
+
+The widely copied "**a counterexample has at least 17 vertices**" (Wikipedia, and papers citing
+it) has **no primary source**: Royle's own page says 15, and Markström reports Royle's search
+as "less than 16 vertices". The 17 appears to be a decades-old citation drift.
+
+**In Lean** ([ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean), no `sorry`, standard
+axioms): `sweep_reduction` — the search-space reduction every published computation relies on
+(checking C4-free graphs suffices, since a C4 is itself a power-of-two cycle), formalized; this
+is the warrant for `geng -f` in our sweeps. And `exists_cycle_of_two_le_degree` — minimum
+degree 2 forces a cycle at all (via mathlib's component/tree machinery), the ground fact
+beneath the conjecture.
+
+**Computationally** ([computations/erdos_gyarfas/](computations/erdos_gyarfas/)): sweep
+in progress; the validation gate caught a real off-by-one in the cycle-search pruning on its
+first run (Petersen has a C8 the pruned search missed) — which is why the gates exist.
+
+### 4. EP #414 (n ↦ n + τ(n))
+
+**In Lean** ([TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean), no `sorry`,
+standard axioms, no `native_decide`): the map strictly increases (`n + 2 ≤ step n` for
+n ≥ 2), meeting once means merged forever (`merged_of_eq`), and — the headline —
+**`merge_pairs_upTo30`: every pair of starting points 2 ≤ m, n ≤ 30 has merging
+trajectories**, each instance kernel-verified with explicit iterate indices (e.g. the
+trajectories of 11 and 2 meet at 38 after 8 steps each). As far as we could determine,
+these are the first machine-checked instances of EP #414. A full census to 10⁷ is in
+progress; the τ-parity lemma (τ(n) odd ⟺ n square — absent from mathlib, an upstreamable
+target) is next on the ladder.
 
 ### Bench (documented, not active)
 
