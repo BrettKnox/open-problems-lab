@@ -1,2 +1,5 @@
 .lake/
 .setup.log
+__pycache__/
+*.pyc
+*.npy
