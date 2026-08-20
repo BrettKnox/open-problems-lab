@@ -38,10 +38,10 @@ session plan; criteria are restated here at completion time.
 | 8 | W(2,7) | VW-2 record attempt | queued | — |
 | 9 | Odd covering | OC-1 Lean API | done | IsCovering + finite-check reduction (period lemma) + classic 5-congruence system verified by decide + not-odd sanity; axiom-clean; density lemma deferred to OC-2 |
 | 9 | Odd covering | OC-2 shape search | queued | — |
-| 10 | Subset sums | DS-1 repro | queued | — |
-| 10 | Subset sums | DS-2 search | queued | — |
-| 10 | Subset sums | DS-3 Lean witness | queued | — |
-| 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | queued | — |
+| 10 | Subset sums | DS-1 repro | done (≤ 28; 29–31 running) | Conway–Guy sets from A005318 verified distinct exactly by saturating DP; gated vs brute force ≤ 20 + negative control; ratios reproduce literature |
+| 10 | Subset sums | DS-2 search | queued [FORGE] | beat Bohman 0.22002 |
+| 10 | Subset sums | DS-3 Lean witness | done | conwayGuy16: distinct subset sums, max 17305 < 2^15 (one native_decide, Python-cross-verified) |
+| 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | started | k = 1 case COMPLETE (k_eq_one_case, axiom-clean); odd k ≥ 3 is the remaining multi-pass target |
 | 11 | Erdős–Moser | EM-2 GMZ repro | queued | — |
 | 11 | Erdős–Moser | EM-3 record [FORGE] | queued | — |
 | 12 | Lehmer | LT-1 Lean lemmas | done | 4 lemmas axiom-clean: odd, squarefree, no-semiprime, ω ≥ 3 for composite solutions (Lehmer 1932's first bound); criterion (≥ 3 lemmas) exceeded |

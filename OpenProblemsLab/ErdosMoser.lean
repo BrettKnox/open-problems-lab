@@ -1,4 +1,5 @@
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Intervals
 
 /-!
 # Erdős–Moser equation
@@ -23,5 +24,19 @@ namespace OpenProblems.ErdosMoser
 def conjecture : Prop :=
   ∀ m k : ℕ, 2 ≤ m → 1 ≤ k →
     (∑ i ∈ Finset.range m, i ^ k) = m ^ k → m = 3 ∧ k = 1
+
+/-- **The `k = 1` case, complete**: `1 + 2 + ⋯ + (m−1) = m` only at `m = 3`.
+By Gauss, `2·∑ = m(m−1)`, so the equation forces `m − 1 = 2`. The open
+content of Erdős–Moser is entirely in `k ≥ 2`. -/
+theorem k_eq_one_case :
+    ∀ m : ℕ, 2 ≤ m → (∑ i ∈ Finset.range m, i ^ 1) = m ^ 1 → m = 3 := by
+  intro m hm hsum
+  simp only [pow_one] at hsum
+  have hg : (∑ i ∈ Finset.range m, i) * 2 = m * (m - 1) :=
+    Finset.sum_range_id_mul_two m
+  rw [hsum] at hg
+  have hne : 0 < m := by omega
+  have h2 : 2 = m - 1 := Nat.eq_of_mul_eq_mul_left hne (by omega)
+  omega
 
 end OpenProblems.ErdosMoser

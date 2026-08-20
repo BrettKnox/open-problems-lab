@@ -275,6 +275,25 @@ shape search). Applied to the textbook five-congruence system {0(2), 0(3), 1(4),
 7(12)}: covers ℤ by a kernel `decide` over its period 12 (`classic_isCovering`), and, as
 Erdős's conjecture demands of every covering system, it is not odd (`classic_not_odd`).
 
+### 10. Distinct subset sums
+
+**The Conway–Guy construction is verified exactly** ([computations/subset_sums/](computations/subset_sums/)):
+the n-element sets built from OEIS A005318 have all 2ⁿ subset sums pairwise distinct,
+checked by a saturating polynomial-coefficient DP for **n ≤ 28** so far (ratios max/2ⁿ
+descending 0.255 → 0.2447, marching toward the 0.23513 limit), cross-gated against
+brute-force enumeration for n ≤ 20 with negative controls. **In Lean**
+([DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean)): the 16-element
+Conway–Guy set has distinct subset sums with max 17305 < 2¹⁵ — a machine-checked witness
+that the trivial powers-of-two construction is beaten by a factor ~1.9 (one `native_decide`
+counting 65536 sums; independently verified in Python).
+
+### 11. Erdős–Moser
+
+**The k = 1 case is completely proved in Lean** (`k_eq_one_case` in
+[ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean), axiom-clean): 1 + 2 + ⋯ + (m−1) = m
+only at m = 3, by Gauss's identity. The entire open content of the conjecture lives in
+k ≥ 2; Moser's elementary odd-k argument is the next formalization target on this ladder.
+
 ### Bench (documented, not active)
 
 Sorting-network size S(13) (known through n=12, Harder 2020; n=13 likely CPU-decades) ·
