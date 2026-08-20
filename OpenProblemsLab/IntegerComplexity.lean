@@ -431,4 +431,31 @@ theorem conjecture_iff : conjecture ↔ ∀ n : ℕ, 1 ≤ n → 2 * n ≤ compl
   · intro h n hn; exact (h n hn).ge
   · intro h n hn; exact le_antisymm (complexity_two_pow_le hn) (h n hn)
 
+theorem defect_two_pow (k : ℕ) :
+    defect (2 ^ k) = (complexity (2 ^ k) : ℝ) - k * (3 * Real.logb 3 2) := by
+  simp only [defect]
+  push_cast
+  rw [Real.logb_pow]
+  ring
+
+/-- **The conjecture is exactly linearity of the defect**: `δ(2^k) = k·δ(2)`.
+
+This is the form Altman's machinery works in — the defect, not the complexity,
+is the invariant with the good structure theory, and `δ(2) = 2 − 3log₃2 ≈
+0.107` is the increment the conjecture claims is never beaten. -/
+theorem conjecture_iff_defect :
+    conjecture ↔ ∀ k : ℕ, 1 ≤ k → defect (2 ^ k) = k * defect 2 := by
+  have hd2 : defect 2 = 2 - 3 * Real.logb 3 2 := by
+    simp only [defect, complexity_two]; push_cast; ring
+  constructor
+  · intro h k hk
+    rw [defect_two_pow, h k hk, hd2]
+    push_cast
+    ring
+  · intro h n hn
+    have hk := h n hn
+    rw [defect_two_pow, hd2] at hk
+    have : ((complexity (2 ^ n) : ℝ)) = ((2 * n : ℕ) : ℝ) := by push_cast; linarith
+    exact_mod_cast this
+
 end OpenProblems.IntegerComplexity

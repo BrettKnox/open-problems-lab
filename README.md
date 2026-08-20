@@ -65,7 +65,15 @@ no published formalization. No `sorry`; the only axioms used are `propext`,
   lower bound 2n ≤ ‖2ⁿ‖. Everything open lives in the gap between 1.892n and 2n.
 - The **defect** δ(n) = ‖n‖ − 3·log₃ n and **stability** — the Altman–Zelinsky vocabulary
   the known partial results are stated in — with their basic lemmas, as the foundation for
-  pushing past n = 9.
+  pushing past n = 9. In particular `conjecture_iff_defect`: **the conjecture is exactly
+  the statement that δ(2ᵏ) = k·δ(2)**, i.e. that the increment δ(2) ≈ 0.107 is never
+  beaten. That is the form Altman's machinery operates on, since the defect (not the
+  complexity) is the invariant with a structure theory.
+
+The file also documents a route that was **measured and rejected**: verifying more values
+of n by computation inside Lean. Each level is an O(N²) min-plus convolution, so it caps
+out near n = 10–11 for a large amount of proof work plus a `native_decide` trust
+assumption. Getting further formally means formalizing the theory, not out-computing it.
 
 ### Bench (documented, not active)
 
