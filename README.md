@@ -265,6 +265,16 @@ exceed the remainder), and therefore has **at least 3 distinct prime factors**
 (`three_le_card_primeFactors_of_lehmer`). The published ladder continues to ω(n) ≥ 14
 (Cohen–Hagis 1980), which is computation-heavy; formalizing further rungs is queued.
 
+### 9. Odd covering systems
+
+In [OddCovering.lean](OpenProblemsLab/OddCovering.lean) (no `sorry`, standard axioms):
+**the finite-check reduction** `isCovering_of_covers_period` — a system whose moduli divide a
+period L covers ℤ iff it covers {0,…,L−1} — which is the formal warrant behind every
+computational verification or search over covering systems (including the planned OC-2
+shape search). Applied to the textbook five-congruence system {0(2), 0(3), 1(4), 5(6),
+7(12)}: covers ℤ by a kernel `decide` over its period 12 (`classic_isCovering`), and, as
+Erdős's conjecture demands of every covering system, it is not odd (`classic_not_odd`).
+
 ### Bench (documented, not active)
 
 Sorting-network size S(13) (known through n=12, Harder 2020; n=13 likely CPU-decades) ·
