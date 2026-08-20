@@ -30,7 +30,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 
 | # | Problem | Tier | Lean file | Last substantial progress | Attack lane |
 |---|---------|------|-----------|---------------------------|-------------|
-| 1 | **Integer complexity** ‖2ⁿ‖ = 2n | A | [IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean) | Altman–Arias de Reyna 2026 ([2111.00671](https://arxiv.org/abs/2111.00671)); search to 2¹²⁶ (He, [2308.10301](https://arxiv.org/abs/2308.10301)) | Extend Altman k≤48 stability + He's search. ~2 researchers worldwide. **First Lean formalization of the statement anywhere** |
+| 1 | **Integer complexity** ‖2ⁿ‖ = 2n | A | [IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean) | Altman–Arias de Reyna 2026 ([2111.00671](https://arxiv.org/abs/2111.00671)); search to 2¹²⁶ (He, [2308.10301](https://arxiv.org/abs/2308.10301)) | **In progress — see [Results](#results).** Extend Altman k≤48 stability + He's search. ~2 researchers worldwide |
 | 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn | Exact small-n values via SAT (no published table); log n vs n^⅓ gap wide open |
 | 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | P₁₃-free ([2410.22842](https://arxiv.org/abs/2410.22842)); minimal counterexample "predominantly cubic" (2026) | Raise minimal-counterexample bounds (>17 vertices, cubic >30 — old, low) via geng/nauty + SAT |
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | Zero competition. Large-scale trajectory computation + parity-of-τ structure |
@@ -42,6 +42,28 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 10 | **Distinct subset sums** (EP [#1](https://www.erdosproblems.com/1), $500) | B | [DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean) | Dubroff–Fox–Xu 2021 lower bound; Bohman 0.22002·2ⁿ construction | Beat Bohman's constant by search; formalize DFX |
 | 11 | **Erdős–Moser** 1ᵏ+⋯+(m−1)ᵏ = mᵏ | C | [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean) | GMZ 2011: m > 10^(10⁹) via CF of log 2 | Extend the CF computation past 10^(10¹⁰); formalize Moser's odd-k proof |
 | 12 | **Lehmer's totient problem** | C | [LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean) | Cohen–Hagis 1980 (n>10²⁰, ω≥14); Burek–Żmija 2019 | Modern sweep raising 10-year-old bounds; formalize Cohen–Hagis framework |
+
+## Results
+
+### 1. Integer complexity, ‖2ⁿ‖ = 2n
+
+The first formalization of integer complexity anywhere, in
+[IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean). No `sorry`; the only
+axioms used are `propext`, `Classical.choice`, `Quot.sound`.
+
+- **Selfridge's lower bound**, in the sharp integer form `n³ ≤ 3^‖n‖` (and the logarithmic
+  form `‖n‖ ≥ 3·log₃ n`). Proved by structural induction on expressions.
+- **‖3ᵏ‖ = 3k** for k ≥ 1 — the exact equality case of that bound.
+- **The conjecture itself, proved for n ≤ 9.** Selfridge's bound alone rules out any
+  expression of size below 2n for 2ⁿ up to n = 9, where it is tight to within 4%
+  (3¹⁷ = 129140163 < 134217728 = 8⁹). At n = 10 it reverses, so 10 and beyond need
+  genuinely new input. This is far short of He's computational verification to 2¹²⁶, but
+  it is a proof rather than a computation, and it is the first formal one.
+- **`conjecture_iff`**: since ‖2ⁿ‖ ≤ 2n is proved, the conjecture reduces exactly to the
+  lower bound 2n ≤ ‖2ⁿ‖. Everything open lives in the gap between 1.892n and 2n.
+- The **defect** δ(n) = ‖n‖ − 3·log₃ n and **stability** — the Altman–Zelinsky vocabulary
+  the known partial results are stated in — with their basic lemmas, as the foundation for
+  pushing past n = 9.
 
 ### Bench (documented, not active)
 
