@@ -4,6 +4,7 @@ import Mathlib.Combinatorics.SimpleGraph.Star
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Set.Function
 import Mathlib.Order.Interval.Set.Defs
+import OpenProblemsLab.StarFacts
 
 /-!
 # Antimagic labeling conjecture (Hartsfield–Ringel 1990)
@@ -46,44 +47,9 @@ The first infinite family, and the cleanest: label the edge to leaf `i` with
 carries `1 + ⋯ + m`, which exceeds every leaf sum precisely when `m ≥ 2` —
 the failure at `m = 1` **is** the `K₂` exception of the conjecture. -/
 
-open SimpleGraph
+open SimpleGraph OpenProblems.StarFacts
 
 variable {m : ℕ}
-
-/-- Edge enumeration of the star `K_{1,m}` on `Fin (m+1)` with center `0`:
-the `i`-th edge joins the center to leaf `i + 1`. -/
-private def starEdge (m : ℕ) (i : Fin m) : Sym2 (Fin (m + 1)) :=
-  s(0, i.succ)
-
-private lemma starEdge_injective : Function.Injective (starEdge m) := by
-  intro i j h
-  rcases Sym2.eq_iff.mp h with ⟨-, h2⟩ | ⟨h1, -⟩
-  · exact Fin.succ_injective _ h2
-  · exact absurd h1.symm (Fin.succ_ne_zero j)
-
-private lemma starGraph_edgeFinset :
-    (starGraph (0 : Fin (m + 1))).edgeFinset = Finset.image (starEdge m) Finset.univ := by
-  ext e
-  refine e.ind fun a b => ?_
-  simp only [SimpleGraph.mem_edgeFinset, SimpleGraph.mem_edgeSet, starGraph_adj,
-    Finset.mem_image, Finset.mem_univ, true_and, starEdge]
-  constructor
-  · rintro ⟨hne, h0 | h0⟩
-    · subst h0
-      obtain ⟨j, rfl⟩ : ∃ j : Fin m, b = j.succ :=
-        ⟨b.pred (fun hb => hne hb.symm), by simp⟩
-      exact ⟨j, rfl⟩
-    · subst h0
-      obtain ⟨j, rfl⟩ : ∃ j : Fin m, a = j.succ := ⟨a.pred hne, by simp⟩
-      exact ⟨j, Sym2.eq_swap⟩
-  · rintro ⟨j, hj⟩
-    rcases Sym2.eq_iff.mp hj with ⟨h1, h2⟩ | ⟨h1, h2⟩
-    · subst h1
-      subst h2
-      exact ⟨(Fin.succ_ne_zero j).symm, Or.inl rfl⟩
-    · subst h1
-      subst h2
-      exact ⟨Fin.succ_ne_zero j, Or.inr rfl⟩
 
 /-- The label of an edge of the star: the larger endpoint (as a number). For
 `starEdge i` this is `i + 1`. -/
@@ -134,9 +100,8 @@ the unique exception in the Hartsfield–Ringel conjecture. -/
 theorem isAntimagic_starGraph (hm : 2 ≤ m) :
     IsAntimagic (starGraph (0 : Fin (m + 1))) := by
   classical
-  have hcard : (starGraph (0 : Fin (m + 1))).edgeFinset.card = m := by
-    rw [starGraph_edgeFinset, Finset.card_image_of_injective _ starEdge_injective,
-      Finset.card_univ, Fintype.card_fin]
+  have hcard : (starGraph (0 : Fin (m + 1))).edgeFinset.card = m :=
+    starGraph_edgeFinset_card
   have hbig : (m - 1) + m ≤ ∑ i : Fin m, (i.val + 1) := by
     have hne : (⟨m - 2, by omega⟩ : Fin m) ≠ ⟨m - 1, by omega⟩ := by
       simp only [ne_eq, Fin.mk.injEq]

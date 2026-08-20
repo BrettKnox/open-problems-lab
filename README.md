@@ -36,7 +36,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | **In progress — see [Results](#results).** Zero competition. Census + parity structure |
 | 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **In progress — see [Results](#results).** Rule out 871 via modern SAT + proof logging (untried) |
 | 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | **In progress — see [Results](#results).** Small-graph sweep; degree-2-heavy trees |
-| 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | Push exhaustive verification to 36–37 (embarrassingly parallel) |
+| 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | **In progress — see [Results](#results).** Push exhaustive verification (embarrassingly parallel) |
 | 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); W(2,7) > 3703 (Rabung–Lotts, [E-JC 19(2) #P35](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v19i2p35)) | **In progress — see [Results](#results).** Lower-bound records via SAT + cyclic zipper |
 | 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | Search admissible lcm shapes; LP density bounds |
 | 10 | **Distinct subset sums** (EP [#1](https://www.erdosproblems.com/1), $500) | B | [DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean) | Dubroff–Fox–Xu 2021 lower bound; Bohman 0.22002·2ⁿ construction | Beat Bohman's constant by search; formalize DFX |
@@ -206,6 +206,15 @@ and the word is independently verified by
 [verify_word.py](computations/superpermutations/verify_word.py), which also confirms a
 corrupted word is rejected). Next on the ladder: SAT calibration on L(5) = 153, then the
 length-871 feasibility verdict for n = 6.
+
+### 7. Graceful trees
+
+**Stars are the first tree family proved graceful in Lean**
+(`starGraph_isTree_and_graceful` in [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean),
+no `sorry`, standard axioms): label the center 0 and leaf i with i; edge labels come out
+exactly 1,…,m. Combined with mathlib's `isTree_starGraph`, a machine-checked instance family
+of the Ringel–Kotzig conjecture. The star edge-enumeration machinery is shared with the
+antimagic proof ([StarFacts.lean](OpenProblemsLab/StarFacts.lean)).
 
 ### 8. W(2,7)
 

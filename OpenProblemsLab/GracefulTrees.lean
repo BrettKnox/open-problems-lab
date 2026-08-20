@@ -1,9 +1,11 @@
 import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
+import Mathlib.Combinatorics.SimpleGraph.Star
 import Mathlib.Data.Sym.Sym2
 import Mathlib.Data.Nat.Dist
 import Mathlib.Data.Set.Function
 import Mathlib.Order.Interval.Set.Defs
+import OpenProblemsLab.StarFacts
 
 /-!
 # Graceful tree conjecture (Ringel–Kotzig)
@@ -41,5 +43,52 @@ def IsGraceful {V : Type} [Fintype V] [DecidableEq V]
 def conjecture : Prop :=
   ∀ (V : Type) [Fintype V] [DecidableEq V] (T : SimpleGraph V) [DecidableRel T.Adj],
     T.IsTree → IsGraceful T
+
+/-! ### Stars are graceful
+
+The first tree family: label the center `0` and leaf `i` with `i`. Edge labels
+are exactly `1, …, m`. Together with mathlib's `isTree_starGraph`, this is a
+machine-checked instance family of the conjecture. -/
+
+open SimpleGraph OpenProblems.StarFacts
+
+variable {m : ℕ}
+
+theorem isGraceful_starGraph : IsGraceful (starGraph (0 : Fin (m + 1))) := by
+  classical
+  refine ⟨Fin.val, Fin.val_injective, ?_, ?_⟩
+  · intro v
+    rw [starGraph_edgeFinset_card]
+    omega
+  · rw [starGraph_edgeFinset_card, ← SimpleGraph.coe_edgeFinset, starGraph_edgeFinset]
+    have hlab : ∀ i : Fin m, edgeLabel Fin.val (starEdge m i) = i.val + 1 := by
+      intro i
+      simp [edgeLabel, starEdge, Nat.dist, Fin.val_succ]
+    refine ⟨?_, ?_, ?_⟩
+    · rintro e he
+      simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range] at he
+      obtain ⟨i, rfl⟩ := he
+      rw [hlab]
+      simp only [Set.mem_Icc]
+      omega
+    · rintro e₁ he₁ e₂ he₂ h
+      simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range] at he₁ he₂
+      obtain ⟨i, rfl⟩ := he₁
+      obtain ⟨j, rfl⟩ := he₂
+      rw [hlab, hlab] at h
+      exact congrArg (starEdge m) (Fin.val_injective (by omega))
+    · rintro k hk
+      simp only [Set.mem_Icc] at hk
+      refine ⟨starEdge m ⟨k - 1, by omega⟩, ?_, ?_⟩
+      · simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range]
+        exact ⟨_, rfl⟩
+      · rw [hlab]
+        show k - 1 + 1 = k
+        omega
+
+/-- Stars witness the conjecture: a genuine tree family, graceful. -/
+theorem starGraph_isTree_and_graceful :
+    (starGraph (0 : Fin (m + 1))).IsTree ∧ IsGraceful (starGraph (0 : Fin (m + 1))) :=
+  ⟨isTree_starGraph 0, isGraceful_starGraph⟩
 
 end OpenProblems.GracefulTrees

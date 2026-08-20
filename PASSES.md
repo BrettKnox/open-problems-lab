@@ -33,7 +33,7 @@ session plan; criteria are restated here at completion time.
 | 6 | Antimagic | AM-3 hard subcase | queued | — |
 | 7 | Graceful | GT-1 repro | queued | — |
 | 7 | Graceful | GT-2 feasibility [FORGE] | queued | — |
-| 7 | Graceful | GT-3 Lean families | queued | — |
+| 7 | Graceful | GT-3 Lean families | done (stars) | starGraph_isTree_and_graceful axiom-clean; star machinery shared with antimagic via StarFacts.lean; paths next |
 | 8 | W(2,7) | VW-1 Lean certificates | done | ¬HasVdW 2 7 3703 and ¬HasVdW 2 6 1131 machine-checked (one native_decide each); Heule's public certs found one cell short of published records, full-length reconstructed via phase+boundary-flip and independently verified; conditional W-bounds pending vdW theorem (absent from mathlib) |
 | 8 | W(2,7) | VW-2 record attempt | queued | — |
 | 9 | Odd covering | OC-1 Lean API | queued | — |
