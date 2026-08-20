@@ -138,6 +138,16 @@ also reproduced by a separate from-scratch brute force.
 `sep(n) ≥ 5` is exact through n = 30; the search stopped at a 9 GiB memory wall, not at a hard
 pair, so where the next jump lies is unknown.
 
+**Exact values in Lean, kernel only** (`sep_one`, `sep_four` — no `native_decide`): sep(1) = 2
+and sep(4) = 3, the function's first jump. The lower half is the machine-checked fact that
+`0110` vs `1010` defeats every two-state automaton; the upper half kernel-searches all 3-state
+transition functions for all 256 pairs of length-4 words, through a second reduction lemma
+(`exists_eval_ne_iff_exists_step`) that eliminates the non-decidable `Set`-valued accept
+field. As far as we could determine, the first formally verified separating-words values. An
+OEIS submission package for the sequence is drafted in
+[computations/separating_words/](computations/separating_words/) (submission is a user
+action).
+
 ### 3. Erdős–Gyárfás
 
 **Records, verified at source** (every secondary claim below was checked against the actual

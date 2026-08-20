@@ -1,6 +1,7 @@
 import Mathlib.Computability.DFA
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Data.Nat.Log
+import Mathlib.Data.Fintype.Pi
 
 /-!
 # The separating words problem
@@ -196,5 +197,81 @@ theorem two_le_sep {n : ℕ} (hn : 1 ≤ n) : 2 ≤ sep n := by
 `∃ C, sep n ≤ C · log₂ n` for all `n ≥ 2`. -/
 def logConjecture : Prop :=
   ∃ C : ℕ, ∀ n : ℕ, 2 ≤ n → sep n ≤ C * Nat.log 2 n
+
+/-! ### Exact values: `sep 1 = 2` and `sep 4 = 3`
+
+The first jump of the separating-words function, formally verified — the
+computational table in `computations/separating_words` starts from these.
+Everything here is kernel-checked (`decide`), no `native_decide`. -/
+
+/-- Second reduction: a `k`-state DFA with differing end states exists iff a
+bare transition function and start state do — the `accept` field (a `Set`,
+not decidable) plays no role in evaluation. -/
+theorem exists_eval_ne_iff_exists_step {k : ℕ} (u v : List (Fin 2)) :
+    (∃ M : DFA (Fin 2) (Fin k), M.eval u ≠ M.eval v) ↔
+      ∃ (δ : Fin k → Fin 2 → Fin k) (s : Fin k), u.foldl δ s ≠ v.foldl δ s := by
+  constructor
+  · rintro ⟨M, hM⟩
+    exact ⟨M.step, M.start, hM⟩
+  · rintro ⟨δ, s, h⟩
+    exact ⟨⟨δ, s, ∅⟩, h⟩
+
+/-- Kernel-checked core for the upper bound at `n = 4`: any two distinct
+4-tuples over `Fin 2` are separated by some 3-state transition function. -/
+private theorem core_upper_4 : ∀ a b c d a' b' c' d' : Fin 2,
+    ([a, b, c, d] : List (Fin 2)) ≠ [a', b', c', d'] →
+      ∃ (δ : Fin 3 → Fin 2 → Fin 3) (s : Fin 3),
+        ([a, b, c, d] : List (Fin 2)).foldl δ s ≠ [a', b', c', d'].foldl δ s := by
+  decide
+
+/-- Kernel-checked core for the lower bound at `n = 4`: no 2-state transition
+function separates `0110` from `1010`. -/
+private theorem core_lower_4 : ∀ (δ : Fin 2 → Fin 2 → Fin 2) (s : Fin 2),
+    ([0, 1, 1, 0] : List (Fin 2)).foldl δ s = [1, 0, 1, 0].foldl δ s := by
+  decide
+
+theorem suffStates_three_four : SuffStates 3 4 := by
+  intro u v hu hv huv
+  rw [exists_separates_iff_exists_eval_ne, exists_eval_ne_iff_exists_step]
+  match u, hu with
+  | [a, b, c, d], _ =>
+    match v, hv with
+    | [a', b', c', d'], _ => exact core_upper_4 a b c d a' b' c' d' huv
+
+theorem not_suffStates_two_four : ¬ SuffStates 2 4 := by
+  intro h
+  obtain ⟨M, hM⟩ := h [0, 1, 1, 0] [1, 0, 1, 0] rfl rfl (by decide)
+  exact eval_ne_of_separates hM (core_lower_4 M.step M.start)
+
+/-- **`sep 1 = 2`**: one state distinguishes nothing; two suffice for single
+symbols. -/
+theorem sep_one : sep 1 = 2 := by
+  refine le_antisymm ?_ (two_le_sep (by omega))
+  refine Nat.sInf_le ?_
+  intro u v hu hv huv
+  rw [exists_separates_iff_exists_eval_ne, exists_eval_ne_iff_exists_step]
+  match u, hu with
+  | [a], _ =>
+    match v, hv with
+    | [a'], _ =>
+      refine ⟨fun _ x => x, 0, ?_⟩
+      simpa using fun h => huv (by rw [h])
+
+/-- **`sep 4 = 3`** — the first jump of the separating-words function,
+kernel-verified: three states always suffice at length 4, and `0110` vs
+`1010` defeats every two-state automaton. -/
+theorem sep_four : sep 4 = 3 := by
+  refine le_antisymm (Nat.sInf_le suffStates_three_four) ?_
+  refine le_csInf ⟨6, suffStates_add_two 4⟩ ?_
+  rintro k hk
+  by_contra hlt
+  push Not at hlt
+  have hcases : k = 0 ∨ k = 1 ∨ k = 2 := by omega
+  rcases hcases with rfl | rfl | rfl
+  · obtain ⟨M, -⟩ := hk [0, 1, 1, 0] [1, 0, 1, 0] rfl rfl (by decide)
+    exact M.start.elim0
+  · obtain ⟨M, hM⟩ := hk [0, 1, 1, 0] [1, 0, 1, 0] rfl rfl (by decide)
+    exact eval_ne_of_separates hM (Subsingleton.elim _ _)
+  · exact not_suffStates_two_four hk
 
 end OpenProblems.SeparatingWords
