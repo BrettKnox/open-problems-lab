@@ -1,0 +1,142 @@
+﻿canonical initially-connected transition functions over {0,1}:
+  k=1:          1   (of k^(2k) = 1)
+  k=2:         12   (of k^(2k) = 16)
+  k=3:        216   (of k^(2k) = 729)
+  k=4:      5,248   (of k^(2k) = 65,536)
+  k=5:    160,675   (of k^(2k) = 9,765,625)
+
+    k=1: first unseparable pair at n=1: 0 / 1  (candidate group 2, unseparable class >= 2)
+N(1) = 0   [0.0s, 0 functions in the certificate]  hardest pair at n=1: 0 / 1
+    k=2: n= 1 separated by 1 functions (+1)  [0.0s]
+    k=2: n= 2 separated by 3 functions (+2)  [0.0s]
+    k=2: n= 3 separated by 5 functions (+2)  [0.0s]
+    k=2: first unseparable pair at n=4: 0110 / 1010  (candidate group 3, unseparable class >= 2)
+N(2) = 3   [0.0s, 5 functions in the certificate]  hardest pair at n=4: 0110 / 1010
+    k=3: n= 1 separated by 5 functions (+0)  [0.0s]
+    k=3: n= 2 separated by 5 functions (+0)  [0.0s]
+    k=3: n= 3 separated by 5 functions (+0)  [0.0s]
+    k=3: n= 4 separated by 7 functions (+2)  [0.0s]
+    k=3: n= 5 separated by 8 functions (+1)  [0.0s]
+    k=3: n= 6 separated by 10 functions (+2)  [0.0s]
+    k=3: n= 7 separated by 13 functions (+3)  [0.0s]
+    k=3: n= 8 separated by 16 functions (+3)  [0.0s]
+    k=3: n= 9 separated by 20 functions (+4)  [0.0s]
+    k=3: first unseparable pair at n=10: 1100000000 / 1111111100  (candidate group 3, unseparable class >= 2)
+N(3) = 9   [0.0s, 20 functions in the certificate]  hardest pair at n=10: 1100000000 / 1111111100
+    k=4: n= 1 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 2 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 3 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 4 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 5 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 6 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 7 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 8 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 9 separated by 20 functions (+0)  [0.0s]
+    k=4: n=10 separated by 22 functions (+2)  [0.0s]
+    k=4: n=11 separated by 24 functions (+2)  [0.0s]
+    k=4: n=12 separated by 27 functions (+3)  [0.0s]
+    k=4: n=13 separated by 29 functions (+2)  [0.0s]
+    k=4: n=14 separated by 33 functions (+4)  [0.0s]
+    k=4: n=15 separated by 36 functions (+3)  [0.0s]
+    k=4: n=16 separated by 38 functions (+2)  [0.0s]
+    k=4: n=17 separated by 42 functions (+4)  [0.0s]
+    k=4: first unseparable pair at n=18: 111000000000000000 / 111111111111111000  (candidate group 2, unseparable class >= 2)
+N(4) = 17   [0.3s, 42 functions in the certificate]  hardest pair at n=18: 111000000000000000 / 111111111111111000
+    k=5: n= 1 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 2 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 3 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 4 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 5 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 6 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 7 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 8 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 9 separated by 42 functions (+0)  [0.0s]
+    k=5: n=10 separated by 42 functions (+0)  [0.0s]
+    k=5: n=11 separated by 42 functions (+0)  [0.0s]
+    k=5: n=12 separated by 42 functions (+0)  [0.0s]
+    k=5: n=13 separated by 42 functions (+0)  [0.0s]
+    k=5: n=14 separated by 42 functions (+0)  [0.0s]
+    k=5: n=15 separated by 42 functions (+0)  [0.0s]
+    k=5: n=16 separated by 42 functions (+0)  [0.0s]
+    k=5: n=17 separated by 42 functions (+0)  [0.0s]
+    k=5: n=18 separated by 44 functions (+2)  [0.1s]
+N(5) >= 18 (search capped at n=18)   [0.1s, 44 functions in the certificate]
+
+n   sep(n)  witness pair (minK = sep(n))
+1   2       0 / 1
+2   2       00 / 10
+3   2       000 / 100
+4   3       0110 / 1010
+5   3       01100 / 10100
+6   3       011000 / 101000
+7   3       0110000 / 1010000
+8   3       01100000 / 10100000
+9   3       011000000 / 101000000
+10  4       1100000000 / 1111111100
+11  4       11000000000 / 11111111000
+12  4       110000000000 / 111111110000
+13  4       1100000000000 / 1111111100000
+14  4       11000000000000 / 11111111000000
+15  4       110000000000000 / 111111110000000
+16  4       1100000000000000 / 1111111100000000
+17  4       11000000000000000 / 11111111000000000
+18  5       111000000000000000 / 111111111111111000
+
+sequence: 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5
+total 0.5s
+
+--- validation gates ---
+(A) canonical enumeration vs brute-force canonicalisation
+  ok   icdfa k=1: 1 canonical transition functions
+  ok   icdfa k=2: 12 canonical transition functions
+  ok   icdfa k=3: 216 canonical transition functions
+  ok   icdfa k=4: 5248 canonical transition functions
+(B) accept-set reduction, exhaustive over all pairs and all DFAs
+  ok   reduction n=1 k=3: 1 pairs, 17,496 literal DFAs  [0.0s]
+  ok   reduction n=2 k=3: 6 pairs, 17,496 literal DFAs  [0.0s]
+  ok   reduction n=3 k=3: 28 pairs, 17,496 literal DFAs  [0.0s]
+  ok   reduction n=4 k=3: 120 pairs, 17,496 literal DFAs  [0.0s]
+  ok   reduction n=5 k=3: 496 pairs, 17,496 literal DFAs  [0.0s]
+  ok   reduction n=6 k=3: 2016 pairs, 17,496 literal DFAs  [0.0s]
+  ok   reduction n=7 k=3: 8128 pairs, 17,496 literal DFAs  [0.1s]
+  ok   reduction n=1 k=4: 1 pairs, 4,194,304 literal DFAs  [0.1s]
+  ok   reduction n=2 k=4: 6 pairs, 4,194,304 literal DFAs  [0.3s]
+  ok   reduction n=3 k=4: 28 pairs, 4,194,304 literal DFAs  [0.4s]
+  ok   reduction n=4 k=4: 120 pairs, 4,194,304 literal DFAs  [0.9s]
+  ok   reduction n=5 k=4: 496 pairs, 4,194,304 literal DFAs  [2.2s]
+  ok   reduction n=8 k=3: 32640 pairs, 17,496 literal DFAs  [0.3s]
+  ok   reduction n=6 k=4: 2016 pairs, 4,194,304 literal DFAs  [6.5s]
+  ok   reduction n=7 k=4: 8128 pairs, 4,194,304 literal DFAs  [20.8s]
+  ok   reduction n=8 k=4: 32640 pairs, 4,194,304 literal DFAs  [74.9s]
+(C) fast minK vs literal minK on random pairs
+  ok   40 random pairs: fast minK == literal minK (k <= 4)
+(D) sep(n) from the literal definition, tiny n
+  ok   literal sep(n) for n <= 7: [2, 2, 2, 3, 3, 3, 3] vs computed [2, 2, 2, 3, 3, 3, 3]
+(E) literal reference on the hardest pairs
+  ok   n=1  0/1: literal minK = 2 (claimed 2); 130 DFAs enumerated [0.0s]
+  ok   n=4  0110/1010: literal minK = 3 (claimed 3); 17,626 DFAs enumerated [0.0s]
+  ok   n=10 1100000000/1111111100: literal minK = 4 (claimed 4); 4,211,930 DFAs enumerated [0.0s]
+  ok   n=18 111000000000000000/111111111111111000: literal minK = 5 (claimed 5); 1,566,711,930 DFAs enumerated [0.5s]
+(F) structural sanity
+  ok   sep(n) non-decreasing over the computed range
+  ok   200 pairs: minK <= i+2 for first difference at position i
+  ok   50 pairs: minK(uw,vw) >= minK(u,v)
+  ok   minK >= 2 always (a 1-state DFA accepts everything or nothing)
+
+all gates: PASS
+
+--- negative controls (each gate must catch a corrupted result) ---
+  control 1: one transition flipped in the k=3 canonical list
+  ok   icdfa k=1: 1 canonical transition functions
+  ok   icdfa k=2: 12 canonical transition functions
+  FAIL icdfa k=3: 215 generated vs 216 canonical
+    -> CAUGHT
+  control 2: delete the 73 k=3 functions that separate 0110/1010
+    -> fast says None, literal reference says 3: CAUGHT
+  control 3 (n=1): claim minK(0,1)=1
+    -> true claim 2: accepted (2-state witness, runs end in states 0 != 1)
+    -> false claim 1: CAUGHT (no transition function on <= 1 states separates them)
+  control 4: claim sep(4) <= 2
+    -> exhaustive search over all <= 2-state functions gives N(2)=3 < 4: CAUGHT
+
+negative controls: PASS (every corruption caught)

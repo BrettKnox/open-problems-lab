@@ -31,7 +31,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | # | Problem | Tier | Lean file | Last substantial progress | Attack lane |
 |---|---------|------|-----------|---------------------------|-------------|
 | 1 | **Integer complexity** ‖2ⁿ‖ = 2n | A | [IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean) | Altman–Arias de Reyna 2026 ([2111.00671](https://arxiv.org/abs/2111.00671)); search to 2¹²⁶ (He, [2308.10301](https://arxiv.org/abs/2308.10301)) | **In progress — see [Results](#results).** Extend Altman k≤48 stability + He's search. ~2 researchers worldwide |
-| 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn | Exact small-n values via SAT (no published table); log n vs n^⅓ gap wide open |
+| 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn; exact values n ≤ 18 (Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)) | **In progress — see [Results](#results).** Extend the exact table; log n vs n^⅓ gap wide open |
 | 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | P₁₃-free ([2410.22842](https://arxiv.org/abs/2410.22842)); minimal counterexample "predominantly cubic" (2026) | Raise minimal-counterexample bounds (>17 vertices, cubic >30 — old, low) via geng/nauty + SAT |
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | Zero competition. Large-scale trajectory computation + parity-of-τ structure |
 | 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Egan 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | Rule out 871 via modern SAT + proof logging (untried) |
@@ -108,6 +108,35 @@ only.
   the words differ. Weak as a bound, but it is what makes `sep` *well defined*: without a
   construction the infimum ranges over an empty set and `sep n` would silently be 0.
 - **`2 ≤ sep n`** for n ≥ 1 — one state distinguishes nothing.
+
+**Computationally** ([computations/separating_words/](computations/separating_words/), log in
+[RESULTS.md](computations/separating_words/RESULTS.md)): exact values of sep(n) for
+**n ≤ 30**, using the reduction above to enumerate transition functions only.
+
+```
+n      1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ... 30
+sep(n) 2 2 2 3 3 3 3 3 3  4  4  4  4  4  4  4  4  5  5 ...  5
+```
+
+For **n ≤ 18 this reproduces the one published table**, Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)
+(EPTCS 386, Table 1, D∃(n)), term for term and under the same convention — an earlier version
+of this README wrongly said no such table existed. **n = 19..30 extends it** by 12 terms, and
+the sequence is not in OEIS.
+
+The extension immediately earns its keep. The first 27 terms agree exactly with
+**round(√(n+3))**, which would predict sep(28) = 6; the exhaustive value is **sep(28) = 5**.
+So the tempting square-root law dies at the first term past the published table — a reminder
+of how little of this function's shape is pinned down.
+
+Validation: the accept-set reduction is checked *exhaustively* against the literal definition
+(every transition function, start state, and accept set — 4,194,304 DFAs at k = 4) rather
+than assumed, giving the Lean theorem an independent computational cross-check; each witness
+pair is re-derived from the literal definition (sep(18) > 4 required enumerating 1,566,711,930
+DFAs); and four deliberate corruptions were each caught by the gates. Values for n ≤ 6 were
+also reproduced by a separate from-scratch brute force.
+
+`sep(n) ≥ 5` is exact through n = 30; the search stopped at a 9 GiB memory wall, not at a hard
+pair, so where the next jump lies is unknown.
 
 ### Bench (documented, not active)
 

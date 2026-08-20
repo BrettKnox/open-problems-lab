@@ -1,0 +1,111 @@
+﻿canonical initially-connected transition functions over {0,1}:
+  k=1:          1   (of k^(2k) = 1)
+  k=2:         12   (of k^(2k) = 16)
+  k=3:        216   (of k^(2k) = 729)
+  k=4:      5,248   (of k^(2k) = 65,536)
+  k=5:    160,675   (of k^(2k) = 9,765,625)
+
+    k=1: first unseparable pair at n=1: 0 / 1  (candidate group 2, unseparable class >= 2)
+N(1) = 0   [0.0s, 0 functions in the certificate]  hardest pair at n=1: 0 / 1
+    k=2: n= 1 separated by 1 functions (+1)  [0.0s]
+    k=2: n= 2 separated by 3 functions (+2)  [0.0s]
+    k=2: n= 3 separated by 5 functions (+2)  [0.0s]
+    k=2: first unseparable pair at n=4: 0110 / 1010  (candidate group 3, unseparable class >= 2)
+N(2) = 3   [0.0s, 5 functions in the certificate]  hardest pair at n=4: 0110 / 1010
+    k=3: n= 1 separated by 5 functions (+0)  [0.0s]
+    k=3: n= 2 separated by 5 functions (+0)  [0.0s]
+    k=3: n= 3 separated by 5 functions (+0)  [0.0s]
+    k=3: n= 4 separated by 7 functions (+2)  [0.0s]
+    k=3: n= 5 separated by 8 functions (+1)  [0.0s]
+    k=3: n= 6 separated by 10 functions (+2)  [0.0s]
+    k=3: n= 7 separated by 13 functions (+3)  [0.0s]
+    k=3: n= 8 separated by 16 functions (+3)  [0.0s]
+    k=3: n= 9 separated by 20 functions (+4)  [0.0s]
+    k=3: first unseparable pair at n=10: 1100000000 / 1111111100  (candidate group 3, unseparable class >= 2)
+N(3) = 9   [0.0s, 20 functions in the certificate]  hardest pair at n=10: 1100000000 / 1111111100
+    k=4: n= 1 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 2 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 3 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 4 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 5 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 6 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 7 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 8 separated by 20 functions (+0)  [0.0s]
+    k=4: n= 9 separated by 20 functions (+0)  [0.0s]
+    k=4: n=10 separated by 22 functions (+2)  [0.0s]
+    k=4: n=11 separated by 24 functions (+2)  [0.0s]
+    k=4: n=12 separated by 27 functions (+3)  [0.0s]
+    k=4: n=13 separated by 29 functions (+2)  [0.0s]
+    k=4: n=14 separated by 33 functions (+4)  [0.0s]
+    k=4: n=15 separated by 36 functions (+3)  [0.0s]
+    k=4: n=16 separated by 38 functions (+2)  [0.0s]
+    k=4: n=17 separated by 42 functions (+4)  [0.0s]
+    k=4: first unseparable pair at n=18: 111000000000000000 / 111111111111111000  (candidate group 2, unseparable class >= 2)
+N(4) = 17   [0.3s, 42 functions in the certificate]  hardest pair at n=18: 111000000000000000 / 111111111111111000
+    k=5: n= 1 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 2 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 3 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 4 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 5 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 6 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 7 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 8 separated by 42 functions (+0)  [0.0s]
+    k=5: n= 9 separated by 42 functions (+0)  [0.0s]
+    k=5: n=10 separated by 42 functions (+0)  [0.0s]
+    k=5: n=11 separated by 42 functions (+0)  [0.0s]
+    k=5: n=12 separated by 42 functions (+0)  [0.0s]
+    k=5: n=13 separated by 42 functions (+0)  [0.0s]
+    k=5: n=14 separated by 42 functions (+0)  [0.0s]
+    k=5: n=15 separated by 42 functions (+0)  [0.0s]
+    k=5: n=16 separated by 42 functions (+0)  [0.0s]
+    k=5: n=17 separated by 42 functions (+0)  [0.0s]
+    k=5: n=18 separated by 45 functions (+3)  [0.1s]
+    k=5: n=19 separated by 47 functions (+2)  [0.1s]
+    k=5: n=20 separated by 49 functions (+2)  [0.2s]
+    k=5: n=21 separated by 52 functions (+3)  [0.4s]
+    k=5: n=22 separated by 55 functions (+3)  [0.8s]
+    k=5: n=23 separated by 58 functions (+3)  [1.7s]
+    k=5: n=24 separated by 60 functions (+2)  [3.3s]
+    k=5: n=25 separated by 62 functions (+2)  [6.9s]
+    k=5: n=26 separated by 65 functions (+3)  [14.2s]
+    k=5: n=27 separated by 67 functions (+2)  [32.0s]
+    k=5: n=28 separated by 70 functions (+3)  [69.6s]
+    k=5: n=29 separated by 72 functions (+2)  [153.6s]
+    k=5: n=30 separated by 74 functions (+2)  [356.4s]
+N(5) >= 30 (search capped at n=30)   [639.3s, 74 functions in the certificate]
+
+certificate for sep(n) <= 5 up to n=30 saved to cert_k5_n30.npy (74 transition functions)
+n   sep(n)  witness pair (minK = sep(n))
+1   2       0 / 1
+2   2       00 / 10
+3   2       000 / 100
+4   3       0110 / 1010
+5   3       01100 / 10100
+6   3       011000 / 101000
+7   3       0110000 / 1010000
+8   3       01100000 / 10100000
+9   3       011000000 / 101000000
+10  4       1100000000 / 1111111100
+11  4       11000000000 / 11111111000
+12  4       110000000000 / 111111110000
+13  4       1100000000000 / 1111111100000
+14  4       11000000000000 / 11111111000000
+15  4       110000000000000 / 111111110000000
+16  4       1100000000000000 / 1111111100000000
+17  4       11000000000000000 / 11111111000000000
+18  5       111000000000000000 / 111111111111111000
+19  5       1110000000000000000 / 1111111111111110000
+20  5       11100000000000000000 / 11111111111111100000
+21  5       111000000000000000000 / 111111111111111000000
+22  5       1110000000000000000000 / 1111111111111110000000
+23  5       11100000000000000000000 / 11111111111111100000000
+24  5       111000000000000000000000 / 111111111111111000000000
+25  5       1110000000000000000000000 / 1111111111111110000000000
+26  5       11100000000000000000000000 / 11111111111111100000000000
+27  5       111000000000000000000000000 / 111111111111111000000000000
+28  5       1110000000000000000000000000 / 1111111111111110000000000000
+29  5       11100000000000000000000000000 / 11111111111111100000000000000
+30  5       111000000000000000000000000000 / 111111111111111000000000000000
+
+sequence: 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+total 640.4s
