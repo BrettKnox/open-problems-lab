@@ -167,8 +167,10 @@ beneath the conjecture.
 point is independently reproduced** — among the 9,467,449 C4-free connected cubic graphs on
 24 vertices, exactly **4** have neither a C4 nor a C8 (his count), each containing a C16;
 zero counterexamples. Different generator, checker, language, and hardware than the 2004
-computation. General min-deg-3 lane verified to n = 16 so far (zero counterexamples,
-n = 17 running). Measured scaling puts cubic n = 26–28 in overnight/forge territory and the
+computation. General min-deg-3 lane verified through **n = 17** (34,758,006 C4-free graphs
+at 17 alone, zero counterexamples) — with the Lean `sweep_reduction` this means any
+counterexample has ≥ 18 vertices by our independent method, second-verifying the low range
+of Balaji's unrefereed SAT record. Measured scaling puts cubic n = 26–28 in overnight/forge territory and the
 n = 30 record step behind a compiled-filter barrier (documented in RESULTS.md). A bonus for
 the methodology section: the validation gate caught a real off-by-one in the cycle-search
 pruning on its first run (Petersen has a C8 the pruned search missed) — which is why the

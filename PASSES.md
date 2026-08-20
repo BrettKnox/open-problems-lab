@@ -19,7 +19,7 @@ session plan; criteria are restated here at completion time.
 | 2 | Separating words | SW-4 formal sep values | queued | — |
 | 2 | Separating words | SW-5 n=31+ wall | queued | — |
 | 3 | Erdős–Gyárfás | EG-1 source-verify records | done | folklore-17 debunked (no primary source; Royle checked ≤ 15); real records: general ≥ 32 (Balaji 2026 unrefereed), cubic ≥ 30 (Markström 2004), cubic bipartite ≥ 60 (Tranquilli 2026); README table sourced |
-| 3 | Erdős–Gyárfás | EG-2 baseline repro | done (17 pending) | Markström n=24 reproduced exactly (4 no-C4-no-C8 among 9,467,449 C4-free cubic; 0 counterexamples); general lane 0 counterexamples to n=16 (17 running); scaling curve measured, barrier documented for cubic ≥ 28 |
+| 3 | Erdős–Gyárfás | EG-2 baseline repro | done | Markström n=24 reproduced exactly (4 no-C4-no-C8 among 9,467,449 C4-free cubic; 0 cex); general lane verified through n=17 (34.7M graphs at 17, 0 cex) ⇒ counterexample ≥ 18 by our method; curves measured, barriers documented |
 | 3 | Erdős–Gyárfás | EG-3 extension [FORGE] | queued | target: cubic n = 30 via res/mod-parallel geng (beats peer-reviewed record) |
 | 3 | Erdős–Gyárfás | EG-4 Lean lemmas | done | sweep_reduction (C4-free restriction justified) + exists_cycle_of_two_le_degree; axiom-clean; criterion (≥ 2 real lemmas) met |
 | 4 | EP #414 | TT-1 stream census | in progress | agent running (target 10^7 starts) |
@@ -29,7 +29,7 @@ session plan; criteria are restated here at completion time.
 | 5 | Superpermutations | SP-2 SAT calibration n=5 | queued | — |
 | 5 | Superpermutations | SP-3 871 verdict [FORGE] | queued | — |
 | 6 | Antimagic | AM-1 sweep | queued | — |
-| 6 | Antimagic | AM-2 Lean families | queued | — |
+| 6 | Antimagic | AM-2 Lean families | done (stars) | isAntimagic_starGraph, m ≥ 2, axiom-clean; m=1 failure = the K₂ exception; paths/cycles remain as stretch |
 | 6 | Antimagic | AM-3 hard subcase | queued | — |
 | 7 | Graceful | GT-1 repro | queued | — |
 | 7 | Graceful | GT-2 feasibility [FORGE] | queued | — |

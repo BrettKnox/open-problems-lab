@@ -31,7 +31,13 @@ in `OpenProblemsLab/ErdosGyarfas.lean` justifies restricting to C4-free):
 | 14 | 6,059 | 0 | 0.7 s |
 | 15 | 91,433 | 0 | 11 s |
 | 16 | 1,655,659 | 0 | 184 s |
-| 17 | (running) | — | — |
+| 17 | 34,758,006 | 0 | 4,884 s |
+
+With `sweep_reduction` (Lean), the n ≤ 17 sweep verifies the conjecture for **all** graphs
+of min degree 3 on ≤ 17 vertices — i.e. any counterexample has ≥ 18 vertices by this
+independent method. (The widely copied but never-sourced folklore said "≥ 17"; the current
+frontier is Balaji's unrefereed SAT n ≥ 32, of which this re-verifies the low range by a
+second method.) n = 18 (~×18 more graphs) needs the forge window with a compiled checker.
 
 Connected **cubic** C4-free (target: Markström's Congr. Numer. 171 (2004)
 record — all cubic ≤ 28 verified; exactly 4/23/251 graphs on 24/26/28
