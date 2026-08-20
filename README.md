@@ -41,7 +41,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | Search admissible lcm shapes; LP density bounds |
 | 10 | **Distinct subset sums** (EP [#1](https://www.erdosproblems.com/1), $500) | B | [DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean) | Dubroff–Fox–Xu 2021 lower bound; Bohman 0.22002·2ⁿ construction | Beat Bohman's constant by search; formalize DFX |
 | 11 | **Erdős–Moser** 1ᵏ+⋯+(m−1)ᵏ = mᵏ | C | [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean) | GMZ 2011: m > 10^(10⁹) via CF of log 2 | Extend the CF computation past 10^(10¹⁰); formalize Moser's odd-k proof |
-| 12 | **Lehmer's totient problem** | C | [LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean) | Cohen–Hagis 1980 (n>10²⁰, ω≥14); Burek–Żmija 2019 | Modern sweep raising 10-year-old bounds; formalize Cohen–Hagis framework |
+| 12 | **Lehmer's totient problem** | C | [LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean) | Cohen–Hagis 1980 (n>10²⁰, ω≥14); Burek–Żmija 2019 | **In progress — see [Results](#results).** Modern sweep; formalize Cohen–Hagis framework |
 
 ## Results
 
@@ -235,6 +235,26 @@ then carry the distinct sums 1,…,m and the center carries their total, which e
 leaf sum exactly when m ≥ 2. The pleasing part: **the m = 1 failure of this argument is
 precisely the K₂ exception** in the Hartsfield–Ringel conjecture — the exception is visible
 in the arithmetic.
+
+**Computationally** ([computations/antimagic/](computations/antimagic/), log in
+[RESULTS.md](computations/antimagic/RESULTS.md)): **the conjecture is verified for every
+connected graph on ≤ 10 vertices** — all 11,989,763 of them received an explicit antimagic
+labeling, each independently re-verified, with `K₂` *proved* not antimagic by exhaustive
+search (the lone exception, exactly as conjectured). The hill-climber never once needed the
+exact fallback above K₂: at small scale, antimagic labelings are everywhere. We could find no
+published exhaustive sweep of this kind (family results abound; claim stated as "not found",
+not as certain novelty).
+
+### 12. Lehmer's totient problem
+
+**Lehmer's own first structural bound is machine-checked**
+([LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean), no `sorry`, standard axioms): a
+composite n with φ(n) | n−1 must be odd (`odd_of_lehmer`), squarefree
+(`squarefree_of_lehmer`), cannot be a product of two distinct primes
+(`not_lehmer_semiprime` — the identity pq−1 = (p−1)(q−1) + (p−1)+(q−1) makes the divisor
+exceed the remainder), and therefore has **at least 3 distinct prime factors**
+(`three_le_card_primeFactors_of_lehmer`). The published ladder continues to ω(n) ≥ 14
+(Cohen–Hagis 1980), which is computation-heavy; formalizing further rungs is queued.
 
 ### Bench (documented, not active)
 

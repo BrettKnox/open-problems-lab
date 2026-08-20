@@ -28,7 +28,7 @@ session plan; criteria are restated here at completion time.
 | 5 | Superpermutations | SP-1 Houston word in Lean | done | L 6 ≤ 872 proved; single native_decide axiom (720-perm check), length kernel-checked, word independently Python-verified |
 | 5 | Superpermutations | SP-2 SAT calibration n=5 | queued | — |
 | 5 | Superpermutations | SP-3 871 verdict [FORGE] | queued | — |
-| 6 | Antimagic | AM-1 sweep | queued | — |
+| 6 | Antimagic | AM-1 sweep | done | conjecture verified for ALL connected graphs ≤ 10 vertices (11,989,763 graphs, labelings independently verified; K₂ refuted by exhaustion); no published sweep found; n=11 [FORGE], n=12 needs compiled checker |
 | 6 | Antimagic | AM-2 Lean families | done (stars) | isAntimagic_starGraph, m ≥ 2, axiom-clean; m=1 failure = the K₂ exception; paths/cycles remain as stretch |
 | 6 | Antimagic | AM-3 hard subcase | queued | — |
 | 7 | Graceful | GT-1 repro | queued | — |
@@ -44,7 +44,7 @@ session plan; criteria are restated here at completion time.
 | 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | queued | — |
 | 11 | Erdős–Moser | EM-2 GMZ repro | queued | — |
 | 11 | Erdős–Moser | EM-3 record [FORGE] | queued | — |
-| 12 | Lehmer | LT-1 Lean lemmas | queued | — |
+| 12 | Lehmer | LT-1 Lean lemmas | done | 4 lemmas axiom-clean: odd, squarefree, no-semiprime, ω ≥ 3 for composite solutions (Lehmer 1932's first bound); criterion (≥ 3 lemmas) exceeded |
 | 12 | Lehmer | LT-2 sweep | queued | — |
 | 12 | Lehmer | LT-3 ω bound [FORGE] | queued | — |
 
