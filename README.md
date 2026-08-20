@@ -203,8 +203,11 @@ above the range — there is no second persistent stream. The mechanism is parit
 exactly at squares, so trajectories change parity only when stepping from a square, and the
 census shows the long-deferred merges waiting for exactly that. Five gates and four negative
 controls, including exact agreement between the census and the kernel-checked Lean witnesses
-on the overlap. The τ-parity lemma (absent from mathlib, an upstreamable target) is next on
-the ladder.
+on the overlap. **The parity mechanism is now formal too**
+(`odd_card_divisors_iff_isSquare`, axiom-clean): τ(n) is odd exactly when n is a square —
+absent from mathlib (an upstreaming candidate) — with the corollaries that `step` preserves
+trajectory parity off squares and flips it exactly at squares, which is the machinery the
+census observed empirically.
 
 ### 5. Superpermutations
 

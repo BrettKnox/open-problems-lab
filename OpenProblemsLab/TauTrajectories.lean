@@ -1,4 +1,6 @@
 import Mathlib.NumberTheory.Divisors
+import Mathlib.NumberTheory.ArithmeticFunction.Misc
+import Mathlib.Data.Nat.Factorization.Defs
 import Mathlib.Tactic.IntervalCases
 
 /-!
@@ -104,6 +106,69 @@ theorem merge_upTo30 : ∀ m : ℕ, 2 ≤ m → m ≤ 30 →
   · exact ⟨2, 8, by decide⟩
   · exact ⟨13, 14, by decide⟩
   · exact ⟨1, 8, by decide⟩
+
+/-! ### The parity mechanism
+
+`τ(n)` is odd exactly when `n` is a square (each divisor `d < √n` pairs with
+`n/d`; equivalently, all factorization exponents are even). Hence `step`
+preserves the parity of a trajectory except exactly when stepping from a
+square — the mechanism behind the census structure in
+`computations/tau_trajectories/`. The parity criterion itself appears to be
+absent from mathlib (an upstreaming candidate). -/
+
+/-- A product of naturals is odd iff every factor is odd. (Not found in
+mathlib; proved by induction.) -/
+private lemma odd_prod_iff {α : Type} (s : Finset α) (f : α → ℕ) :
+    Odd (∏ x ∈ s, f x) ↔ ∀ x ∈ s, Odd (f x) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.prod_insert ha, Nat.odd_mul, ih]
+    constructor
+    · rintro ⟨h1, h2⟩ x hx
+      rcases Finset.mem_insert.mp hx with rfl | hx'
+      · exact h1
+      · exact h2 x hx'
+    · intro h
+      exact ⟨h a (Finset.mem_insert_self a s),
+        fun x hx => h x (Finset.mem_insert_of_mem hx)⟩
+
+/-- **`τ(n)` is odd iff `n` is a perfect square** (for `n ≥ 1`). -/
+theorem odd_card_divisors_iff_isSquare {n : ℕ} (hn : n ≠ 0) :
+    Odd n.divisors.card ↔ IsSquare n := by
+  rw [Nat.card_divisors hn, Nat.isSquare_iff_even_factorization, odd_prod_iff]
+  constructor
+  · intro h p hp
+    by_cases hmem : p ∈ n.primeFactors
+    · obtain ⟨k, hk⟩ := h p hmem
+      exact ⟨k, by omega⟩
+    · have h0 : n.factorization p = 0 := by
+        rw [← Nat.support_factorization] at hmem
+        exact Finsupp.notMem_support_iff.mp hmem
+      simp [h0]
+  · intro h p hmem
+    obtain ⟨k, hk⟩ := h p (Nat.prime_of_mem_primeFactors hmem)
+    exact ⟨k, by omega⟩
+
+/-- Off squares, `step` preserves parity. -/
+theorem step_parity_of_not_isSquare {n : ℕ} (hn : n ≠ 0) (h : ¬ IsSquare n) :
+    step n % 2 = n % 2 := by
+  have hev : Even n.divisors.card := by
+    rcases Nat.even_or_odd n.divisors.card with he | ho
+    · exact he
+    · exact absurd ((odd_card_divisors_iff_isSquare hn).mp ho) h
+  obtain ⟨k, hk⟩ := hev
+  simp only [step]
+  omega
+
+/-- At squares, `step` flips parity. -/
+theorem step_parity_of_isSquare {n : ℕ} (hn : n ≠ 0) (h : IsSquare n) :
+    step n % 2 ≠ n % 2 := by
+  have hodd : Odd n.divisors.card := (odd_card_divisors_iff_isSquare hn).mpr h
+  obtain ⟨k, hk⟩ := hodd
+  simp only [step]
+  omega
 
 /-- The pairwise form: any two starting points in `[2, 30]` have merging
 trajectories — the EP #414 property, verified on this box. -/
