@@ -94,6 +94,21 @@ verified ‖2ⁱ‖ = 2i to 2¹²⁶ — 94 powers further, and unreachable by a
 that needs the defect machinery rather than enumeration. Iraids et al. tabulated ‖n‖ to
 ~10¹², about 230× further, on a distributed out-of-core computation.
 
+### 2. Separating words
+
+In [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean). No `sorry`; standard axioms
+only.
+
+- **The accept set is irrelevant** (`exists_separates_iff_exists_eval_ne`): a k-state DFA
+  separating u from v exists exactly when some k-state *transition function* sends them to
+  different states — given that, accept precisely the state u lands in. This is the lemma
+  that makes exhaustive search practical, since it removes the 2ᵏ accept-set factor
+  entirely; the computation below enumerates transition functions only.
+- **`sep n ≤ n + 2`**, via a counter that latches on the symbol at the first position where
+  the words differ. Weak as a bound, but it is what makes `sep` *well defined*: without a
+  construction the infimum ranges over an empty set and `sep n` would silently be 0.
+- **`2 ≤ sep n`** for n ≥ 1 — one state distinguishes nothing.
+
 ### Bench (documented, not active)
 
 Sorting-network size S(13) (known through n=12, Harder 2020; n=13 likely CPU-decades) ·

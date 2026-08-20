@@ -283,7 +283,7 @@ which also checks that `complexity` means what it should. -/
 private theorem lt_complexity_of_three_pow_lt {n c : ℕ} (hn : 1 ≤ n) (h : 3 ^ c < n ^ 3) :
     c < complexity n := by
   by_contra hle
-  push_neg at hle
+  push Not at hle
   have h1 : (3 : ℕ) ^ complexity n ≤ 3 ^ c := Nat.pow_le_pow_right (by norm_num) hle
   have h2 := cube_le_three_pow_complexity hn
   omega
@@ -350,7 +350,7 @@ theorem complexity_two_pow_of_le_nine {n : ℕ} (hn : 1 ≤ n) (h9 : n ≤ 9) :
     complexity (2 ^ n) = 2 * n := by
   refine le_antisymm (complexity_two_pow_le hn) ?_
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have h1 : (3 : ℕ) ^ complexity (2 ^ n) ≤ 3 ^ (2 * n - 1) :=
     Nat.pow_le_pow_right (by norm_num) (by omega)
   have h2 := eight_pow_le_three_pow_complexity_two_pow n
