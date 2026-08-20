@@ -37,7 +37,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **In progress — see [Results](#results).** Rule out 871 via modern SAT + proof logging (untried) |
 | 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | Systematic small-graph verification (none published); degree-2-heavy trees |
 | 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | Push exhaustive verification to 36–37 (embarrassingly parallel) |
-| 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); lb 3703 (Rabung–Lotts) | Lower-bound records via SAT + cyclic zipper |
+| 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); W(2,7) > 3703 (Rabung–Lotts, [E-JC 19(2) #P35](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v19i2p35)) | **In progress — see [Results](#results).** Lower-bound records via SAT + cyclic zipper |
 | 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | Search admissible lcm shapes; LP density bounds |
 | 10 | **Distinct subset sums** (EP [#1](https://www.erdosproblems.com/1), $500) | B | [DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean) | Dubroff–Fox–Xu 2021 lower bound; Bohman 0.22002·2ⁿ construction | Beat Bohman's constant by search; formalize DFX |
 | 11 | **Erdős–Moser** 1ᵏ+⋯+(m−1)ᵏ = mᵏ | C | [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean) | GMZ 2011: m > 10^(10⁹) via CF of log 2 | Extend the CF computation past 10^(10¹⁰); formalize Moser's odd-k proof |
@@ -188,6 +188,25 @@ and the word is independently verified by
 [verify_word.py](computations/superpermutations/verify_word.py), which also confirms a
 corrupted word is rejected). Next on the ladder: SAT calibration on L(5) = 153, then the
 length-871 feasibility verdict for n = 6.
+
+### 8. W(2,7)
+
+**The published lower-bound records are now machine-checked**
+([VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean)): explicit colorings with no
+monochromatic 7-term AP on {1,…,3703} (`W(2,7) > 3703`, the Rabung–Lotts record — their
+E-JC table entry verified at source) and no 6-term AP on {1,…,1131} (the lower half of
+Kouril–Paul's exact `W(2,6) = 1132`). Each rests on one `native_decide` evaluation of the
+certificate data; the colorings are independently verified with negative controls in
+[computations/vanderwaerden/](computations/vanderwaerden/).
+
+Two honest notes. First, mathlib has no proof of van der Waerden's theorem, so the number
+`W(r,k)` defined as an infimum is only known nonempty conditionally; the certificate theorems
+(`¬ HasVdW 2 7 3703`) carry the unconditional content, and formalizing vdW's theorem itself is
+now on the ladder. Second, a small find: Heule's public certificate files are one cell short
+of the published records (3702 and 1130 cells — they certify one less). The full-length
+certificates here were reconstructed by unrolling the cyclic patterns one further cell and
+flipping one boundary symbol, which removes the unique wraparound progression whose
+difference equals the period — then re-verified from the literal definition.
 
 ### Bench (documented, not active)
 
