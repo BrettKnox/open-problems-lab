@@ -165,7 +165,10 @@ def _block(f: np.ndarray, L: int, R: int, ws: _Workspace, stats: list) -> None:
     # ---- how far the additive search has to go, from Selfridge's bound -----
     half = (L + 1) // 2                       # <= ceil(n/2) for every n in block
     cap_table = [icbrt(3 ** w) // half for w in range(WMAX)]
-    cap = cap_table[int(Wb.max())]
+    bound = int(Wb.max())
+    if bound >= WMAX:
+        raise RuntimeError(f"upper bound {bound} >= WMAX={WMAX} at L={L}")
+    cap = cap_table[bound]
     if cap >= APREFIX:                        # never seen; guard anyway
         raise RuntimeError(f"cap={cap} exceeds APREFIX={APREFIX} at L={L}")
     fa = f[1:max(cap, 1) + 1].astype(np.int16)
@@ -237,6 +240,53 @@ def integer_complexity_table(limit: int, block: int = 1 << 26,
     return f
 
 
+def recompute_from_definition(f: np.ndarray, n: int, chunk: int = 1 << 23) -> int:
+    """||n|| straight from the recurrence, using f for every smaller value.
+
+    Scans the *entire* additive range 1 <= a <= n/2 -- no Selfridge pruning --
+    so it is an independent audit of the pruning at values far beyond anything
+    the OEIS b-file reaches.
+    """
+    best = int(INF)
+    h = n // 2
+    for s in range(1, h + 1, chunk):
+        e = min(s + chunk - 1, h)
+        lo = f[s:e + 1].astype(np.int16)
+        hi = f[n - e:n - s + 1][::-1].astype(np.int16)
+        v = int((lo + hi).min())
+        if v < best:
+            best = v
+    for d in range(2, isqrt(n) + 1):
+        if n % d == 0:
+            v = int(f[d]) + int(f[n // d])
+            if v < best:
+                best = v
+    return best
+
+
+def audit(f: np.ndarray, samples: int = 64, seed: int = 20260820,
+          verbose: bool = True) -> int:
+    """Re-derive ||n|| from the definition for random large n; assert equality."""
+    limit = len(f) - 1
+    rng = np.random.default_rng(seed)
+    lo = max(2, limit // 2)
+    picks = sorted(set(int(x) for x in rng.integers(lo, limit + 1, size=samples)))
+    picks += [limit, limit - 1, lo]
+    t0 = time.perf_counter()
+    for n in sorted(set(picks)):
+        got, want = int(f[n]), recompute_from_definition(f, n)
+        if got != want:
+            raise AssertionError(
+                f"AUDIT FAILED at n={n}: table says {got}, full recurrence "
+                f"says {want}")
+    if verbose:
+        print(f"recurrence audit: {len(set(picks))} random n in "
+              f"[{lo:,}, {limit:,}] re-derived from the full definition "
+              f"(all additive splits, no pruning) -- all match "
+              f"[{time.perf_counter()-t0:.1f}s]")
+    return len(set(picks))
+
+
 def main() -> None:
     p = argparse.ArgumentParser(description="Compute the A005245 table up to N.")
     p.add_argument("--limit", type=int, required=True, help="N (inclusive)")
@@ -244,6 +294,10 @@ def main() -> None:
     p.add_argument("--block", type=int, default=1 << 26, help="block size in n")
     p.add_argument("--verify", action="store_true",
                    help="also run the OEIS b-file check and the power checks")
+    p.add_argument("--selfcheck", type=int, default=0, metavar="M",
+                   help="compare the first M entries against brute_force(M)")
+    p.add_argument("--audit", type=int, default=0, metavar="K",
+                   help="re-derive K random large n from the full recurrence")
     p.add_argument("--quiet", action="store_true")
     args = p.parse_args()
 
@@ -260,11 +314,24 @@ def main() -> None:
         print(f"saved {args.out} ({f.nbytes/2**20:.1f} MiB) in "
               f"{time.perf_counter()-t1:.2f} s")
 
+    if args.selfcheck:
+        m = min(args.selfcheck, args.limit)
+        t1 = time.perf_counter()
+        ref = brute_force(m)
+        if not np.array_equal(f[:m + 1].astype(np.int16), ref):
+            d = np.flatnonzero(f[:m + 1].astype(np.int16) != ref)
+            raise AssertionError(f"self-check failed, first n={int(d[0])}")
+        print(f"self-check: matches the quadratic reference recurrence on "
+              f"n = 0..{m:,} [{time.perf_counter()-t1:.1f}s]")
+
     if args.verify:
         import validate_oeis
         import verify_powers
         validate_oeis.check(f, verbose=True)
         verify_powers.check(f, verbose=True)
+
+    if args.audit:
+        audit(f, samples=args.audit, verbose=True)
 
 
 if __name__ == "__main__":

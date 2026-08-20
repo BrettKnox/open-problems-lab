@@ -75,6 +75,25 @@ of n by computation inside Lean. Each level is an O(N²) min-plus convolution, s
 out near n = 10–11 for a large amount of proof work plus a `native_decide` trust
 assumption. Getting further formally means formalizing the theory, not out-computing it.
 
+**Computationally** ([computations/integer_complexity/](computations/integer_complexity/),
+log in [RESULTS.md](computations/integer_complexity/RESULTS.md)): an exact table of ‖n‖ to
+**n = 2³² = 4,294,967,296** in 426 s single-threaded, confirming **‖2ᵏ‖ = 2k for k ≤ 32**.
+The additive search is pruned by the Selfridge bound proved above — it forces the smaller
+summand of an optimal split to satisfy a ≤ ∛(3^U)/⌈n/2⌉, a window measured at **≤ 153**
+against a naive n/2 ≈ 2.1×10⁹ — in exact integer arithmetic, so the table stays exact.
+
+Four validation gates, all passing: exact agreement with **all 10,000 terms** of the OEIS
+A005245 b-file; agreement with an independent brute-force implementation of the definition
+(sharing no code path) on n ≤ 30,000 and across block sizes; a **large-n audit** that
+re-derives ‖n‖ for random n ∈ [2³¹, 2³²] from the full definition scanning *every* additive
+split with no pruning; and **negative controls** confirming a single corrupted entry is
+caught, so the gates are not vacuous.
+
+This is a trusted oracle, **not a record**. He ([2308.10301](https://arxiv.org/abs/2308.10301))
+verified ‖2ⁱ‖ = 2i to 2¹²⁶ — 94 powers further, and unreachable by any dense table, since
+that needs the defect machinery rather than enumeration. Iraids et al. tabulated ‖n‖ to
+~10¹², about 230× further, on a distributed out-of-core computation.
+
 ### Bench (documented, not active)
 
 Sorting-network size S(13) (known through n=12, Harder 2020; n=13 likely CPU-decades) ·

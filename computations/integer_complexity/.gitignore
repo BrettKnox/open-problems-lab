@@ -1,0 +1,6 @@
+# Fetched from https://oeis.org/A005245/b005245.txt on first run. Not committed:
+# OEIS content is CC BY-NC-SA 4.0, which does not sit inside this repo's Apache-2.0.
+# (*.npy and __pycache__/ are already covered by the repo-root .gitignore;
+# the table is 1 byte per integer, so N = 2^32 is a 4 GiB artifact and is
+# recomputed on demand rather than committed.)
+b005245.txt
