@@ -22,7 +22,7 @@ session plan; criteria are restated here at completion time.
 | 3 | Erdős–Gyárfás | EG-2 baseline repro | done | Markström n=24 reproduced exactly (4 no-C4-no-C8 among 9,467,449 C4-free cubic; 0 cex); general lane verified through n=17 (34.7M graphs at 17, 0 cex) ⇒ counterexample ≥ 18 by our method; curves measured, barriers documented |
 | 3 | Erdős–Gyárfás | EG-3 extension [FORGE] | queued | target: cubic n = 30 via res/mod-parallel geng (beats peer-reviewed record) |
 | 3 | Erdős–Gyárfás | EG-4 Lean lemmas | done | sweep_reduction (C4-free restriction justified) + exists_cycle_of_two_le_degree; axiom-clean; criterion (≥ 2 real lemmas) met |
-| 4 | EP #414 | TT-1 stream census | in progress | agent running (target 10^7 starts) |
+| 4 | EP #414 | TT-1 stream census | done | ALL starts ≤ 10^8 merge into the single stream of 2 (H* = M + 0.18%); parity mechanism instrumented; 5 gates + 4 negative controls; census m ≤ 30 equals Lean witnesses exactly |
 | 4 | EP #414 | TT-2 Lean structure | done | lt_step, step_add_two_le, merged_of_eq; τ-parity lemma identified as absent from mathlib (next pass, upstreamable) |
 | 4 | EP #414 | TT-3 merge theorems | done | merge_pairs_upTo30: all pairs 2 ≤ m,n ≤ 30 merge, kernel decide, no native_decide; first machine-checked EP #414 instances as far as determinable |
 | 5 | Superpermutations | SP-1 Houston word in Lean | done | L 6 ≤ 872 proved; single native_decide axiom (720-perm check), length kernel-checked, word independently Python-verified |

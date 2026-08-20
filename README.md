@@ -184,9 +184,17 @@ n ≥ 2), meeting once means merged forever (`merged_of_eq`), and — the headli
 **`merge_pairs_upTo30`: every pair of starting points 2 ≤ m, n ≤ 30 has merging
 trajectories**, each instance kernel-verified with explicit iterate indices (e.g. the
 trajectories of 11 and 2 meet at 38 after 8 steps each). As far as we could determine,
-these are the first machine-checked instances of EP #414. A full census to 10⁷ is in
-progress; the τ-parity lemma (τ(n) odd ⟺ n square — absent from mathlib, an upstreamable
-target) is next on the ladder.
+these are the first machine-checked instances of EP #414.
+
+**Computationally** ([computations/tau_trajectories/](computations/tau_trajectories/), log in
+[RESULTS.md](computations/tau_trajectories/RESULTS.md)): **every starting point up to 10⁸
+merges into the single stream containing 2**, with the single stream achieved just 0.18%
+above the range — there is no second persistent stream. The mechanism is parity: τ(n) is odd
+exactly at squares, so trajectories change parity only when stepping from a square, and the
+census shows the long-deferred merges waiting for exactly that. Five gates and four negative
+controls, including exact agreement between the census and the kernel-checked Lean witnesses
+on the overlap. The τ-parity lemma (absent from mathlib, an upstreamable target) is next on
+the ladder.
 
 ### 5. Superpermutations
 
