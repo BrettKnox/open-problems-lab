@@ -41,9 +41,24 @@ Selfridge's bound pins `‖2^n‖ ≥ ⌈3n·log₃ 2⌉ ≈ 1.892·n`
 (`eight_pow_le_three_pow_complexity_two_pow`), so for `n ≥ 10` the entire open
 content of the conjecture is the gap between `1.892n` and `2n`.
 
+## Why `n = 9` and not further
+
+The tempting next step is a verified computation inside Lean: build the sets
+of values reachable with `k` ones (capped at `N = 2^n`) and check that `2^n`
+is absent below size `2n`. Only the over-approximation direction needs
+proving, so the formalization is easy — but the arithmetic does not pay. Each
+level is a min-plus convolution costing `O(N²)`: at `N = 2^10` that is already
+`~10^8` set operations even compiled, and kernel reduction is far slower
+still. The route caps out near `n = 10`–`11`, buying one or two values of `n`
+for a large amount of finicky proof work plus a `native_decide` trust
+assumption. It was measured and rejected, not overlooked.
+
+Getting past `n = 9` formally means formalizing the actual theory — Altman's
+defect and low-defect polynomials — which is what makes the known results
+(`k ≤ 48` stability, He's search to `2^126`) possible in the first place.
+
 Attack lanes: extend Altman's `k ≤ 48` stability computation; extend He's
-power search; formalize the defect/low-defect-polynomial machinery, which is
-what would push the formal result past `n = 9`.
+power search; formalize the defect/low-defect-polynomial machinery.
 -/
 
 namespace OpenProblems.IntegerComplexity

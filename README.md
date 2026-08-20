@@ -47,9 +47,11 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 
 ### 1. Integer complexity, ‖2ⁿ‖ = 2n
 
-The first formalization of integer complexity anywhere, in
-[IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean). No `sorry`; the only
-axioms used are `propext`, `Classical.choice`, `Quot.sound`.
+A formalization of integer complexity in
+[IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean), with no prior one known:
+the notion is absent from mathlib and from DeepMind's formal-conjectures, and we could find
+no published formalization. No `sorry`; the only axioms used are `propext`,
+`Classical.choice`, `Quot.sound`.
 
 - **Selfridge's lower bound**, in the sharp integer form `n³ ≤ 3^‖n‖` (and the logarithmic
   form `‖n‖ ≥ 3·log₃ n`). Proved by structural induction on expressions.
