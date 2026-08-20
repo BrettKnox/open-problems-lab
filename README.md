@@ -229,6 +229,13 @@ exactly 1,…,m. Combined with mathlib's `isTree_starGraph`, a machine-checked i
 of the Ringel–Kotzig conjecture. The star edge-enumeration machinery is shared with the
 antimagic proof ([StarFacts.lean](OpenProblemsLab/StarFacts.lean)).
 
+**Computationally** ([computations/graceful/](computations/graceful/), log in
+[RESULTS.md](computations/graceful/RESULTS.md)): **every tree on ≤ 18 vertices verified
+graceful** — 123,867 trees at n = 18 alone, counts gated against OEIS A000055, every
+labeling independently re-verified, with an exact-search fallback that was never needed.
+This is a reproduction baseline, plainly stated: Fang's 2010 record stands at 35 vertices;
+the measured cost curve puts the mid-20s in forge territory with a compiled climber.
+
 ### 8. W(2,7)
 
 **The published lower-bound records are now machine-checked**
