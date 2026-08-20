@@ -1,0 +1,1 @@
+graphs 1,015,651  C4-free survivors 1,015,651  noC4noC8 1  first-pow2 {8: 1015650, 16: 1}  counterexamples 0  [3669.7s]

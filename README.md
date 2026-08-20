@@ -162,9 +162,17 @@ is the warrant for `geng -f` in our sweeps. And `exists_cycle_of_two_le_degree` 
 degree 2 forces a cycle at all (via mathlib's component/tree machinery), the ground fact
 beneath the conjecture.
 
-**Computationally** ([computations/erdos_gyarfas/](computations/erdos_gyarfas/)): sweep
-in progress; the validation gate caught a real off-by-one in the cycle-search pruning on its
-first run (Petersen has a C8 the pruned search missed) — which is why the gates exist.
+**Computationally** ([computations/erdos_gyarfas/](computations/erdos_gyarfas/), log in
+[RESULTS.md](computations/erdos_gyarfas/RESULTS.md)): **Markström's hardest published data
+point is independently reproduced** — among the 9,467,449 C4-free connected cubic graphs on
+24 vertices, exactly **4** have neither a C4 nor a C8 (his count), each containing a C16;
+zero counterexamples. Different generator, checker, language, and hardware than the 2004
+computation. General min-deg-3 lane verified to n = 16 so far (zero counterexamples,
+n = 17 running). Measured scaling puts cubic n = 26–28 in overnight/forge territory and the
+n = 30 record step behind a compiled-filter barrier (documented in RESULTS.md). A bonus for
+the methodology section: the validation gate caught a real off-by-one in the cycle-search
+pruning on its first run (Petersen has a C8 the pruned search missed) — which is why the
+gates exist.
 
 ### 4. EP #414 (n ↦ n + τ(n))
 
