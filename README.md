@@ -295,6 +295,17 @@ shape search). Applied to the textbook five-congruence system {0(2), 0(3), 1(4),
 7(12)}: covers ℤ by a kernel `decide` over its period 12 (`classic_isCovering`), and, as
 Erdős's conjecture demands of every covering system, it is not odd (`classic_not_odd`).
 
+**Computationally** ([computations/odd_covering/](computations/odd_covering/), log in
+[RESULTS.md](computations/odd_covering/RESULTS.md)): a rigorous density screen —
+a covering needs Σ1/mᵢ ≥ 1, so a shape whose odd divisors fall short is dead with no search
+— **kills 97.5% of admissible shapes up to L = 200,000** (15,165 of 15,556), leaving 391
+that need real structure. The survivors are strikingly marginal: the tightest, L = 32,445,
+clears the threshold with density **1.0002**. Two gates here caught wrong assertions of
+mine, and both corrections are the interesting content: odd moduli 3..15 already reach
+density 1.0218, so density is *satisfiable* and not the obstruction; the real obstruction is
+CRT overlap (for {3,5,15} the naive 5+3+1 = 9 residues is unreachable — the true maximum is
+8, because the mod-3 and mod-5 classes must meet).
+
 ### 10. Distinct subset sums
 
 **The Conway–Guy construction is verified exactly** ([computations/subset_sums/](computations/subset_sums/),

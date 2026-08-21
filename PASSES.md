@@ -37,7 +37,7 @@ session plan; criteria are restated here at completion time.
 | 8 | W(2,7) | VW-1 Lean certificates | done | ¬HasVdW 2 7 3703 and ¬HasVdW 2 6 1131 machine-checked (one native_decide each); Heule's public certs found one cell short of published records, full-length reconstructed via phase+boundary-flip and independently verified; conditional W-bounds pending vdW theorem (absent from mathlib) |
 | 8 | W(2,7) | VW-2 record attempt | queued | — |
 | 9 | Odd covering | OC-1 Lean API | done | IsCovering + finite-check reduction (period lemma) + classic 5-congruence system verified by decide + not-odd sanity; axiom-clean; density lemma deferred to OC-2 |
-| 9 | Odd covering | OC-2 shape search | queued | — |
+| 9 | Odd covering | OC-2 shape search | done | rigorous density screen kills 97.5% of admissible shapes L ≤ 200k (15,165 of 15,556) with no search; 391 survivors, tightest at density 1.0002; gates corrected two of my own wrong assertions (density IS satisfiable; CRT overlap is the obstruction); B&B barrier documented → OC-3 = SAT/ILP on survivors |
 | 10 | Subset sums | DS-1 repro | done | Conway–Guy verified distinct exactly for ALL n ≤ 31 (blocked saturating DP, 10.4 GB at 31; n=32 barrier documented); gated vs brute force + negative controls; ratios 0.255→0.2427 reproduce the 0.23513 march |
 | 10 | Subset sums | DS-2 search | queued [FORGE] | beat Bohman 0.22002 |
 | 10 | Subset sums | DS-3 Lean witness | done | conwayGuy16: distinct subset sums, max 17305 < 2^15 (one native_decide, Python-cross-verified) |
