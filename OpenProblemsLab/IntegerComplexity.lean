@@ -434,7 +434,6 @@ theorem defect_mul_le {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :
     exact Real.logb_mul (by positivity) (by positivity)
   simp only [defect]
   rw [hlog]
-  push_cast
   linarith
 
 /-- **Altman's stability theorem, stated verbatim**

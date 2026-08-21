@@ -313,8 +313,15 @@ counting 65536 sums; independently verified in Python).
 
 **The k = 1 case is completely proved in Lean** (`k_eq_one_case` in
 [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean), axiom-clean): 1 + 2 + ⋯ + (m−1) = m
-only at m = 3, by Gauss's identity. The entire open content of the conjecture lives in
-k ≥ 2; Moser's elementary odd-k argument is the next formalization target on this ladder.
+only at m = 3, by Gauss's identity. The entire open content lives in k ≥ 2.
+
+**Moser's odd-k machinery is now formal through the mod-m² step** (all axiom-clean, no
+`sorry`): the pairing i ↔ m−i gives m ∣ 2·∑ i^k for odd k; the binomial expansion sharpens
+this to the congruence **2·∑ i^k + m^k ≡ k·m·∑ i^(k−1) (mod m²)**; and `dvd_of_solution`
+extracts Moser's actual lever — any solution with odd k ≥ 2 forces **m ∣ k·∑_{i<m} i^(k−1)**,
+turning the equation into a constraint on the *lower* power sum. Done in ℤ, since truncated
+ℕ subtraction makes the binomial step unstateable. What remains is evaluating that power sum
+mod m, which is where Moser's bound m > 10^(10⁶) comes from.
 
 ### Bench (documented, not active)
 

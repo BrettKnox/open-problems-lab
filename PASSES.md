@@ -26,7 +26,7 @@ session plan; criteria are restated here at completion time.
 | 4 | EP #414 | TT-2 Lean structure | done | lt_step, step_add_two_le, merged_of_eq; τ odd ⟺ square proved (odd_card_divisors_iff_isSquare, absent from mathlib — upstreamable) + step parity preserved off squares / flipped at squares; axiom-clean |
 | 4 | EP #414 | TT-3 merge theorems | done | merge_pairs_upTo30: all pairs 2 ≤ m,n ≤ 30 merge, kernel decide, no native_decide; first machine-checked EP #414 instances as far as determinable |
 | 5 | Superpermutations | SP-1 Houston word in Lean | done | L 6 ≤ 872 proved; single native_decide axiom (720-perm check), length kernel-checked, word independently Python-verified |
-| 5 | Superpermutations | SP-2 SAT calibration n=5 | queued | — |
+| 5 | Superpermutations | SP-2 SAT calibration n=5 | in progress | encoder gated on L(1..3) ± symmetry breaking + negative control; reproduces L(4)=33 (UNSAT@32 54 s, SAT@33 17 s); n=5 ladder running |
 | 5 | Superpermutations | SP-3 871 verdict [FORGE] | queued | — |
 | 6 | Antimagic | AM-1 sweep | done | conjecture verified for ALL connected graphs ≤ 10 vertices (11,989,763 graphs, labelings independently verified; K₂ refuted by exhaustion); no published sweep found; n=11 [FORGE], n=12 needs compiled checker |
 | 6 | Antimagic | AM-2 Lean families | done (stars) | isAntimagic_starGraph, m ≥ 2, axiom-clean; m=1 failure = the K₂ exception; paths/cycles remain as stretch |
@@ -41,11 +41,11 @@ session plan; criteria are restated here at completion time.
 | 10 | Subset sums | DS-1 repro | done | Conway–Guy verified distinct exactly for ALL n ≤ 31 (blocked saturating DP, 10.4 GB at 31; n=32 barrier documented); gated vs brute force + negative controls; ratios 0.255→0.2427 reproduce the 0.23513 march |
 | 10 | Subset sums | DS-2 search | queued [FORGE] | beat Bohman 0.22002 |
 | 10 | Subset sums | DS-3 Lean witness | done | conwayGuy16: distinct subset sums, max 17305 < 2^15 (one native_decide, Python-cross-verified) |
-| 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | started | k = 1 case COMPLETE (k_eq_one_case, axiom-clean); odd k ≥ 3 is the remaining multi-pass target |
+| 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | in progress | k=1 complete; odd-k chain formal through the mod-m² step: pairing → binomial congruence → dvd_of_solution (m ∣ k·∑ i^(k−1)). Remaining: power sums mod m |
 | 11 | Erdős–Moser | EM-2 GMZ repro | queued | — |
 | 11 | Erdős–Moser | EM-3 record [FORGE] | queued | — |
 | 12 | Lehmer | LT-1 Lean lemmas | done | 4 lemmas axiom-clean: odd, squarefree, no-semiprime, ω ≥ 3 for composite solutions (Lehmer 1932's first bound); criterion (≥ 3 lemmas) exceeded |
-| 12 | Lehmer | LT-2 sweep | queued | — |
+| 12 | Lehmer | LT-2 sweep | in progress | segmented φ sieve gated vs trial division + negative control; n ≤ 10^6 confirms only 1 and primes solve φ(n) | n−1; 10^9 sweep running |
 | 12 | Lehmer | LT-3 ω bound [FORGE] | queued | — |
 
 Cycle 1 order: 3 → 4 → 5 → 8 → 6 → 7 → 12 → 9 → 10 → 11, IC/SW passes interleaved as
