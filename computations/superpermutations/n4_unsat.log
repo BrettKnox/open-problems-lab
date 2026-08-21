@@ -1,0 +1,2 @@
+n=4 L=32 sym=True: UNSAT 54.3s
+n=4 L=33 sym=True: SAT 17.1s
