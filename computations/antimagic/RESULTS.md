@@ -6,9 +6,9 @@ Machine: Ryzen 7 7840HS, Python 3.14, single-threaded; graphs from geng
 ## Headline
 
 **The Hartsfield–Ringel conjecture is verified for every connected graph on
-at most 10 vertices.** All 11,989,763 connected graphs on 1–10 vertices
+at most 11 vertices.** All 1,018,690,328 connected graphs on 1–11 vertices
 (counts match OEIS A001349: 1, 1, 2, 6, 21, 112, 853, 11117, 261080,
-11716571) were given an explicit antimagic labeling, each one re-checked by an
+11716571, 1006700565) were given an explicit antimagic labeling, each one re-checked by an
 independent verifier (bijection onto {1..m} plus pairwise-distinct vertex
 sums, recomputed from scratch) — except `K₂`, which the exact search **proves
 not antimagic** by exhaustion, exactly as the conjecture's lone exception
@@ -20,6 +20,7 @@ requires.
 | 8 | 11,117 | 11,117 | 0.2 s |
 | 9 | 261,080 | 261,080 | 5.0 s |
 | 10 | 11,716,571 | 11,716,571 | 272 s |
+| 11 | 1,006,700,565 | 1,006,700,565 | 28,541 s (7.9 h) |
 
 The randomized hill-climber found a labeling for **every single graph** — the
 exact branch-and-prune fallback was never needed above `K₂`. Antimagic
@@ -55,6 +56,7 @@ exhaustive sweeps for *variant* notions such as distance antimagic). We do
 not claim novelty beyond "we could not find one"; the sweep's value is the
 certified baseline plus the harness.
 
-Scaling: n = 11 has 1,006,700,565 connected graphs (~6.5 h at the measured
-~43k graphs/s plus generation) — feasible in the forge window; n = 12
-(164 billion) needs a compiled checker.
+Scaling: n = 11 ran at ~35k graphs/s and took 7.9 h; **n = 12 has ~164
+billion connected graphs**, i.e. ~53 days single-threaded here — that is the
+barrier, and the unblock is a compiled checker plus res/mod parallelism, not
+more wall time on this one.

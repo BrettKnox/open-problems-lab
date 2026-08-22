@@ -34,7 +34,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn; exact values n ≤ 18 (Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)) | **In progress — see [Results](#results).** Extend the exact table; log n vs n^⅓ gap wide open |
 | 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | General: ≥ 32 (Balaji 2026, unrefereed SAT); cubic: ≥ 30 (Markström 2004); cubic bipartite: ≥ 60 (Tranquilli, [2608.02675](https://arxiv.org/abs/2608.02675)) | **In progress — see [Results](#results).** Extend the cubic record; independently verify the unrefereed general record |
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | **In progress — see [Results](#results).** Zero competition. Census + parity structure |
-| 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **In progress — see [Results](#results).** Rule out 871 via modern SAT + proof logging (untried) |
+| 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **See [Results](#results).** Direct SAT ruled out (barrier documented); needs a Chaffin/TSP-style encoding |
 | 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | **In progress — see [Results](#results).** Small-graph sweep; degree-2-heavy trees |
 | 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | **In progress — see [Results](#results).** Push exhaustive verification (embarrassingly parallel) |
 | 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); W(2,7) > 3703 (Rabung–Lotts, [E-JC 19(2) #P35](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v19i2p35)) | **In progress — see [Results](#results).** Lower-bound records via SAT + cyclic zipper |
@@ -220,6 +220,15 @@ and the word is independently verified by
 corrupted word is rejected). Next on the ladder: SAT calibration on L(5) = 153, then the
 length-871 feasibility verdict for n = 6.
 
+**That verdict is now in, and it is negative** (log in
+[RESULTS.md](computations/superpermutations/RESULTS.md)). The CNF encoder is gated and
+**reproduces L(4) = 33** exactly (UNSAT at 32 in 54 s). But n = 5's *easiest* ladder rung,
+L = 149, ran 22.6 CPU-hours at 99.5% utilisation without returning — a > 1500× jump from
+n = 4, on an instance strictly easier than the L = 152 one that would prove L(5) = 153. So
+direct symbol-assignment SAT does not reach n = 5, and n = 6 at L = 871 is not a
+compute-budget problem a forge window fixes. SP-3 is dropped rather than left perpetually
+"queued"; reopening it needs the permutation-graph/TSP formulation the real searches use.
+
 ### 7. Graceful trees
 
 **Stars are the first tree family proved graceful in Lean**
@@ -267,14 +276,21 @@ in the arithmetic.
 
 **Computationally** ([computations/antimagic/](computations/antimagic/), log in
 [RESULTS.md](computations/antimagic/RESULTS.md)): **the conjecture is verified for every
-connected graph on ≤ 10 vertices** — all 11,989,763 of them received an explicit antimagic
-labeling, each independently re-verified, with `K₂` *proved* not antimagic by exhaustive
-search (the lone exception, exactly as conjectured). The hill-climber never once needed the
+connected graph on ≤ 11 vertices** — all **1,018,690,328** of them received an explicit
+antimagic labeling, each independently re-verified, with `K₂` *proved* not antimagic by
+exhaustive search (the lone exception, exactly as conjectured). The n = 11 level alone is
+1,006,700,565 graphs (7.9 h); n = 12 is ~164 billion and needs a compiled checker. The hill-climber never once needed the
 exact fallback above K₂: at small scale, antimagic labelings are everywhere. We could find no
 published exhaustive sweep of this kind (family results abound; claim stated as "not found",
 not as certain novelty).
 
 ### 12. Lehmer's totient problem
+
+**Computationally** ([computations/lehmer/](computations/lehmer/)): **no composite n below
+10⁹ satisfies φ(n) ∣ n − 1** (7 h, segmented φ sieve gated against trial division with a
+negative control). A clean self-check falls out: the sweep found 50,847,535 solutions, and
+π(10⁹) + 1 = 50,847,535 exactly — so the solution set is precisely {1} ∪ primes, confirmed
+without reference to the primality test used inside the sweep.
 
 **Lehmer's own first structural bound is machine-checked**
 ([LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean), no `sorry`, standard axioms): a

@@ -26,9 +26,9 @@ session plan; criteria are restated here at completion time.
 | 4 | EP #414 | TT-2 Lean structure | done | lt_step, step_add_two_le, merged_of_eq; τ odd ⟺ square proved (odd_card_divisors_iff_isSquare, absent from mathlib — upstreamable) + step parity preserved off squares / flipped at squares; axiom-clean |
 | 4 | EP #414 | TT-3 merge theorems | done | merge_pairs_upTo30: all pairs 2 ≤ m,n ≤ 30 merge, kernel decide, no native_decide; first machine-checked EP #414 instances as far as determinable |
 | 5 | Superpermutations | SP-1 Houston word in Lean | done | L 6 ≤ 872 proved; single native_decide axiom (720-perm check), length kernel-checked, word independently Python-verified |
-| 5 | Superpermutations | SP-2 SAT calibration n=5 | in progress | encoder gated on L(1..3) ± symmetry breaking + negative control; reproduces L(4)=33 (UNSAT@32 54 s, SAT@33 17 s); n=5 ladder running |
-| 5 | Superpermutations | SP-3 871 verdict [FORGE] | queued | — |
-| 6 | Antimagic | AM-1 sweep | done | conjecture verified for ALL connected graphs ≤ 10 vertices (11,989,763 graphs, labelings independently verified; K₂ refuted by exhaustion); no published sweep found; n=11 [FORGE], n=12 needs compiled checker |
+| 5 | Superpermutations | SP-2 SAT calibration n=5 | done (barrier) | encoder gated on L(1..3) ± sym + negative control; reproduces L(4)=33 (UNSAT@32 54 s). n=5 L=149 (easiest rung) abandoned after 22.6 CPU-hours at 99.5% — a >1500x jump from n=4. Curve is a wall |
+| 5 | Superpermutations | SP-3 871 verdict [FORGE] | DROPPED | dead by this route: if the easiest n=5 UNSAT is unreachable, n=6/871 is not a compute-budget problem. Reopen only with a Chaffin/TSP-style encoding, not a bigger machine |
+| 6 | Antimagic | AM-1 sweep | done | conjecture verified for ALL connected graphs ≤ **11** vertices (1,018,690,328 graphs; 1,006,700,565 at n=11 alone in 7.9 h; labelings independently verified; K₂ refuted by exhaustion); no published sweep found; n=12 (164 bn) needs a compiled checker |
 | 6 | Antimagic | AM-2 Lean families | done (stars) | isAntimagic_starGraph, m ≥ 2, axiom-clean; m=1 failure = the K₂ exception; paths/cycles remain as stretch |
 | 6 | Antimagic | AM-3 hard subcase | queued | — |
 | 7 | Graceful | GT-1 repro | done | all trees ≤ 18 vertices verified graceful (123,867 at n=18; A000055 gate; independent verifier; exact fallback never needed); curve measured — mid-20s need compiled climber [FORGE]; Fang's 35 stands |
@@ -45,7 +45,7 @@ session plan; criteria are restated here at completion time.
 | 11 | Erdős–Moser | EM-2 GMZ repro | queued | — |
 | 11 | Erdős–Moser | EM-3 record [FORGE] | queued | — |
 | 12 | Lehmer | LT-1 Lean lemmas | done | 4 lemmas axiom-clean: odd, squarefree, no-semiprime, ω ≥ 3 for composite solutions (Lehmer 1932's first bound); criterion (≥ 3 lemmas) exceeded |
-| 12 | Lehmer | LT-2 sweep | in progress | segmented φ sieve gated vs trial division + negative control; n ≤ 10^6 confirms only 1 and primes solve φ(n) | n−1; 10^9 sweep running |
+| 12 | Lehmer | LT-2 sweep | done | no composite solution below 10^9 (7 h); the 50,847,535 solutions found equal π(10^9)+1 exactly — an independent confirmation that only 1 and the primes qualify |
 | 12 | Lehmer | LT-3 ω bound [FORGE] | queued | — |
 
 Cycle 1 order: 3 → 4 → 5 → 8 → 6 → 7 → 12 → 9 → 10 → 11, IC/SW passes interleaved as
