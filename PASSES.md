@@ -33,7 +33,7 @@ session plan; criteria are restated here at completion time.
 | 6 | Antimagic | AM-3 hard subcase | queued | — |
 | 7 | Graceful | GT-1 repro | done | all trees ≤ 18 vertices verified graceful (123,867 at n=18; A000055 gate; independent verifier; exact fallback never needed); curve measured — mid-20s need compiled climber [FORGE]; Fang's 35 stands |
 | 7 | Graceful | GT-2 feasibility [FORGE] | scoped | C port of the ~60-line climber is the unblock; cost memo in RESULTS.md |
-| 7 | Graceful | GT-3 Lean families | done (stars) | starGraph_isTree_and_graceful axiom-clean; star machinery shared with antimagic via StarFacts.lean; paths next |
+| 7 | Graceful | GT-3 Lean families | done | stars AND paths graceful (isGraceful_pathGraph via the zigzag labeling; needed a sum-free parity argument + a DecidableRel instance for mathlib's pathGraph); both axiom-clean |
 | 8 | W(2,7) | VW-1 Lean certificates | done | ¬HasVdW 2 7 3703 and ¬HasVdW 2 6 1131 machine-checked (one native_decide each); Heule's public certs found one cell short of published records, full-length reconstructed via phase+boundary-flip and independently verified; conditional W-bounds pending vdW theorem (absent from mathlib) |
 | 8 | W(2,7) | VW-2 record attempt | queued | — |
 | 9 | Odd covering | OC-1 Lean API | done | IsCovering + finite-check reduction (period lemma) + classic 5-congruence system verified by decide + not-odd sanity; axiom-clean; density lemma deferred to OC-2 |

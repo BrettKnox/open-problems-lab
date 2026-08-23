@@ -238,6 +238,12 @@ exactly 1,…,m. Combined with mathlib's `isTree_starGraph`, a machine-checked i
 of the Ringel–Kotzig conjecture. The star edge-enumeration machinery is shared with the
 antimagic proof ([StarFacts.lean](OpenProblemsLab/StarFacts.lean)).
 
+**Paths are graceful too** (`isGraceful_pathGraph`), by the classical zigzag labeling
+0, m, 1, m−1, 2, …: vertex i takes i/2 when even and m−(i−1)/2 when odd, so edge {i,i+1}
+carries exactly m−i and the edge labels sweep m, m−1, …, 1. Two infinite families of the
+conjecture are now machine-checked. (A `DecidableRel` instance for mathlib's `pathGraph`
+falls out of this and may be worth upstreaming.)
+
 **Computationally** ([computations/graceful/](computations/graceful/), log in
 [RESULTS.md](computations/graceful/RESULTS.md)): **every tree on ≤ 18 vertices verified
 graceful** — 123,867 trees at n = 18 alone, counts gated against OEIS A000055, every
