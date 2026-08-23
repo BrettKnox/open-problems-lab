@@ -43,6 +43,42 @@ theorem k_eq_one_case :
   have h2 : 2 = m - 1 := Nat.eq_of_mul_eq_mul_left hne (by omega)
   omega
 
+/-! ### The `k = 3` case, complete
+
+`∑_{i<m} i³ = m³` has no solution with `m ≥ 2`. Squaring Gauss's identity
+gives `4·∑_{i≤t} i³ = (t(t+1))²` (proved here — mathlib has the linear Gauss
+sum but not the cubic one), and the equation then collapses to `t² = 4t + 4`,
+which has no integer root. -/
+
+/-- Sum of cubes, in a subtraction-free form: `4·∑_{i≤t} i³ = (t(t+1))²`. -/
+theorem four_mul_sum_cubes (t : ℕ) :
+    4 * ∑ i ∈ Finset.range (t + 1), i ^ 3 = (t * (t + 1)) ^ 2 := by
+  induction t with
+  | zero => simp
+  | succ n ih =>
+    rw [Finset.sum_range_succ, Nat.mul_add, ih]
+    ring
+
+/-- **The `k = 3` case, complete**: `∑_{i<m} i³ = m³` has no solution with
+`m ≥ 2`. -/
+theorem k_eq_three_case :
+    ∀ m : ℕ, 2 ≤ m → (∑ i ∈ Finset.range m, i ^ 3) ≠ m ^ 3 := by
+  intro m hm hsol
+  obtain ⟨t, rfl⟩ : ∃ t, m = t + 1 := ⟨m - 1, by omega⟩
+  have h4 := four_mul_sum_cubes t
+  rw [hsol] at h4
+  -- (t(t+1))² = 4(t+1)³, i.e. t²(t+1)² = 4(t+1)³, so t² = 4(t+1)
+  have ht1 : 0 < (t + 1) ^ 2 := by positivity
+  have hkey : t ^ 2 = 4 * (t + 1) := by
+    have hexp : 4 * (t + 1) ^ 3 = (4 * (t + 1)) * (t + 1) ^ 2 := by ring
+    have hlhs : (t * (t + 1)) ^ 2 = t ^ 2 * (t + 1) ^ 2 := by ring
+    rw [hlhs, hexp] at h4
+    exact Nat.eq_of_mul_eq_mul_right ht1 h4.symm
+  -- t² = 4t + 4 has no natural solution
+  rcases Nat.lt_or_ge t 6 with hlt | hge
+  · interval_cases t <;> omega
+  · nlinarith [hge]
+
 /-! ### Moser's pairing step (odd `k`)
 
 Moser's 1953 elementary treatment of odd `k` starts by folding the sum onto
@@ -220,7 +256,7 @@ theorem sum_pow_range_mod (p : ℕ) [hp : Fact p.Prime] {j : ℕ} (hj : 0 < j) :
       (fun a _ => Finset.mem_univ _)
       (fun x _ => Finset.mem_range.mpr (ZMod.val_lt x))
       (fun a ha => by
-        simpa [ZMod.val_natCast_of_lt (Finset.mem_range.mp ha)])
+        simp [ZMod.val_natCast_of_lt (Finset.mem_range.mp ha)])
       (fun x _ => by simp [ZMod.natCast_val, ZMod.cast_id])
       (fun a _ => rfl)
   rw [hbij]

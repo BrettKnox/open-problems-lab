@@ -41,7 +41,7 @@ session plan; criteria are restated here at completion time.
 | 10 | Subset sums | DS-1 repro | done | Conway–Guy verified distinct exactly for ALL n ≤ 31 (blocked saturating DP, 10.4 GB at 31; n=32 barrier documented); gated vs brute force + negative controls; ratios 0.255→0.2427 reproduce the 0.23513 march |
 | 10 | Subset sums | DS-2 search | queued [FORGE] | beat Bohman 0.22002 |
 | 10 | Subset sums | DS-3 Lean witness | done | conwayGuy16: distinct subset sums, max 17305 < 2^15 (one native_decide, Python-cross-verified) |
-| 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | in progress | k=1 complete; chain formal through mod-m² (pairing → binomial → dvd_of_solution) AND power sums mod p (sum_pow_range_mod: ∑_{i<p} i^j ≡ −1 iff (p−1)∣j, bridging range-sums to ZMod p). Remaining: assemble into the odd-k contradiction |
+| 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | in progress | k=1 and k=3 complete (k=3 via a sum-of-cubes identity absent from mathlib); chain formal through mod-m² (pairing → binomial → dvd_of_solution) AND power sums mod p (sum_pow_range_mod: ∑_{i<p} i^j ≡ −1 iff (p−1)∣j, bridging range-sums to ZMod p). Remaining: assemble into the odd-k contradiction |
 | 11 | Erdős–Moser | EM-2 GMZ repro | queued | — |
 | 11 | Erdős–Moser | EM-3 record [FORGE] | queued | — |
 | 12 | Lehmer | LT-1 Lean lemmas | done | 4 lemmas axiom-clean: odd, squarefree, no-semiprime, ω ≥ 3 for composite solutions (Lehmer 1932's first bound); criterion (≥ 3 lemmas) exceeded |

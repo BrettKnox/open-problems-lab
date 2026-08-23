@@ -340,7 +340,10 @@ counting 65536 sums; independently verified in Python).
 
 **The k = 1 case is completely proved in Lean** (`k_eq_one_case` in
 [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean), axiom-clean): 1 + 2 + ⋯ + (m−1) = m
-only at m = 3, by Gauss's identity. The entire open content lives in k ≥ 2.
+only at m = 3, by Gauss's identity. **The k = 3 case is complete too**
+(`k_eq_three_case`): squaring Gauss gives 4·∑_{i≤t} i³ = (t(t+1))² — proved here, since
+mathlib has the linear Gauss sum but not the cubic one — and the equation collapses to
+t² = 4t + 4, which has no integer root.
 
 **Moser's odd-k machinery is now formal through the mod-m² step** (all axiom-clean, no
 `sorry`): the pairing i ↔ m−i gives m ∣ 2·∑ i^k for odd k; the binomial expansion sharpens
