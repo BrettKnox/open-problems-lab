@@ -2,6 +2,8 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.NumberTheory.Multiplicity
+import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.Data.ZMod.Basic
 
 /-!
 # Erdős–Moser equation
@@ -185,6 +187,55 @@ theorem dvd_of_solution {m k : ℕ} (hk : Odd k) (hk2 : 2 ≤ k)
       rw [← this, ← hc]
       ring
     exact mul_left_cancel₀ hmz hEq
+
+/-! ### Power sums modulo a prime
+
+The lever `m ∣ k·∑_{i<m} i^(k-1)` is only useful once the power sum can be
+evaluated. Modulo a prime `p` the classical answer is
+`∑_{i<p} i^j ≡ -1` when `(p-1) ∣ j` (with `j > 0`), and `≡ 0` otherwise —
+mathlib has this for finite fields (`FiniteField.sum_pow_units`); what is
+missing is the bridge from a `Finset.range p` sum of naturals, which is what
+the Erdős–Moser equation hands us. -/
+
+/-- Range sums push to `ZMod p` termwise. -/
+theorem cast_sum_range (p : ℕ) (j : ℕ) :
+    ((∑ i ∈ Finset.range p, i ^ j : ℕ) : ZMod p)
+      = ∑ i ∈ Finset.range p, (i : ZMod p) ^ j := by
+  push_cast
+  rfl
+
+/-- **The power sum mod `p`**: `∑_{i<p} i^j ≡ -1 (mod p)` if `(p-1) ∣ j` and
+`j > 0`, and `≡ 0` otherwise. Proved by transporting the `Finset.range p` sum
+onto `ZMod p` (where the casts enumerate the field exactly once) and applying
+the finite-field computation. -/
+theorem sum_pow_range_mod (p : ℕ) [hp : Fact p.Prime] {j : ℕ} (hj : 0 < j) :
+    ((∑ i ∈ Finset.range p, i ^ j : ℕ) : ZMod p)
+      = if (p - 1) ∣ j then -1 else 0 := by
+  classical
+  rw [cast_sum_range]
+  -- the casts of `0, …, p-1` enumerate `ZMod p`
+  have hbij : ∑ i ∈ Finset.range p, (i : ZMod p) ^ j = ∑ x : ZMod p, x ^ j := by
+    rw [← ZMod.card p] at *
+    exact Finset.sum_nbij' (fun i => (i : ZMod p)) (fun x => x.val)
+      (fun a _ => Finset.mem_univ _)
+      (fun x _ => Finset.mem_range.mpr (ZMod.val_lt x))
+      (fun a ha => by
+        simpa [ZMod.val_natCast_of_lt (Finset.mem_range.mp ha)])
+      (fun x _ => by simp [ZMod.natCast_val, ZMod.cast_id])
+      (fun a _ => rfl)
+  rw [hbij]
+  -- split off `x = 0`, then use the finite-field unit sum
+  have hzero : (0 : ZMod p) ^ j = 0 := zero_pow (by omega)
+  have : ∑ x : ZMod p, x ^ j = ∑ x : (ZMod p)ˣ, ((x : ZMod p) ^ j) := by
+    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image
+      (fun x : (ZMod p)ˣ => (x : ZMod p))))]
+    · rw [Finset.sum_image (fun a _ b _ h => Units.ext h)]
+    · intro x _ hx
+      have hx0 : x = 0 := by
+        by_contra h0
+        exact hx (Finset.mem_image.mpr ⟨Units.mk0 x h0, Finset.mem_univ _, rfl⟩)
+      rw [hx0, hzero]
+  rw [this, FiniteField.sum_pow_units (ZMod p) j, ZMod.card]
 
 /-- **Moser's constraint for odd `k`**: a solution with odd `k` forces
 `m ∣ 2·m^k`, which is automatic — the content only appears one step further,

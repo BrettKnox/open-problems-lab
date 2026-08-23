@@ -347,8 +347,13 @@ only at m = 3, by Gauss's identity. The entire open content lives in k ≥ 2.
 this to the congruence **2·∑ i^k + m^k ≡ k·m·∑ i^(k−1) (mod m²)**; and `dvd_of_solution`
 extracts Moser's actual lever — any solution with odd k ≥ 2 forces **m ∣ k·∑_{i<m} i^(k−1)**,
 turning the equation into a constraint on the *lower* power sum. Done in ℤ, since truncated
-ℕ subtraction makes the binomial step unstateable. What remains is evaluating that power sum
-mod m, which is where Moser's bound m > 10^(10⁶) comes from.
+ℕ subtraction makes the binomial step unstateable.
+
+The next rung is in too: **`sum_pow_range_mod`** evaluates the power sum modulo a prime —
+∑_{i<p} i^j ≡ −1 when (p−1) ∣ j, and ≡ 0 otherwise. mathlib has this for finite fields; what
+was missing was the bridge from a `Finset.range p` sum of naturals (which is what the
+equation hands us) onto `ZMod p`, where the casts enumerate the field exactly once. That is
+the tool Moser's bound m > 10^(10⁶) is built from.
 
 ### Bench (documented, not active)
 
