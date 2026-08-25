@@ -328,6 +328,15 @@ density 1.0218, so density is *satisfiable* and not the obstruction; the real ob
 CRT overlap (for {3,5,15} the naive 5+3+1 = 9 residues is unreachable — the true maximum is
 8, because the mod-3 and mod-5 classes must meet).
 
+The survivors were then handed to a SAT solver, where UNSAT at a shape *proves* no odd
+covering has that lcm. Over all admissible L ≤ 20,000 (3 h 34 m): 1,513 shapes killed by
+density, **2 proved impossible by SAT** (L = 945 and 2205), 41 undecided at a 2×10⁶ conflict
+budget, and **no covering system found**. So any odd covering with lcm ≤ 20,000 must have its
+lcm among 41 named values — a narrowing from 1,556, not a resolution, and the log says which
+41. Two fixes made even that possible: a linear (not pairwise-quadratic) at-most-one
+encoding, and exploiting translation symmetry to fix one modulus's class, which took the
+smallest survivor from unsolved-after-400 s to UNSAT in 47 s.
+
 ### 10. Distinct subset sums
 
 **The Conway–Guy construction is verified exactly** ([computations/subset_sums/](computations/subset_sums/),

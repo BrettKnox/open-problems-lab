@@ -66,13 +66,24 @@ def build(L: int, mods: list[int]) -> tuple[CNF, dict]:
     return cnf, var
 
 
-def coverable(L: int, mods: list[int] | None = None, solver: str = "cd15"):
-    """(satisfiable?, seconds, model as {m: a} or None)."""
+def coverable(L: int, mods: list[int] | None = None, solver: str = "cd15",
+              conf_budget: int | None = None):
+    """(status, seconds, model). status True = a covering exists, False =
+    proved impossible, None = the conflict budget ran out (undecided).
+
+    Per-shape budgeting matters: the cost is very uneven (L=2205 decides in
+    18 s, L=4095 needs many minutes), so an unbudgeted screen can stall on a
+    single shape indefinitely. Undecided shapes are reported, never silently
+    skipped."""
     mods = mods or divisors_odd(L)
     cnf, var = build(L, mods)
     t0 = time.time()
     with Solver(name=solver, bootstrap_with=cnf) as s:
-        ok = s.solve()
+        if conf_budget is None:
+            ok = s.solve()
+        else:
+            s.conf_budget(conf_budget)
+            ok = s.solve_limited()      # None when the budget is exhausted
         sysmodel = None
         if ok:
             pos = set(v for v in s.get_model() if v > 0)
@@ -115,11 +126,10 @@ def gates() -> None:
     print("all gates: PASS")
 
 
-def screen(bound: int, budget: float, verbose: bool) -> int:
+def screen(bound: int, conf_budget: int | None, verbose: bool) -> int:
     t0 = time.time()
-    admissible = killed_density = solved = 0
-    found = []
-    slow = []
+    admissible = killed_density = decided = 0
+    found, undecided, times = [], [], []
     for L in range(3, bound + 1, 2):
         if not (L % 9 == 0 or L % 15 == 0):
             continue
@@ -128,23 +138,32 @@ def screen(bound: int, budget: float, verbose: bool) -> int:
         if sum(1.0 / m for m in mods) < 1.0:
             killed_density += 1
             continue
-        ok, dt, model = coverable(L, mods)
-        solved += 1
-        if ok:
+        ok, dt, model = coverable(L, mods, conf_budget=conf_budget)
+        if ok is None:
+            undecided.append(L)
+            tag = "UNDECIDED (budget)"
+        elif ok:
             assert verify_system(L, model), "SAT model failed the verifier!"
             found.append((L, model))
-            print(f"  *** ODD COVERING FOUND at L={L}: {model}", flush=True)
-        elif dt > budget:
-            slow.append((L, dt))
-        if verbose and solved % 50 == 0:
-            print(f"  ... {L:,}: {solved} shapes solved, {len(found)} coverings"
-                  f"  [{time.time() - t0:.0f}s]", flush=True)
+            tag = "*** ODD COVERING"
+            print(f"  *** ODD COVERING at L={L}: {model}", flush=True)
+        else:
+            decided += 1
+            times.append((dt, L))
+            tag = "no covering"
+        if verbose:
+            print(f"  L={L:<7} {len(mods):>3} moduli  {tag:<20} {dt:8.1f}s"
+                  f"   [{time.time() - t0:.0f}s total]", flush=True)
     print(f"\nadmissible shapes L <= {bound:,} (9|L or 15|L): {admissible:,}")
-    print(f"  killed by density, no search: {killed_density:,}")
-    print(f"  decided by SAT:               {solved:,}")
-    print(f"  odd covering systems found:   {len(found)}")
-    if slow:
-        print(f"  slowest instances: {sorted(slow, key=lambda t: -t[1])[:5]}")
+    print(f"  killed by density, no search:    {killed_density:,}")
+    print(f"  proved impossible by SAT:        {decided:,}")
+    print(f"  undecided (conflict budget hit): {len(undecided)}")
+    print(f"  odd covering systems found:      {len(found)}")
+    if undecided:
+        print(f"  undecided shapes: {undecided}")
+    if times:
+        times.sort(reverse=True)
+        print(f"  slowest decided: {[(L, round(d, 1)) for d, L in times[:5]]}")
     print(f"total {time.time() - t0:.0f}s")
     return 1 if found else 0
 
@@ -153,7 +172,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--verify", action="store_true")
     ap.add_argument("--screen", type=int, default=0)
-    ap.add_argument("--budget", type=float, default=10.0)
+    ap.add_argument("--budget", type=int, default=2000000,
+                    help="conflict budget per shape (0 = unlimited)")
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--one", type=int, default=0, help="solve a single shape L")
     args = ap.parse_args()
@@ -165,7 +185,7 @@ def main() -> int:
         print(f"L={args.one}: {len(mods)} odd moduli, "
               f"{'COVERABLE ' + str(model) if ok else 'UNSAT'}  [{dt:.1f}s]")
     if args.screen:
-        return screen(args.screen, args.budget, not args.quiet)
+        return screen(args.screen, args.budget or None, not args.quiet)
     if not (args.verify or args.screen or args.one):
         ap.print_help()
     return 0
