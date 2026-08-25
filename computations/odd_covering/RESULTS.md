@@ -53,12 +53,49 @@ hit in every case, so they bound nothing from above:
 
 (9·5·7 has density < 1, so it is dead by the rigorous screen regardless.)
 
+## OC-3: SAT over the survivors
+
+The B&B above is far too weak, so the survivors were handed to CaDiCaL with a
+proper encoding (`sat_cover.py`): one variable per (modulus, class),
+exactly-one per modulus, and a clause per residue of Z/L demanding some chosen
+class hits it. UNSAT at a shape is a *proof* that no odd covering system has
+that lcm.
+
+Two engineering facts were load-bearing, both found the hard way:
+
+* **Pairwise at-most-one is unusable.** Modulus 32445 alone would need
+  ~5.3e8 clauses; the first run died with `MemoryError`. Replaced by pysat's
+  sequential counter (linear in m).
+* **Translation symmetry is worth a factor of L.** Shifting every class by a
+  common t maps coverings to coverings, so one modulus's class can be fixed
+  outright; fixing the largest (L itself, always a divisor) uses the full Z/L
+  action. Effect on the smallest survivor L = 945: from *unsolved after 400 s*
+  to **UNSAT in 47 s**.
+
+Result over all admissible shapes L <= 20,000, with a 2e6 conflict budget per
+shape (3 h 34 m total):
+
+| outcome | shapes |
+|---|---|
+| killed by the density bound (proof, no search) | **1,513** |
+| proved impossible by SAT (L = 945, 2205) | **2** |
+| undecided - conflict budget exhausted | 41 |
+| **odd covering systems found** | **0** |
+
+So: **any odd covering system with lcm <= 20,000 must have its lcm among 41
+specific values** - the admissible space is narrowed from 1,556 shapes to 41,
+and none of the 41 yielded a covering within budget. That is a narrowing, not
+a resolution, and the log names exactly which shapes remain open.
+
 ## Barrier
 
-The B&B is far too weak to settle any surviving shape: the search is over
-∏ mᵢ residue assignments, and even L = 3465 exhausts a 25 s budget without
-closing. Settling one survivor needs a real solver — the natural next step is
-a SAT/ILP encoding (one variable per residue class choice, clauses forcing
-every residue of ℤ/L covered), which pysat can carry. That is the OC-3 pass;
-the density screen above is what makes it worth pointing at the 391 survivors
-rather than all 15,556 shapes.
+The budget is the binding constraint, and it binds hard: per-shape time to
+*exhaust* 2e6 conflicts grew from 85 s (L = 1575) to 984 s (L = 19845), and
+the only two shapes that closed were the two smallest. Raising the budget 10x
+puts each undecided shape at roughly 15 min - 3 h, i.e. ~1-2 machine-days for
+the 41 - a forge-window job, not a laptop one.
+
+Whether more budget is even the right lever is unclear: these are structured
+exact-cover instances, and a CRT-aware search (branching on residues modulo
+each prime power in turn) or an ILP formulation may beat generic CDCL by more
+than a constant. That is the OC-4 question.
