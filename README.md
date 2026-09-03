@@ -290,6 +290,14 @@ exact fallback above K₂: at small scale, antimagic labelings are everywhere. W
 published exhaustive sweep of this kind (family results abound; claim stated as "not found",
 not as certain novelty).
 
+**The theoretically hard subcase shows no difficulty** ([RESULTS_spiders.md](computations/antimagic/RESULTS_spiders.md)):
+sparse trees with many degree-2 vertices are where doubt about the conjecture is
+concentrated, but all 426 spider families on ≤ 16 vertices were labeled on the *first*
+restart, and subdivided stars pushed to 321 vertices need at most 3. Evidence for the
+conjecture, not proof — a heuristic-first search can only show labelings are easy to find,
+never that none exists. The read: these trees are hard to *prove*, not hard to *label*, so
+the next pass is Lean proofs for these families rather than more search.
+
 ### 12. Lehmer's totient problem
 
 **Computationally** ([computations/lehmer/](computations/lehmer/)): **no composite n below

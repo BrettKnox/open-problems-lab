@@ -30,7 +30,7 @@ session plan; criteria are restated here at completion time.
 | 5 | Superpermutations | SP-3 871 verdict [FORGE] | DROPPED | dead by this route: if the easiest n=5 UNSAT is unreachable, n=6/871 is not a compute-budget problem. Reopen only with a Chaffin/TSP-style encoding, not a bigger machine |
 | 6 | Antimagic | AM-1 sweep | done | conjecture verified for ALL connected graphs ≤ **11** vertices (1,018,690,328 graphs; 1,006,700,565 at n=11 alone in 7.9 h; labelings independently verified; K₂ refuted by exhaustion); no published sweep found; n=12 (164 bn) needs a compiled checker |
 | 6 | Antimagic | AM-2 Lean families | done (stars) | isAntimagic_starGraph, m ≥ 2, axiom-clean; m=1 failure = the K₂ exception; paths/cycles remain as stretch |
-| 6 | Antimagic | AM-3 hard subcase | queued | — |
+| 6 | Antimagic | AM-3 hard subcase | done | 426 spider families ≤ 16 vertices all antimagic on the FIRST restart; subdivided stars pushed to 321 vertices need ≤ 3 restarts. No computational difficulty exists in the theoretically hard subcase → next pass should be Lean proofs for these families, not more search |
 | 7 | Graceful | GT-1 repro | done | all trees ≤ 18 vertices verified graceful (123,867 at n=18; A000055 gate; independent verifier; exact fallback never needed); curve measured — mid-20s need compiled climber [FORGE]; Fang's 35 stands |
 | 7 | Graceful | GT-2 feasibility [FORGE] | scoped | C port of the ~60-line climber is the unblock; cost memo in RESULTS.md |
 | 7 | Graceful | GT-3 Lean families | done | stars AND paths graceful (isGraceful_pathGraph via the zigzag labeling; needed a sum-free parity argument + a DecidableRel instance for mathlib's pathGraph); both axiom-clean |
