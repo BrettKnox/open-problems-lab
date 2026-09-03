@@ -40,7 +40,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); W(2,7) > 3703 (Rabung–Lotts, [E-JC 19(2) #P35](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v19i2p35)) | **In progress — see [Results](#results).** Lower-bound records via SAT + cyclic zipper |
 | 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | Search admissible lcm shapes; LP density bounds |
 | 10 | **Distinct subset sums** (EP [#1](https://www.erdosproblems.com/1), $500) | B | [DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean) | Dubroff–Fox–Xu 2021 lower bound; Bohman 0.22002·2ⁿ construction | Beat Bohman's constant by search; formalize DFX |
-| 11 | **Erdős–Moser** 1ᵏ+⋯+(m−1)ᵏ = mᵏ | C | [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean) | GMZ 2011: m > 10^(10⁹) via CF of log 2 | Extend the CF computation past 10^(10¹⁰); formalize Moser's odd-k proof |
+| 11 | **Erdős–Moser** 1ᵏ+⋯+(m−1)ᵏ = mᵏ | C | [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean) | GMZ 2009 ([0907.1356](https://arxiv.org/abs/0907.1356)): m > 2.7139·10^1667658416 via CF of log 2 | **In progress — see [Results](#results).** Formalize Moser's odd-k proof; GMZ machinery reproduced |
 | 12 | **Lehmer's totient problem** | C | [LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean) | Cohen–Hagis 1980 (n>10²⁰, ω≥14); Burek–Żmija 2019 | **In progress — see [Results](#results).** Modern sweep; formalize Cohen–Hagis framework |
 
 ## Results
@@ -397,6 +397,36 @@ The next rung is in too: **`sum_pow_range_mod`** evaluates the power sum modulo 
 was missing was the bridge from a `Finset.range p` sum of naturals (which is what the
 equation hands us) onto `ZMod p`, where the casts enumerate the field exactly once. That is
 the tool Moser's bound m > 10^(10⁶) is built from.
+
+**Computationally** ([computations/erdos_moser/](computations/erdos_moser/), log in
+[RESULTS.md](computations/erdos_moser/RESULTS.md)): the Gallot–Moree–Zudilin continued-fraction
+machinery reimplemented from the paper, with **all 11 rows of their Table 1 that this machine
+can reach reproduced exactly** — index, partial quotient, q_j to seven significant figures,
+residue mod 6, and the prime witnessing that condition (d) fails. Their result is that
+2k/(2m−3) must be a convergent of log 2, quantified by a four-condition search over the
+convergents of (log 2)/(2N) for any N dividing k.
+
+The load-bearing observation for making this checkable at all: **condition (d) cannot be
+verified exactly** — it asks about the prime factorization of a q_j with tens of thousands of
+digits — **but checking it only for small primes is sound**, because every rejection the
+program makes is a genuine failure, so the reported j never exceeds the true j(N) and the
+bound m > q_j/2 survives. Raising the trial bound can only strengthen the result, never
+invalidate it. That is visible in the data: at bound 20,000 the row N = 2⁸·3² shows no
+violating prime; at 60,000 it finds p = 56131, exactly the prime the paper lists.
+
+Two features of the published table look like typos and are not: the same q_j appears against
+different j, and j is not monotone in N even though condition (b) strictly tightens. Both are
+correct — each row is a continued fraction of a *different real number* (log 2)/(2N), so
+indices are not comparable across rows. This repo asserted they were extraction errors before
+computing them; the computation settled it.
+
+The bound reached is **m > 6.87·10^61316** (at N = 2⁸·3, using N₂ ∣ k from Moree–te
+Riele–Urbanowicz and Kellner), or **m > 2.64·10^450** with no divisibility input at all. Both
+are far below Moser's 10^(10⁶) and GMZ's 2.7139·10^1667658416, and the gap is entirely in the
+number of correct partial quotients: the bound scales as 10^(0.515·r), GMZ used r ≈ 3·10⁹, and
+this reaches r ≈ 1.4·10⁵. **The barrier is named rather than hand-waved**: extraction here is
+a quadratic Euclidean algorithm, and the paper itself reports having to switch to a recursive
+half-GCD to pass 10^(10⁸). Closing the gap needs a different program, not a larger budget.
 
 ### Bench (documented, not active)
 

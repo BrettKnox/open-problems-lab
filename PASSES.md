@@ -44,8 +44,8 @@ session plan; criteria are restated here at completion time.
 | 10 | Subset sums | DS-2 search | queued [FORGE] | beat Bohman 0.22002 |
 | 10 | Subset sums | DS-3 Lean witness | done | conwayGuy16: distinct subset sums, max 17305 < 2^15 (one native_decide, Python-cross-verified) |
 | 11 | Erdős–Moser | EM-1 Moser odd-k in Lean | in progress | k=1 and k=3 complete (k=3 via a sum-of-cubes identity absent from mathlib); chain formal through mod-m² (pairing → binomial → dvd_of_solution) AND power sums mod p (sum_pow_range_mod: ∑_{i<p} i^j ≡ −1 iff (p−1)∣j, bridging range-sums to ZMod p). Remaining: assemble into the odd-k contradiction |
-| 11 | Erdős–Moser | EM-2 GMZ repro | queued | — |
-| 11 | Erdős–Moser | EM-3 record [FORGE] | queued | — |
+| 11 | Erdős–Moser | EM-2 GMZ repro | done | Theorem 2 reimplemented from the paper; ALL 11 reachable rows of Table 1 reproduced exactly (j, a_{j+1}, q_j to 7 s.f., q mod 6, violating prime incl. p=56131 at N=2^8·3^2). Key soundness point: partial checking of condition (d) can only weaken the bound, never invalidate it. Reached m > 6.87e61316 (N=768) and m > 2.64e450 unconditionally; 8 gates incl. a negative control and rediscovery of Mirimanoff prime 11 |
+| 11 | Erdős–Moser | EM-3 record [FORGE] | scoped (barrier) | bound scales 10^(0.515r); GMZ used r≈3e9, this reaches r≈1.4e5. Quadratic Euclid is the wall — the paper switched to recursive HGCD to pass 10^(10^8). Needs a subquadratic CF extractor + billions of digits of log 2, i.e. a different program, not more --digits |
 | 12 | Lehmer | LT-1 Lean lemmas | done | 4 lemmas axiom-clean: odd, squarefree, no-semiprime, ω ≥ 3 for composite solutions (Lehmer 1932's first bound); criterion (≥ 3 lemmas) exceeded |
 | 12 | Lehmer | LT-2 sweep | done | no composite solution below 10^9 (7 h); the 50,847,535 solutions found equal π(10^9)+1 exactly — an independent confirmation that only 1 and the primes qualify |
 | 12 | Lehmer | LT-3 ω bound [FORGE] | queued | — |
