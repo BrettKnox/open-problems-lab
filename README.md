@@ -404,9 +404,15 @@ any of 71 modulus sets that demonstrably admit a covering**, across 8 lattices, 
 group correction active. Even moduli are used there deliberately — the odd case has no
 known positive instance to test against.
 
-Beyond 10⁶ the screen starts leaving survivors, the first being 2027025 = 3⁴·5²·7·11·13
-and 3378375 = 3³·5³·7·11·13, both far out of reach of the complete search. That frontier
-is as much an artifact of the greedy partition as of the mathematics.
+Pushed to 10⁷, the screen kills 20,649 of 20,661 candidates (99.94%), so **any odd
+covering system with lcm ≤ 10⁷ has lcm among twelve explicit values** — all of them
+3·5·7·11·13 with extra prime powers or one extra prime. Those twelve will not fall to
+more of the same: the complete search is far out of reach at that size, and a better
+partition cannot help much, since every modulus divisible by 3 must sit in a different
+coprime group, forcing ~70 groups and making the correction second-order however it is
+chosen. The remaining looseness is on *mixed* moduli (15, 45, 105, …) — prime-power
+towers are already handled exactly — so closing them wants a different argument, not a
+tuned one.
 
 ### 10. Distinct subset sums
 

@@ -227,11 +227,42 @@ Caveats:
 * The greedy partition is not optimal, so the frontier below is an artifact of
   the heuristic as much as of the mathematics.
 
-### Frontier
+### Frontier: 10^7
 
-Beyond 10^6 the screen begins to leave survivors — the numbers with more
-prime factors, where the criterion weakens. `L = 2027025 = 3^4·5^2·7·11·13`
-(partition bound 1.0256) and `L = 3378375 = 3^3·5^3·7·11·13` (1.0160) are the
-first, both well outside the reach of the complete search (about 10^2 moduli
-over a period of 2·10^6). Closing them wants either a better partition than
-greedy or a third-level version of the same independence argument.
+The full sweep to 10^7 finishes in 19 minutes and kills **20,649 of 20,661**
+candidates (99.94%), leaving twelve:
+
+| L | factorization |
+|---|---|
+| 2,027,025 | 3^4·5^2·7·11·13 |
+| 3,378,375 | 3^3·5^3·7·11·13 |
+| 3,828,825 | 3^2·5^2·7·11·13·17 |
+| 4,279,275 | 3^2·5^2·7·11·13·19 |
+| 4,729,725 | 3^3·5^2·7^2·11·13 |
+| 6,081,075 | 3^5·5^2·7·11·13 |
+| 6,185,025 | 3^3·5^2·7^2·11·17 |
+| 6,891,885 | 3^4·5·7·11·13·17 |
+| 7,432,425 | 3^3·5^2·7·11^2·13 |
+| 7,702,695 | 3^4·5·7·11·13·19 |
+| 8,783,775 | 3^3·5^2·7·11·13^2 |
+| 9,324,315 | 3^4·5·7·11·13·23 |
+
+So: **any odd covering system with lcm at most 10^7 has lcm among those twelve
+values.** Every one is `3·5·7·11·13` with extra prime powers or one extra
+prime — the numbers where the odd divisors pile up fastest, and the criterion
+weakens exactly as `sum 1/phi(m)` clears 1 by more (1.016 to 1.026 on the
+partition bound, against the 1.0 it needs to beat).
+
+These will not fall to more of the same. The complete search is far out of
+reach (about 10^2 moduli over a period of 2·10^6 to 10^7), and a better
+partition cannot help by much: every modulus divisible by 3 must land in a
+different coprime group, forcing at least ~70 groups, so the group correction
+is second-order however it is chosen. Extending the T family to prime powers
+was tried and closes none of the twelve.
+
+What is left is the looseness the criterion still has on *mixed* moduli:
+prime-power towers are handled exactly (the classes mod 3, 9, 27, 81 cover
+exactly 40/81 of the 3-coordinate at best), but moduli like 15, 45, 105 are
+credited `1/phi(m)` each with only coprime-group interactions subtracted.
+Capturing the tree structure across coordinates is the next idea, and it is a
+different argument rather than a tuning of this one.
