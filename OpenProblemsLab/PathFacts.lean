@@ -65,4 +65,83 @@ lemma pathGraph_edgeFinset {m : ℕ} :
 
 
 
+/-! ### Incidence sets
+
+Which edges touch a given vertex: the endpoints carry one edge, every
+interior vertex carries two. These are what any vertex-sum argument on paths
+needs (antimagic labelings, degree computations). -/
+
+lemma mem_pathEdge_iff {m : ℕ} (i : Fin m) (v : Fin (m + 1)) :
+    v ∈ pathEdge m i ↔ v.val = i.val ∨ v.val = i.val + 1 := by
+  simp only [pathEdge, Sym2.mem_iff]
+  constructor
+  · rintro (h | h) <;> [left; right] <;> exact congrArg Fin.val h
+  · rintro (h | h) <;> [left; right] <;> exact Fin.ext h
+
+lemma incidence_eq {m : ℕ} (v : Fin (m + 1)) :
+    (pathGraph (m + 1)).incidenceFinset v
+      = Finset.image (pathEdge m)
+          ((Finset.univ : Finset (Fin m)).filter
+            (fun i : Fin m => v.val = i.val ∨ v.val = i.val + 1)) := by
+  classical
+  ext e
+  simp only [SimpleGraph.mem_incidenceFinset, SimpleGraph.incidenceSet,
+    Set.mem_ofPred_eq, Finset.mem_image, Finset.mem_filter, Finset.mem_univ,
+    true_and]
+  constructor
+  · rintro ⟨hmem, hin⟩
+    rw [← SimpleGraph.mem_edgeFinset, pathGraph_edgeFinset] at hmem
+    simp only [Finset.mem_image, Finset.mem_univ, true_and] at hmem
+    obtain ⟨i, rfl⟩ := hmem
+    exact ⟨i, (mem_pathEdge_iff i v).mp hin, rfl⟩
+  · rintro ⟨i, hi, rfl⟩
+    refine ⟨?_, (mem_pathEdge_iff i v).mpr hi⟩
+    rw [← SimpleGraph.mem_edgeFinset, pathGraph_edgeFinset]
+    simp only [Finset.mem_image, Finset.mem_univ, true_and]
+    exact ⟨i, rfl⟩
+
+/-- Vertex `0` touches exactly the first edge. -/
+lemma incidence_zero {m : ℕ} (hm : 1 ≤ m) :
+    (pathGraph (m + 1)).incidenceFinset ⟨0, by omega⟩
+      = {pathEdge m ⟨0, by omega⟩} := by
+  classical
+  rw [incidence_eq]
+  have : (Finset.univ : Finset (Fin m)).filter
+      (fun i : Fin m => (0 : ℕ) = i.val ∨ (0 : ℕ) = i.val + 1)
+      = {⟨0, by omega⟩} := by
+    ext ⟨iv, hiv⟩
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton,
+      Fin.mk.injEq]
+    omega
+  rw [this, Finset.image_singleton]
+
+/-- The last vertex touches exactly the last edge. -/
+lemma incidence_last {m : ℕ} (hm : 1 ≤ m) :
+    (pathGraph (m + 1)).incidenceFinset ⟨m, by omega⟩
+      = {pathEdge m ⟨m - 1, by omega⟩} := by
+  classical
+  rw [incidence_eq]
+  have : (Finset.univ : Finset (Fin m)).filter
+      (fun i : Fin m => m = i.val ∨ m = i.val + 1) = {⟨m - 1, by omega⟩} := by
+    ext ⟨iv, hiv⟩
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton,
+      Fin.mk.injEq]
+    omega
+  rw [this, Finset.image_singleton]
+
+/-- An interior vertex touches exactly the two edges beside it. -/
+lemma incidence_mid {m v : ℕ} (h1 : 1 ≤ v) (h2 : v < m) :
+    (pathGraph (m + 1)).incidenceFinset ⟨v, by omega⟩
+      = {pathEdge m ⟨v - 1, by omega⟩, pathEdge m ⟨v, by omega⟩} := by
+  classical
+  rw [incidence_eq]
+  have hset : (Finset.univ : Finset (Fin m)).filter
+      (fun i : Fin m => v = i.val ∨ v = i.val + 1)
+      = {⟨v - 1, by omega⟩, ⟨v, by omega⟩} := by
+    ext ⟨iv, hiv⟩
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert,
+      Finset.mem_singleton, Fin.mk.injEq]
+    omega
+  rw [hset, Finset.image_insert, Finset.image_singleton]
+
 end OpenProblems.PathFacts

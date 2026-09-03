@@ -287,6 +287,16 @@ leaf sum exactly when m ≥ 2. The pleasing part: **the m = 1 failure of this ar
 precisely the K₂ exception** in the Hartsfield–Ringel conjecture — the exception is visible
 in the arithmetic.
 
+**Paths are antimagic too** (`isAntimagic_pathGraph`, m ≥ 2 edges) — a second family, and
+the proof records a genuine subtlety. The obvious left-to-right labeling (edge i ↦ i+1) is
+antimagic **iff m is even**: the interior sums are 1, 3, …, 2m−1 and the far endpoint carries
+m, which collides exactly when m is odd, at v = (m−1)/2. For m = 5 the sums are 1, 3, 5, 7,
+9, 5. Swapping the last two labels repairs the odd case, and that two-case construction —
+checked computationally for all m ≤ 400 before any proof was attempted — is what is
+formalized. The first draft of this proof was *reverted rather than left with a* `sorry`,
+because the falsity surfaced precisely at the vertex-sum obligation a `sorry` would have
+hidden.
+
 **Computationally** ([computations/antimagic/](computations/antimagic/), log in
 [RESULTS.md](computations/antimagic/RESULTS.md)): **the conjecture is verified for every
 connected graph on ≤ 11 vertices** — all **1,018,690,328** of them received an explicit

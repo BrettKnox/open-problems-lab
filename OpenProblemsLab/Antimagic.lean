@@ -43,6 +43,7 @@ def conjecture : Prop :=
     G.Connected → Fintype.card V ≠ 2 → IsAntimagic G
 
 
+
 /-! ### Stars are antimagic
 
 The first infinite family, and the cleanest: label the edge to leaf `i` with
@@ -52,7 +53,133 @@ the failure at `m = 1` **is** the `K₂` exception of the conjecture. -/
 
 open SimpleGraph OpenProblems.StarFacts OpenProblems.PathFacts
 
+/-! ### Paths are antimagic
+
+Label the edges left to right, `edge i ↦ i + 1`, **except** that for odd `m`
+the last two labels are swapped (`…, m-2, m, m-1`). The swap is not cosmetic:
+with the plain left-to-right labeling the interior sums are `1, 3, …, 2m-1`
+and the far endpoint carries `m`, which collides exactly when `m` is odd, at
+the vertex `v = (m-1)/2`. (For `m = 5` the sums are `1, 3, 5, 7, 9, 5`.) The
+two-case labeling was checked computationally for all `m ≤ 400` before being
+proved here; see `computations/antimagic/RESULTS_spiders.md`. -/
+
+/-- Position-indexed edge label: `i + 1`, with the last two swapped when `m`
+is odd. -/
+def pathLab (m i : ℕ) : ℕ :=
+  if m % 2 = 1 ∧ i = m - 2 then m
+  else if m % 2 = 1 ∧ i = m - 1 then m - 1
+  else i + 1
+
+/-- The labeling as a function on edges (via the smaller endpoint). -/
+private def pathLabel (m : ℕ) : Sym2 (Fin (m + 1)) → ℕ :=
+  Sym2.lift ⟨fun a b => pathLab m (min a.val b.val),
+    fun a b => by
+      show pathLab m (min a.val b.val) = pathLab m (min b.val a.val)
+      rw [Nat.min_comm]⟩
+
+@[simp] private lemma pathLabel_pathEdge {m : ℕ} (i : Fin m) :
+    pathLabel m (pathEdge m i) = pathLab m i.val := by
+  simp [pathLabel, pathEdge]
+
+/-- `pathLab m` restricted to `{0, …, m-1}` is a bijection onto `{1, …, m}`:
+it is the identity shift except for a transposition of the top two values. -/
+private lemma pathLab_mem {m i : ℕ} (hm : 2 ≤ m) (hi : i < m) :
+    1 ≤ pathLab m i ∧ pathLab m i ≤ m := by
+  unfold pathLab
+  split_ifs with h1 h2 <;> omega
+
+private lemma pathLab_inj {m i j : ℕ} (hm : 2 ≤ m) (hi : i < m) (hj : j < m)
+    (h : pathLab m i = pathLab m j) : i = j := by
+  unfold pathLab at h
+  split_ifs at h with h1 h2 h3 h4 h5 <;> omega
+
+private lemma pathLab_surj {m k : ℕ} (hm : 2 ≤ m) (h1 : 1 ≤ k) (h2 : k ≤ m) :
+    ∃ i, i < m ∧ pathLab m i = k := by
+  by_cases hodd : m % 2 = 1
+  · rcases (by omega : k = m ∨ k = m - 1 ∨ k ≤ m - 2) with hk | hk | hk
+    · exact ⟨m - 2, by omega, by unfold pathLab; split_ifs <;> omega⟩
+    · exact ⟨m - 1, by omega, by unfold pathLab; split_ifs <;> omega⟩
+    · exact ⟨k - 1, by omega, by unfold pathLab; split_ifs <;> omega⟩
+  · exact ⟨k - 1, by omega, by unfold pathLab; split_ifs <;> omega⟩
+
+
+
 variable {m : ℕ}
+
+
+/-- Vertex sums under `pathLabel`: endpoints carry a single label, interior
+vertices the sum of the two beside them. -/
+private lemma pathSum {m : ℕ} (hm : 2 ≤ m) (v : Fin (m + 1)) :
+    (∑ e ∈ (pathGraph (m + 1)).incidenceFinset v, pathLabel m e)
+      = if v.val = 0 then pathLab m 0
+        else if v.val = m then pathLab m (m - 1)
+        else pathLab m (v.val - 1) + pathLab m v.val := by
+  classical
+  rcases (by omega : v.val = 0 ∨ v.val = m ∨ (1 ≤ v.val ∧ v.val < m)) with h | h | ⟨h1, h2⟩
+  · have hveq : v = ⟨0, by omega⟩ := Fin.ext (by omega)
+    rw [hveq, incidence_zero (by omega : 1 ≤ m), Finset.sum_singleton,
+      pathLabel_pathEdge]
+    simp
+  · have hveq : v = ⟨m, by omega⟩ := Fin.ext (by omega)
+    rw [hveq, incidence_last (by omega : 1 ≤ m), Finset.sum_singleton,
+      pathLabel_pathEdge]
+    simp only []
+    rw [ite_eq_right (by omega)]
+    simp
+  · have hv : v = ⟨v.val, by omega⟩ := Fin.ext rfl
+    rw [hv, incidence_mid h1 h2]
+    have hne : (pathEdge m ⟨v.val - 1, by omega⟩) ≠ pathEdge m ⟨v.val, by omega⟩ := by
+      intro hEq
+      have := pathEdge_injective hEq
+      have := congrArg Fin.val this
+      simp only [] at this
+      omega
+    rw [Finset.sum_insert (by simpa using hne), Finset.sum_singleton,
+      pathLabel_pathEdge, pathLabel_pathEdge]
+    simp only []
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
+
+set_option maxHeartbeats 1000000 in
+/-- **Paths are antimagic** for `m ≥ 2` edges (so at least 3 vertices).
+`P₂ = K₂` is the excluded case, exactly as in the conjecture. -/
+theorem isAntimagic_pathGraph {m : ℕ} (hm : 2 ≤ m) :
+    IsAntimagic (pathGraph (m + 1)) := by
+  classical
+  have hcard : (pathGraph (m + 1)).edgeFinset.card = m := by
+    rw [pathGraph_edgeFinset, Finset.card_image_of_injective _ pathEdge_injective,
+      Finset.card_univ, Fintype.card_fin]
+  refine ⟨pathLabel m, ?_, ?_⟩
+  · rw [hcard, ← SimpleGraph.coe_edgeFinset, pathGraph_edgeFinset]
+    refine ⟨?_, ?_, ?_⟩
+    · rintro e he
+      simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range] at he
+      obtain ⟨i, rfl⟩ := he
+      rw [pathLabel_pathEdge]
+      simp only [Set.mem_Icc]
+      exact pathLab_mem hm i.isLt
+    · rintro e₁ he₁ e₂ he₂ h
+      simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range] at he₁ he₂
+      obtain ⟨i, rfl⟩ := he₁
+      obtain ⟨j, rfl⟩ := he₂
+      rw [pathLabel_pathEdge, pathLabel_pathEdge] at h
+      exact congrArg (pathEdge m) (Fin.ext (pathLab_inj hm i.isLt j.isLt h))
+    · rintro k hk
+      simp only [Set.mem_Icc] at hk
+      obtain ⟨i, hi, hlab⟩ := pathLab_surj hm hk.1 hk.2
+      refine ⟨pathEdge m ⟨i, hi⟩, ?_, ?_⟩
+      · simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range]
+        exact ⟨_, rfl⟩
+      · rw [pathLabel_pathEdge]
+        exact hlab
+  · intro u v huv
+    simp only [] at huv
+    rw [pathSum hm u, pathSum hm v] at huv
+    -- unfold the label into the three regimes and let omega finish
+    have hu := u.isLt
+    have hv := v.isLt
+    unfold pathLab at huv
+    refine Fin.ext ?_
+    split_ifs at huv <;> omega
 
 /-- The label of an edge of the star: the larger endpoint (as a number). For
 `starEdge i` this is `i + 1`. -/
