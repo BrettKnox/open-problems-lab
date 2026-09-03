@@ -5,3 +5,4 @@ __pycache__/
 *.npy
 computations/erdos_moser/gmz.pdf
 computations/erdos_moser/gmz.txt
+computations/odd_covering/sweep*.log

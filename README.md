@@ -38,7 +38,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | 6 | **Antimagic labeling** (Hartsfield–Ringel) | A | [Antimagic.lean](OpenProblemsLab/Antimagic.lean) | Regular graphs 2015–16; subdivisions ([2608.11723](https://arxiv.org/abs/2608.11723)) | **In progress — see [Results](#results).** Small-graph sweep; degree-2-heavy trees |
 | 7 | **Graceful tree conjecture** | A | [GracefulTrees.lean](OpenProblemsLab/GracefulTrees.lean) | Verified ≤35 vertices (Fang 2010, [1003.3045](https://arxiv.org/abs/1003.3045)) — record untouched 16 years | **In progress — see [Results](#results).** Push exhaustive verification (embarrassingly parallel) |
 | 8 | **W(2,7)** van der Waerden | A | [VanDerWaerden.lean](OpenProblemsLab/VanDerWaerden.lean) | W(2,6)=1132 (Kouril–Paul 2008); W(2,7) > 3703 (Rabung–Lotts, [E-JC 19(2) #P35](https://www.combinatorics.org/ojs/index.php/eljc/article/view/v19i2p35)) | **In progress — see [Results](#results).** Lower-bound records via SAT + cyclic zipper |
-| 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | Search admissible lcm shapes; LP density bounds |
+| 9 | **Odd covering systems** (EP [#7](https://www.erdosproblems.com/7); $25/$2000) | B | [OddCovering.lean](OpenProblemsLab/OddCovering.lean) | BBMST 2022: no odd squarefree covering; lcm divisible by 9 or 15 | **Result — see [Results](#results): no odd covering has lcm ≤ 10⁶.** |
 | 10 | **Distinct subset sums** (EP [#1](https://www.erdosproblems.com/1), $500) | B | [DistinctSubsetSums.lean](OpenProblemsLab/DistinctSubsetSums.lean) | Dubroff–Fox–Xu 2021 lower bound; Bohman 0.22002·2ⁿ construction | Beat Bohman's constant by search; formalize DFX |
 | 11 | **Erdős–Moser** 1ᵏ+⋯+(m−1)ᵏ = mᵏ | C | [ErdosMoser.lean](OpenProblemsLab/ErdosMoser.lean) | GMZ 2009 ([0907.1356](https://arxiv.org/abs/0907.1356)): m > 2.7139·10^1667658416 via CF of log 2 | **In progress — see [Results](#results).** Formalize Moser's odd-k proof; GMZ machinery reproduced |
 | 12 | **Lehmer's totient problem** | C | [LehmerTotient.lean](OpenProblemsLab/LehmerTotient.lean) | Cohen–Hagis 1980 (n>10²⁰, ω≥14); Burek–Żmija 2019 | **In progress — see [Results](#results).** Modern sweep; formalize Cohen–Hagis framework |
@@ -361,6 +361,52 @@ lcm among 41 named values — a narrowing from 1,556, not a resolution, and the 
 41. Two fixes made even that possible: a linear (not pairwise-quadratic) at-most-one
 encoding, and exploiting translation symmetry to fix one modulus's class, which took the
 smallest survivor from unsolved-after-400 s to UNSAT in 47 s.
+
+### 9. Odd covering systems (Erdős #7)
+
+**No odd covering system has lcm at most 10⁶.** 1,996 candidate lcms, 49 seconds,
+**zero search** — no SAT solver, no literature input, exact rational arithmetic. The
+previous pass here left 41 shapes below 20,000 undecided after 3.5 hours of CDCL; all 41
+are now closed, and so is everything else up to a bound 50× larger.
+
+The result is not a faster solver. It is a necessary condition with no free choices left
+in it. A covering with lcm L uses only divisors of L, so the *maximal* system (every odd
+divisor m > 1, one class each) is the best possible attempt, and the question is finite.
+Then:
+
+1. **The lcm must be an odd abundant number.** The maximal system's density is
+   σ(L)/L − 1, so density ≥ 1 is exactly σ(L) ≥ 2L. That alone cuts the search space to
+   43 candidates below 20,000. (Standard — "covering number" is established terminology —
+   but it makes this computation self-contained, with no appeal to BBMST's 9-or-15
+   theorem. The counting step is formalized as `card_le_sum_of_covers_period`.)
+2. **The coprime screen.** If T is a set of *pairwise coprime* moduli, CRT makes their
+   classes independent, so they cover exactly L(1 − ∏(1 − 1/m)) **whatever classes are
+   chosen** — the choice drops out. Bounding everything else by L/m gives
+   D ≥ Σ_{m∈T} 1/m + ∏_{m∈T}(1 − 1/m). Taking T to be the primes of L, the share of the
+   uncovered region a modulus can reach is exactly 1/φ(m), so the criterion becomes:
+   **a covering with lcm L needs Σ 1/φ(m) ≥ 1 over the non-prime divisors of L.** For
+   L = 945 that sum is 0.5946 — dead in one line, where CDCL needed 47 seconds.
+3. **Coprime groups.** The uncovered region is a product set, so a coprime *group* is
+   independent inside it and covers 1 − ∏(1 − 1/φ(m)), strictly less than Σ 1/φ(m).
+   Partitioning into groups is stronger than both the additive bound and a
+   forced-overlap matching, and is **sound for any partition** — the greedy one used here
+   needs no optimality argument. This is what kills 675675, where Σ 1/φ = 1.0127 but the
+   partition bound is 0.9922.
+
+A complete search is kept alongside, branching on *which modulus covers the smallest
+uncovered residue* (so it assigns a class outright, making the depth the modulus count)
+with a capacity bound and two symmetry reductions. It beats CDCL by ~8× on L = 945 — and
+still times out from L = 1575 up. **The screen, not the search, is what resolved this.**
+
+The gates are built to catch an unsound screen rather than to confirm it: the search
+agrees with brute force on all 31 subsets of {2,3,4,6,12}, and the screen **never fired on
+any of 71 modulus sets that demonstrably admit a covering**, across 8 lattices, with the
+group correction active. Even moduli are used there deliberately — the odd case has no
+known positive instance to test against.
+
+Beyond 10⁶ the screen starts leaving survivors, the first being 2027025 = 3⁴·5²·7·11·13
+and 3378375 = 3³·5³·7·11·13, both far out of reach of the complete search. That frontier
+is as much an artifact of the greedy partition as of the mathematics.
 
 ### 10. Distinct subset sums
 

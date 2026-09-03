@@ -1,4 +1,7 @@
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Nat.ModEq
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Set.Function
 import Mathlib.Data.Int.Basic
 import Mathlib.Algebra.Ring.Parity
@@ -101,5 +104,51 @@ theorem classic_not_odd : ¬ IsOddCovering classic := by
   rintro ⟨hodd, -, -⟩
   have := hodd (0, 2) (by decide)
   simp at this
+
+
+
+/-! ### The density bound
+
+The engine behind the abundance screen used by the searches in
+`computations/odd_covering`. If the classes cover one full period, the sum of
+`L / mᵢ` is at least `L` — i.e. `∑ 1/mᵢ ≥ 1`. Applied to the *maximal* system
+at lcm `L` (every divisor `m > 1` used once, which is WLOG optimal) this says
+`σ(L) ≥ 2L`: **the lcm of any covering system is an abundant number**, so an
+odd covering system's lcm must be an odd abundant number. -/
+
+open Finset in
+/-- If every modulus divides `L` and the classes cover `{0, …, L−1}`, then
+`L ≤ ∑ L / mᵢ`. Counting: the period is the union of the classes, and the
+class of `a mod m` meets a period of length `L` in at most `L / m` points. -/
+theorem card_le_sum_of_covers_period {S : Finset (ℕ × ℕ)} {L : ℕ}
+    (hdvd : ∀ p ∈ S, p.2 ∣ L)
+    (hcov : ∀ n < L, ∃ p ∈ S, (p.2 : ℤ) ∣ (n : ℤ) - (p.1 : ℤ)) :
+    L ≤ ∑ p ∈ S, L / p.2 := by
+  classical
+  set f : ℕ × ℕ → Finset ℕ :=
+    fun p => (range L).filter (fun n => n % p.2 = p.1 % p.2) with hf
+  have hsub : range L ⊆ S.biUnion f := by
+    intro n hn
+    obtain ⟨p, hp, hd⟩ := hcov n (mem_range.mp hn)
+    exact mem_biUnion.mpr ⟨p, hp, mem_filter.mpr ⟨hn, (Nat.modEq_iff_dvd.mpr hd).symm⟩⟩
+  have hcard : ∀ p ∈ S, (f p).card ≤ L / p.2 := by
+    intro p hp
+    have : (f p).card ≤ (range (L / p.2)).card := by
+      refine card_le_card_of_injOn (fun n => n / p.2) ?_ ?_
+      · intro n hn
+        simp only [hf, coe_filter, Set.mem_ofPred_eq, mem_range] at hn
+        exact mem_range.mpr (Nat.div_lt_div_of_lt_of_dvd (hdvd p hp) hn.1)
+      · intro a ha b hb hab
+        simp only [hf, coe_filter, Set.mem_ofPred_eq, mem_range] at ha hb
+        have hab' : a / p.2 = b / p.2 := hab
+        have hm : a % p.2 = b % p.2 := by rw [ha.2, hb.2]
+        calc a = p.2 * (a / p.2) + a % p.2 := (Nat.div_add_mod a p.2).symm
+          _ = p.2 * (b / p.2) + b % p.2 := by rw [hab', hm]
+          _ = b := Nat.div_add_mod b p.2
+    simpa using this
+  calc L = (range L).card := (card_range L).symm
+    _ ≤ (S.biUnion f).card := card_le_card hsub
+    _ ≤ ∑ p ∈ S, (f p).card := card_biUnion_le
+    _ ≤ ∑ p ∈ S, L / p.2 := sum_le_sum hcard
 
 end OpenProblems.OddCovering
