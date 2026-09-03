@@ -11,7 +11,7 @@ session plan; criteria are restated here at completion time.
 | 1 | Integer complexity | IC-1 statement+proofs | done | Selfridge, n ≤ 9, defect layer, axiom-clean |
 | 1 | Integer complexity | IC-2 table | done | exact to 2^32, k ≤ 32, 4 gates, reproduced |
 | 1 | Integer complexity | IC-3 defect API | done | defect_mul_le subadditivity + Altman's k≤48 stability theorem stated verbatim (altmanStability); criterion met |
-| 1 | Integer complexity | IC-4 Altman k≤48 repro | queued | — |
+| 1 | Integer complexity | IC-4 Altman instantiation | done (bounded) | all 350 pairs 2^k·3^ℓ ≤ 2^32 satisfy ‖2^k3^ℓ‖ = 2k+3ℓ (k≤32, ℓ≤20), 442 s. Instantiation not reproduction: Altman is uniform in ℓ and reaches k=48 via low-defect polynomials; table-extension cannot close that (ℓ unbounded) ⇒ IC-5 needs the defect machinery |
 | 1 | Integer complexity | IC-5 k=49+ [FORGE] | queued | — |
 | 2 | Separating words | SW-1 Lean reduction | done | accept-set irrelevance, sep≤n+2, sep≥2 |
 | 2 | Separating words | SW-2 exact table | done | n ≤ 30, Tran reproduced, √-law killed at 28 |

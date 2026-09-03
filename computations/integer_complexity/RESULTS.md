@@ -198,3 +198,30 @@ python verify_powers.py  --table table.npy
 
 `validate_oeis.py` needs network access on first use to fetch the b-file; pass
 `--bfile PATH` to run fully offline.
+
+
+## IC-4: Altman's stability theorem, instantiated
+
+Altman (arXiv:1606.03635) proved `||2^k * 3^l|| = 2k + 3l` for all `k <= 48`
+and all `l` — the strongest known partial result toward `||2^n|| = 2n`, and
+the statement recorded in `OpenProblemsLab/IntegerComplexity.lean` as
+`altmanStability`. His proof reasons about low-defect polynomials; it does not
+enumerate integers, which is why it reaches all `l` at once.
+
+`stability.py` checks the identity directly for every pair inside the exact
+table (442 s):
+
+**All 350 pairs (k, l) with 2^k·3^l <= 2^32 satisfy ||2^k 3^l|| = 2k + 3l**,
+covering k up to 32 and l up to 20. Reach per k, largest l with
+2^k·3^l <= 2^32:
+
+| k | 0 | 4 | 8 | 12 | 16 | 20 | 24 | 28 | 32 |
+|---|---|---|---|---|---|---|---|---|---|
+| l ≤ | 20 | 17 | 15 | 12 | 10 | 7 | 5 | 2 | 0 |
+
+This is an instantiation, not a reproduction: it confirms the theorem on a
+bounded rectangle using our own OEIS-validated table, whereas Altman's result
+is uniform in `l` and reaches `k = 48`. Extending the *table* cannot close
+that gap — the l-direction is unbounded — so IC-5 (pushing past k = 48) still
+requires implementing the defect machinery, exactly as the Lean file's
+"why n = 9 and not further" note argues.

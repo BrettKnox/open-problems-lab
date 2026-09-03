@@ -78,6 +78,13 @@ assumption. Getting further formally means formalizing the theory, not out-compu
 **Computationally** ([computations/integer_complexity/](computations/integer_complexity/),
 log in [RESULTS.md](computations/integer_complexity/RESULTS.md)): an exact table of ‖n‖ to
 **n = 2³² = 4,294,967,296** in 426 s single-threaded, confirming **‖2ᵏ‖ = 2k for k ≤ 32**.
+**Altman's stability theorem is instantiated in that range too**: all **350** pairs (k, ℓ)
+with 2ᵏ·3ᶫ ≤ 2³² satisfy ‖2ᵏ3ᶫ‖ = 2k + 3ℓ (k to 32, ℓ to 20). That confirms his theorem on a
+bounded rectangle with our own validated table — it is not a reproduction of his proof, which
+is uniform in ℓ and reaches k = 48 by reasoning about low-defect polynomials rather than
+enumerating integers. No amount of table-extension closes that gap, since the ℓ-direction is
+unbounded.
+
 The additive search is pruned by the Selfridge bound proved above — it forces the smaller
 summand of an optimal split to satisfy a ≤ ∛(3^U)/⌈n/2⌉, a window measured at **≤ 153**
 against a naive n/2 ≈ 2.1×10⁹ — in exact integer arithmetic, so the table stays exact.
