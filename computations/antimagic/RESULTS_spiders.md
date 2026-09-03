@@ -45,3 +45,23 @@ label — the difficulty is in the mathematics, not the search. That argues for
 spending the next pass on `isAntimagic` proofs for these families in Lean
 (paths and caterpillars look reachable with the machinery already in
 `Antimagic.lean` and `StarFacts.lean`) rather than on more computation.
+
+
+## A construction pinned down for the next Lean pass (AM-4)
+
+Attempting `isAntimagic_pathGraph` surfaced a false start worth recording. The
+obvious labeling — edge i (joining vertex i to i+1) gets label i+1, left to
+right — gives vertex sums 1, 3, 5, …, 2m−1 in the interior with m at the far
+endpoint, and that **collides exactly when m is odd**, at the interior vertex
+v = (m−1)/2 where 2v+1 = m. For m = 5 the sums are 1, 3, 5, 7, 9, 5.
+
+So the left-to-right labeling is antimagic **iff m is even** (checked for
+every even m ≤ 198, and it fails for every odd m in 3..199). The fix for odd m
+is to swap the last two labels, giving 1, 2, …, m−2, m, m−1. The resulting
+two-case construction is verified antimagic for **all 2 ≤ m ≤ 400**.
+
+That is the target for AM-4: the Lean proof needs a parity case split plus
+path incidence sets (interior vertices carry two edges, endpoints one), which
+is why it was queued rather than rushed. The draft was reverted rather than
+left with a `sorry` — the falsity showed up precisely at the vertex-sum
+obligation, which is the part a `sorry` would have hidden.

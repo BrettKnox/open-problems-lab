@@ -4,7 +4,9 @@ import Mathlib.Combinatorics.SimpleGraph.Star
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Set.Function
 import Mathlib.Order.Interval.Set.Defs
+import Mathlib.Combinatorics.SimpleGraph.Hasse
 import OpenProblemsLab.StarFacts
+import OpenProblemsLab.PathFacts
 
 /-!
 # Antimagic labeling conjecture (Hartsfield–Ringel 1990)
@@ -40,6 +42,7 @@ def conjecture : Prop :=
   ∀ (V : Type) [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj],
     G.Connected → Fintype.card V ≠ 2 → IsAntimagic G
 
+
 /-! ### Stars are antimagic
 
 The first infinite family, and the cleanest: label the edge to leaf `i` with
@@ -47,7 +50,7 @@ The first infinite family, and the cleanest: label the edge to leaf `i` with
 carries `1 + ⋯ + m`, which exceeds every leaf sum precisely when `m ≥ 2` —
 the failure at `m = 1` **is** the `K₂` exception of the conjecture. -/
 
-open SimpleGraph OpenProblems.StarFacts
+open SimpleGraph OpenProblems.StarFacts OpenProblems.PathFacts
 
 variable {m : ℕ}
 
