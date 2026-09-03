@@ -266,3 +266,69 @@ exactly 40/81 of the 3-coordinate at best), but moduli like 15, 45, 105 are
 credited `1/phi(m)` each with only coprime-group interactions subtracted.
 Capturing the tree structure across coordinates is the next idea, and it is a
 different argument rather than a tuning of this one.
+
+## OC-5: the criterion in closed form, and infinite families
+
+`sum_{m | L} 1/phi(m)` is multiplicative, so the criterion of OC-4 has a closed
+form. Writing `S(p, e) = sum_{k=1..e} 1/(p^(k-1)(p-1)) = p/(p-1)^2 * (1 - p^-e)`,
+
+    g(L) = sum_{m | L, m > 1, m not prime} 1/phi(m)
+         = prod_{p^e || L} (1 + S(p, e))  -  1  -  sum_{p | L} 1/(p-1),
+
+and a covering with lcm `L` needs `g(L) >= 1`. Verified against the direct sum
+on all 391 odd abundant `L <= 200,000`, in exact rationals.
+
+The point of the closed form is that `S(p, e) < p/(p-1)^2` for every `e`, so
+**`g` is bounded by a quantity depending only on the SET of primes dividing
+`L`**, however large the exponents:
+
+    g_sup(P) = prod_{p in P} (1 + p/(p-1)^2)  -  1  -  sum_{p in P} 1/(p-1).
+
+`g_sup` strictly increases when a prime is added (the net gain is at least
+`1/(q-1)^2 > 0`), so a single prime set stands for all of its subsets. That
+turns finite verification into **infinite families**:
+
+| prime set | g_sup | consequence |
+|---|---|---|
+| {3} | 0.2500 | no odd covering with lcm `3^a` |
+| {3,7} | 0.4236 | none with lcm `3^a 7^b` |
+| {3,5} | 0.5469 | none with lcm `3^a 5^b` |
+| {3,5,11} | 0.6995 | none with lcm `3^a 5^b 11^c` |
+| {3,5,7} | 0.8268 | none with lcm `3^a 5^b 7^c` |
+| **{3,5,7,13}** | **0.9912** | **none with lcm `3^a 5^b 7^c 13^d`** |
+| {3,5,7,11} | 1.0286 | out of reach, for every exponent choice |
+
+> **No odd covering system has lcm of the form `3^a 5^b 7^c 13^d`, for any
+> exponents at all.**
+
+That is not a bounded search: it holds for arbitrarily large lcm. It is also
+tight — 0.9912 against the 1 it must stay below.
+
+### Where the method stops, exactly
+
+`g_sup({3,5,7,11}) = 1.0286 >= 1`, so the criterion can never settle a prime
+set containing `{3,5,7,11}` no matter how much is computed. This is not a
+budget statement; it is a property of the bound.
+
+It also explains the twelve survivors below 10^7 precisely: **every one of them
+is divisible by 11**, and each has a prime set containing `{3,5,7,11}` (or
+`{3,5,7,11,13}`, `{3,5,7,11,17}`, …), all with `g_sup` between 1.17 and 1.38.
+The survivors are not an accident of the greedy partition — they are the first
+integers whose prime support puts them beyond the criterion's ceiling.
+
+So the honest summary of what the screen achieves: it resolves everything whose
+prime support is poor enough, which covers all `L <= 10^6` and infinitely many
+larger ones, and it provably cannot touch `{3,5,7,11}`-supported lcms. Getting
+those needs a bound that does not factor through `sum 1/phi(m)` — the group
+partition is one such strengthening (it closes 675675, where `g = 1.0127`), but
+it is second-order and does not change the ceiling.
+
+For prime sets of many large primes the boundary is intricate rather than
+clean: there are 795,311 maximal prime sets below 80 with `g_sup < 1`, most of
+them hugging 1 from below. The small families above are the quotable ones.
+
+Gates (`python reach.py --verify`): closed form equals the direct sum on all
+391 odd abundant `L <= 200,000`; `g < 1` implies the screen fires; `g`
+increases in the exponents and stays below `g_sup`; `g_sup` strictly increases
+under adding a prime; and the headline family is re-checked directly at large
+exponents (`3^20 5^12 7^8 13^6`).

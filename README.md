@@ -404,6 +404,23 @@ any of 71 modulus sets that demonstrably admit a covering**, across 8 lattices, 
 group correction active. Even moduli are used there deliberately — the odd case has no
 known positive instance to test against.
 
+**The criterion also has a closed form, and that buys infinite families.** Σ1/φ(m) over
+divisors is multiplicative, so g(L) = ∏(1 + S(p,e)) − 1 − Σ 1/(p−1) with
+S(p,e) = p/(p−1)²·(1 − p^−e). Since S is bounded in e, **g is capped by a quantity
+depending only on the *set* of primes dividing L** — however large the exponents. That
+converts bounded verification into unbounded statements:
+
+> **No odd covering system has lcm of the form 3^a·5^b·7^c·13^d — for any exponents at
+> all.** (g_sup = 0.9912, against the 1 it must stay below.) Likewise 3^a·5^b·7^c
+> (0.8268) and 3^a·5^b·11^c (0.6995).
+
+The same formula names the method's ceiling exactly: g_sup({3,5,7,11}) = 1.0286 ≥ 1, so
+a prime set containing {3,5,7,11} can never be settled this way, no matter how much
+compute is thrown at it. That is not a budget claim — it is a property of the bound, and
+it explains the survivors below: **every one of the twelve is divisible by 11.** They are
+not an artifact of the greedy partition after all; they are the first integers whose
+prime support sits above the criterion's ceiling.
+
 Pushed to 10⁷, the screen kills 20,649 of 20,661 candidates (99.94%), so **any odd
 covering system with lcm ≤ 10⁷ has lcm among twelve explicit values** — all of them
 3·5·7·11·13 with extra prime powers or one extra prime. Those twelve will not fall to
