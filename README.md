@@ -155,6 +155,25 @@ OEIS submission package for the sequence is drafted in
 [computations/separating_words/](computations/separating_words/) (submission is a user
 action).
 
+**A sharp conjecture for where 5 states run out.** Inverting the question - `N(k)` = the
+largest n for which k states still separate everything - exhaustive search gives
+N(1..4) = 0, 3, 9, 17 and stalls at N(5) >= 30 (n = 31 needs ~17 GiB). But *witnessing* is
+far cheaper than *verifying*: the known witnesses are two-block words `1^a 0^(n-a)`, a
+family of only n+1 members per length.
+
+Searching it and asking why it works re-derives **Theorem 1 of Demaine-Eisenstat-Shallit-
+Wilson** ([1103.4513](https://arxiv.org/abs/1103.4513), 2011) - shifting a block by
+L = lcm(1..k) is invisible to a k-state DFA, giving N(k) <= 2k-3+lcm(1..k). That result is
+theirs, found here only after re-deriving it. **What is new is that it is exact wherever
+anything is known**: it reproduces 0, 3, 9, 17 for k = 1..4, witnesses included. Hence the
+conjecture **N(k) = 2k-3+lcm(1..k)**, i.e. **N(5) = 67** - sep(n) = 5 for exactly
+18 <= n <= 67, with sep(68) = 6.
+
+N(5) <= 67 is proved. Both the two-block and the three-block families first collide at
+*exactly* n = 68, and exhaustive search confirms the prediction for the 13 lengths
+18 <= n <= 30 - beyond the n <= 18 the formula was fitted on. Closing 31 <= n <= 67 needs
+an argument that extremal pairs are always of this periodic type, not more compute.
+
 ### 3. Erdős–Gyárfás
 
 **Records, verified at source** (every secondary claim below was checked against the actual

@@ -533,3 +533,78 @@ A fast sanity pass, a few seconds:
 ```
 python separate.py --nmax 20 --kmax 5 --verify
 ```
+
+## SW-5: N(k), and a sharp conjecture for where 5 states run out
+
+`N(k)` is the largest `n` such that some `k`-state DFA separates every pair of
+distinct binary words of length `n` -- the inverse view of `sep`. Exhaustive
+search gives `N(1) = 0`, `N(2) = 3`, `N(3) = 9`, `N(4) = 17`, and stalls at
+`N(5) >= 30`: deciding `n = 31` needs a collision check over all `2^n`
+signatures, about 17 GiB.
+
+**Verifying and witnessing are not equally hard.** A witness is one unseparable
+pair, and the known ones are extremely structured -- `1^2 0^8` vs `1^8 0^2` at
+`n = 10`, `1^3 0^15` vs `1^15 0^3` at `n = 18`. Both are two-block words
+`1^a 0^(n-a)`, a family with only `n + 1` members per length, so it can be
+pushed far past exhaustive range. `blocks.py` evaluates it in
+`O(#functions * n)` by iterating the `0`-map once and indexing into it, rather
+than running each word.
+
+### The construction is known; the tightness is the news
+
+Searching the two-block family and asking *why* it works recovers a theorem
+already in the literature -- **Theorem 1 of Demaine, Eisenstat, Shallit and
+Wilson** ([arXiv:1103.4513](https://arxiv.org/abs/1103.4513), 2011): no DFA of
+at most `k` states separates `0^(k-1) 1^(k-1+L)` from `0^(k-1+L) 1^(k-1)`,
+where `L = lcm(1, ..., k)`. The orbit of any state under one letter has tail
+`<= k-1` and cycle length dividing `L`, so shifting a block by `L` is
+invisible. That gives
+
+    N(k)  <=  2k - 3 + lcm(1, ..., k).
+
+This was re-derived here before the source was found; it is theirs, and the
+asymptotic content (the classical `Omega(log n)` lower bound on `sep`) is
+theirs too.
+
+What does not appear in the literature is that **the bound is exact wherever
+anything is known**:
+
+| k | 2k-3+lcm(1..k) | N(k), exhaustive |
+|---|---|---|
+| 1 | 0 | 0 |
+| 2 | 3 | 3 |
+| 3 | 9 | 9 |
+| 4 | 17 | 17 |
+| 5 | **67** | `>= 30`, `<= 67` |
+
+Four for four, witnesses included: the construction's pair at `k = 3` is
+exactly `1^2 0^8 / 1^8 0^2`, and at `k = 4` exactly `1^3 0^15 / 1^15 0^3` --
+the same pairs exhaustive search finds. That suggests
+
+> **Conjecture.** `N(k) = 2k - 3 + lcm(1, ..., k)`, equivalently `sep(n) = 5`
+> for exactly `18 <= n <= 67`, with `sep(68) = 6`.
+
+### Evidence for N(5) = 67
+
+* The upper bound `N(5) <= 67` is **proved** (the DESW pair at `n = 68` is
+  `1^4 0^64 / 1^64 0^4`; `min_states` independently confirms it needs 6
+  states).
+* The two-block family's first collision is at **exactly** `n = 68` -- nothing
+  earlier, scanned from `n = 20`.
+* The three-block family `1^a 0^b 1^c` also first collides at **exactly**
+  `n = 68`, at `1^3 0^1 1^64` vs `1^63 0^1 1^4` -- again two indices differing
+  by `L = 60`. Scanned over every `(a, b, c)` for `n <= 71`.
+* Exhaustive search over **all** words confirms no collision at all for
+  `n <= 30`, so the prediction `sep(n) = 5` is verified for the 13 lengths
+  `18 <= n <= 30` -- beyond the `n <= 18` the formula was fitted on.
+
+The gap `31 <= n <= 67` is what would have to be closed to prove `N(5) = 67`,
+and the memory wall makes that unreachable by the exhaustive route. Closing it
+needs an argument that the extremal pairs are always of this periodic type,
+which is the open content of the conjecture rather than a computation.
+
+Gates (`python blocks.py --verify`): the family reproduces both known
+witnesses; those witnesses need strictly more than `k` states via an
+independent `min_states` path; the fast two-block and three-block sweeps agree
+with `batch_states` on the same words; no collision at `n = 9` for `k = 3, 4`
+(negative control, since `N(3) = 9`); and the formula reproduces `N(1..4)`.
