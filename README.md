@@ -393,6 +393,17 @@ Then:
    needs no optimality argument. This is what kills 675675, where Σ 1/φ = 1.0127 but the
    partition bound is 0.9922.
 
+**The screen's engine is now machine-checked**, not just implemented. Four axiom-clean
+theorems in [OddCovering.lean](OpenProblemsLab/OddCovering.lean): `card_class_eq` (a class
+`a mod m` meets a period of length L in *exactly* L/m points), `card_inter_coprime` (**two
+coprime classes meet in exactly L/(m₁m₂) points, whatever residues are chosen** — the
+overlap is forced by CRT, not a consequence of bad choices), and `card_le_sum_sub_overlap`,
+which turns that into the screen itself: a covering containing two coprime moduli needs its
+density budget Σ L/mᵢ to cover **L plus L/(m₁m₂)**. The contrapositive
+`not_covers_of_budget_lt` is the form the computation applies. At L = 945 the budget is 975
+over the fifteen odd divisors, while the pair (3,5) alone forces an overlap of 63 — and
+945 + 63 = 1008 > 975. One line of arithmetic where the SAT solver needed 47 seconds.
+
 A complete search is kept alongside, branching on *which modulus covers the smallest
 uncovered residue* (so it assigns a class outright, making the depth the modulus count)
 with a capacity bound and two symmetry reductions. It beats CDCL by ~8× on L = 945 — and
