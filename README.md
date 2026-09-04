@@ -169,6 +169,15 @@ anything is known**: it reproduces 0, 3, 9, 17 for k = 1..4, witnesses included.
 conjecture **N(k) = 2k-3+lcm(1..k)**, i.e. **N(5) = 67** - sep(n) = 5 for exactly
 18 <= n <= 67, with sep(68) = 6.
 
+**And the theorem is now formalized.** [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean)
+proves `iterate_eq_add_of_card_le` — iterating any endofunction of a k-element type is
+eventually periodic with preperiod ≤ k−1 and period ≤ k, so `f^[a] = f^[a+L]` for a ≥ k−1
+whenever L is a common multiple of 1..k — and derives `not_separates_block_shift`, the DESW
+theorem itself: no k-state transition function separates `1^a 0^(b+L)` from `1^(a+L) 0^b`.
+The concrete instance `not_suffStates_five_68` says **5 states do not suffice at length 68**.
+All axiom-clean. As far as we can determine this is the first formalization of the
+separating-words lower bound.
+
 N(5) <= 67 is proved. Both the two-block and the three-block families first collide at
 *exactly* n = 68, and exhaustive search confirms the prediction for the 13 lengths
 18 <= n <= 30 - beyond the n <= 18 the formula was fitted on. Closing 31 <= n <= 67 needs

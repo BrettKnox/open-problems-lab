@@ -2,6 +2,8 @@ import Mathlib.Computability.DFA
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Data.Nat.Log
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Combinatorics.Pigeonhole
+import Mathlib.Tactic.IntervalCases
 
 /-!
 # The separating words problem
@@ -273,5 +275,145 @@ theorem sep_four : sep 4 = 3 := by
   · obtain ⟨M, hM⟩ := hk [0, 1, 1, 0] [1, 0, 1, 0] rfl rfl (by decide)
     exact eval_ne_of_separates hM (Subsingleton.elim _ _)
   · exact not_suffStates_two_four hk
+
+/-! ### The block-shift obstruction (Demaine-Eisenstat-Shallit-Wilson)
+
+The classical `Ω(log n)` lower bound rests on one observation: a `k`-state
+automaton cannot see a block whose length changes by `lcm(1, ..., k)`.
+Iterating any endofunction of a `k`-element type is eventually periodic with
+preperiod `≤ k - 1` and period `≤ k`, so once a run is `k - 1` letters into a
+block, the block's length matters only modulo that period.
+
+`iterate_eq_add_of_card_le` is that fact, and `not_separates_block_shift` is
+Theorem 1 of Demaine, Eisenstat, Shallit and Wilson
+([arXiv:1103.4513](https://arxiv.org/abs/1103.4513), 2011), which follows from
+it. The computations in `computations/separating_words` find that the bound it
+gives is exact wherever exhaustive search reaches, which is the content of the
+`N(k) = 2k - 3 + lcm(1, ..., k)` conjecture recorded there. -/
+
+open Function in
+/-- If two iterates of `f` agree at `x`, the orbit of `x` is periodic from
+there on, with period dividing any common multiple `L` of `1, ..., k`. -/
+private theorem block_shift_aux {α : Type*} {k : ℕ} (f : α → α) (x : α)
+    {i j a L : ℕ} (hlt : i < j) (hjk : j ≤ k) (heq : f^[i] x = f^[j] x)
+    (ha : k ≤ a + 1) (hL : ∀ c, 0 < c → c ≤ k → c ∣ L) :
+    f^[a] x = f^[a + L] x := by
+  set c := j - i with hc
+  have hc0 : 0 < c := by omega
+  have hck : c ≤ k := by omega
+  have hia : i ≤ a := by omega
+  -- one period step, from any point at or past the preperiod
+  have step : ∀ m, i ≤ m → f^[m] x = f^[m + c] x := by
+    intro m hm
+    have h1 : f^[m] x = f^[m - i] (f^[i] x) := by
+      rw [← Function.iterate_add_apply]
+      congr 1
+      omega
+    have h2 : f^[m - i] (f^[j] x) = f^[m + c] x := by
+      rw [← Function.iterate_add_apply]
+      congr 1
+      omega
+    rw [h1, heq, h2]
+  -- hence any multiple of the period
+  have steps : ∀ t m, i ≤ m → f^[m] x = f^[m + c * t] x := by
+    intro t
+    induction t with
+    | zero => intro m _; simp
+    | succ t ih =>
+        intro m hm
+        have := ih m hm
+        have h2 := step (m + c * t) (by omega)
+        rw [this, h2]
+        congr 1
+        ring
+  obtain ⟨t, ht⟩ := hL c hc0 hck
+  rw [ht]
+  exact steps t a hia
+
+open Function in
+/-- Iterating an endofunction of a type with at most `k` elements is
+eventually periodic, with preperiod at most `k - 1` and period at most `k`.
+So if `L` is divisible by every `c` with `1 ≤ c ≤ k` — as `lcm(1, ..., k)` is —
+then `f^[a] = f^[a + L]` for every `a ≥ k - 1`. -/
+theorem iterate_eq_add_of_card_le {α : Type*} [Fintype α] {k : ℕ}
+    (hcard : Fintype.card α ≤ k) (f : α → α) {a L : ℕ} (ha : k ≤ a + 1)
+    (hL : ∀ c, 0 < c → c ≤ k → c ∣ L) : f^[a] = f^[a + L] := by
+  classical
+  funext x
+  -- two of the k+1 iterates x, f x, ..., f^[k] x must agree
+  obtain ⟨i, hi, j, hj, hij, heq⟩ :
+      ∃ i ∈ Finset.range (k + 1), ∃ j ∈ Finset.range (k + 1),
+        i ≠ j ∧ f^[i] x = f^[j] x := by
+    refine Finset.exists_ne_map_eq_of_card_lt_of_maps_to ?_
+      (fun y _ => Finset.mem_univ (f^[y] x))
+    simpa using Nat.lt_succ_of_le hcard
+  simp only [Finset.mem_range] at hi hj
+  rcases lt_or_gt_of_ne hij with h | h
+  · exact block_shift_aux f x h (by omega) heq ha hL
+  · exact block_shift_aux f x h (by omega) heq.symm ha hL
+
+/-- Reading a block of one letter is just iterating that letter's map. -/
+private theorem foldl_replicate {σ : Type*} (δ : σ → Fin 2 → σ) (c : Fin 2)
+    (n : ℕ) (s : σ) :
+    (List.replicate n c).foldl δ s = (fun q => δ q c)^[n] s := by
+  induction n generalizing s with
+  | zero => rfl
+  | succ n ih => rw [List.replicate_succ, List.foldl_cons, ih,
+      Function.iterate_succ_apply]
+
+open Function in
+/-- **Demaine–Eisenstat–Shallit–Wilson, Theorem 1**
+([arXiv:1103.4513](https://arxiv.org/abs/1103.4513)). No `k`-state transition
+function separates `1^a 0^(b+L)` from `1^(a+L) 0^b` once both blocks are at
+least `k - 1` long and `L` is a common multiple of `1, …, k` (so
+`L = lcm(1, …, k)` qualifies). Both words have length `a + b + L`.
+
+Neither run can see the shift: after `k - 1` letters each block's map has
+entered its cycle, whose length divides `L`. -/
+theorem not_separates_block_shift {k a b L : ℕ}
+    (ha : k ≤ a + 1) (hb : k ≤ b + 1)
+    (hL : ∀ c, 0 < c → c ≤ k → c ∣ L)
+    (δ : Fin k → Fin 2 → Fin k) (s : Fin k) :
+    (List.replicate a (1 : Fin 2) ++ List.replicate (b + L) 0).foldl δ s
+      = (List.replicate (a + L) (1 : Fin 2) ++ List.replicate b 0).foldl δ s := by
+  have hcard : Fintype.card (Fin k) ≤ k := le_of_eq (Fintype.card_fin k)
+  have h1 : (fun q => δ q 1)^[a] = (fun q => δ q 1)^[a + L] :=
+    iterate_eq_add_of_card_le hcard _ ha hL
+  have h0 : (fun q => δ q 0)^[b] = (fun q => δ q 0)^[b + L] :=
+    iterate_eq_add_of_card_le hcard _ hb hL
+  rw [List.foldl_append, List.foldl_append, foldl_replicate, foldl_replicate,
+    foldl_replicate, foldl_replicate, ← h1, ← h0]
+
+/-- The bound it gives: `k` states never suffice at length `2(k-1) + L`, so
+`N(k) ≤ 2k - 3 + lcm(1, …, k)`. With `L = lcm(1, …, k)` this is
+`N(1..4) = 0, 3, 9, 17` exactly, and predicts `N(5) = 67`. -/
+theorem not_suffStates_block_shift {k L : ℕ} (hk : 1 ≤ k) (hL0 : 0 < L)
+    (hL : ∀ c, 0 < c → c ≤ k → c ∣ L) :
+    ¬ SuffStates k ((k - 1) + (k - 1) + L) := by
+  intro h
+  set a := k - 1 with ha'
+  have hak : k ≤ a + 1 := by omega
+  have hne : (List.replicate a (1 : Fin 2) ++ List.replicate (a + L) 0)
+      ≠ List.replicate (a + L) (1 : Fin 2) ++ List.replicate a 0 := by
+    intro hEq
+    have := congrArg (fun l => l.count 1) hEq
+    simp [List.count_append, List.count_replicate] at this
+    omega
+  obtain ⟨M, hM⟩ := h _ _ (by simp [List.length_append]; omega)
+    (by simp [List.length_append]; omega) hne
+  exact (eval_ne_of_separates hM)
+    (not_separates_block_shift hak hak hL M.step M.start)
+
+/-- The case that matters now: **5 states do not suffice at length 68**, since
+`lcm(1, …, 5) = 60` and `4 + 4 + 60 = 68`. Combined with the exhaustive
+verification that 5 states *do* suffice for every length up to 30, this
+brackets the crossover: `N(5)` lies in `[30, 67]`, and the computations
+conjecture `N(5) = 67` exactly. -/
+theorem not_suffStates_five_68 : ¬ SuffStates 5 68 := by
+  have h : ∀ c, 0 < c → c ≤ 5 → c ∣ 60 := by
+    intro c hc h5
+    interval_cases c <;> decide
+  simpa using not_suffStates_block_shift (k := 5) (L := 60) (by norm_num)
+    (by norm_num) h
 
 end OpenProblems.SeparatingWords
