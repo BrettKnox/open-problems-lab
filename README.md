@@ -493,6 +493,17 @@ only at m = 3, by Gauss's identity. **The k = 3 case is complete too**
 mathlib has the linear Gauss sum but not the cubic one — and the equation collapses to
 t² = 4t + 4, which has no integer root.
 
+**Moser's odd-`k` theorem is now complete** (`no_solution_odd`, axiom-clean): for every odd
+k ≥ 2 the equation has **no solution with m ≥ 2**. The pairing i ↔ m−i gives m ∣ 2∑; pairing
+the other way, i ↔ (m−1)−i — which also maps `range m` to itself — gives (m−1) ∣ 2∑.
+Consecutive integers are coprime, so m(m−1) ∣ 2∑, and on a solution ∑ = m^k that cancels to
+**m − 1 ∣ 2**. Hence m ≤ 3, and neither survivor works: m = 2 needs 2^k = 1, m = 3 needs
+3^k = 1 + 2^k. This is the classical fact that for odd k the triangular number n(n+1)/2
+divides 1^k + ⋯ + n^k, in exactly the form the equation needs — and with `k_eq_one_case` it
+settles **every odd exponent**, leaving the conjecture's whole content in the even case.
+
+The route there is recorded below, since the intermediate machinery is independently useful.
+
 **Moser's odd-k machinery is now formal through the mod-m² step** (all axiom-clean, no
 `sorry`): the pairing i ↔ m−i gives m ∣ 2·∑ i^k for odd k; the binomial expansion sharpens
 this to the congruence **2·∑ i^k + m^k ≡ k·m·∑ i^(k−1) (mod m²)**; and `dvd_of_solution`

@@ -280,4 +280,88 @@ def moserOddK : Prop :=
   ∀ m k : ℕ, 2 ≤ m → Odd k → 3 ≤ k →
     (∑ i ∈ Finset.range m, i ^ k) ≠ m ^ k
 
+/-! ### Moser's odd-`k` theorem, complete
+
+The pairing above gives `m ∣ 2∑`. Pairing the *other* way — `i ↔ (m-1) - i`,
+which also maps `range m` to itself — gives `(m-1) ∣ 2∑`. Since consecutive
+integers are coprime, `m(m-1) ∣ 2∑`, and on a solution `∑ = m^k` that forces
+`m - 1 ∣ 2`. So `m ≤ 3`, and the two survivors are ruled out by hand.
+
+This is the classical fact that for odd `k` the triangular number
+`n(n+1)/2` divides `1^k + ⋯ + n^k`, in the form the equation needs. -/
+
+/-- The second pairing: `i ↔ (m-1) - i` over `range m`, giving `(m-1) ∣ 2∑`. -/
+theorem two_mul_sum_dvd_pred {m k : ℕ} (hk : Odd k) :
+    (m - 1) ∣ 2 * ∑ i ∈ Finset.range m, i ^ k := by
+  have hrefl : ∑ i ∈ Finset.range m, i ^ k
+      = ∑ i ∈ Finset.range m, (m - 1 - i) ^ k :=
+    (Finset.sum_range_reflect (fun i => i ^ k) m).symm
+  have hsum : 2 * ∑ i ∈ Finset.range m, i ^ k
+      = ∑ i ∈ Finset.range m, (i ^ k + (m - 1 - i) ^ k) := by
+    rw [Finset.sum_add_distrib, ← hrefl, two_mul]
+  rw [hsum]
+  refine Finset.dvd_sum fun i hi => ?_
+  have hi' : i ≤ m - 1 := by have := Finset.mem_range.mp hi; omega
+  exact pair_dvd hk hi'
+
+private theorem one_add_two_pow_lt : ∀ k : ℕ, 2 ≤ k → 1 + 2 ^ k < 3 ^ k := by
+  intro k
+  induction k with
+  | zero => omega
+  | succ n ih =>
+      intro h
+      rcases Nat.lt_or_ge n 2 with hn | hn
+      · interval_cases n
+        · omega
+        · norm_num
+      · have hih := ih (by omega)
+        have h2 : (2 : ℕ) ^ (n + 1) = 2 * 2 ^ n := by ring
+        have h3 : (3 : ℕ) ^ (n + 1) = 3 * 3 ^ n := by ring
+        omega
+
+/-- **Moser's theorem for odd exponents.** For odd `k ≥ 2` the Erdős–Moser
+equation `1^k + ⋯ + (m-1)^k = m^k` has no solution with `m ≥ 2`.
+
+Both pairings apply to a solution, so `m(m-1) ∣ 2m^k`; cancelling `m` and
+using `gcd(m-1, m) = 1` leaves `m - 1 ∣ 2`. That bounds `m` by 3, and neither
+`m = 2` (which needs `2^k = 1`) nor `m = 3` (which needs `3^k = 1 + 2^k`)
+survives. Together with `k_eq_one_case` this settles every odd exponent. -/
+theorem no_solution_odd {m k : ℕ} (hm : 2 ≤ m) (hk : Odd k) (hk2 : 2 ≤ k) :
+    ∑ i ∈ Finset.range m, i ^ k ≠ m ^ k := by
+  intro heq
+  obtain ⟨t, rfl⟩ : ∃ t, m = t + 1 := ⟨m - 1, by omega⟩
+  -- write k = j + 1 up front, so `k - 1` never appears
+  obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
+  have ht : 1 ≤ t := by omega
+  have h1 : (t + 1) ∣ 2 * ∑ i ∈ Finset.range (t + 1), i ^ (j + 1) :=
+    two_mul_sum_dvd (by omega) hk
+  have h2 : t ∣ 2 * ∑ i ∈ Finset.range (t + 1), i ^ (j + 1) := by
+    simpa using two_mul_sum_dvd_pred (m := t + 1) hk
+  have hcop : Nat.Coprime t (t + 1) := by simp
+  have hmul : t * (t + 1) ∣ 2 * (t + 1) ^ (j + 1) := by
+    rw [← heq]
+    exact Nat.Coprime.mul_dvd_of_dvd_of_dvd hcop h2 h1
+  -- cancel one factor of (t+1)
+  have hstep : (t + 1) * t ∣ (t + 1) * (2 * (t + 1) ^ j) := by
+    have hre : (t + 1) * (2 * (t + 1) ^ j) = 2 * (t + 1) ^ (j + 1) := by ring
+    rw [hre, mul_comm (t + 1) t]
+    exact hmul
+  have hdvd : t ∣ 2 * (t + 1) ^ j :=
+    (mul_dvd_mul_iff_left (a := t + 1) (by omega)).mp hstep
+  have ht2 : t ∣ 2 := (Nat.Coprime.dvd_of_dvd_mul_right (hcop.pow_right _)) hdvd
+  have htle : t ≤ 2 := Nat.le_of_dvd (by omega) ht2
+  have hj : 1 ≤ j := by omega
+  interval_cases t
+  · -- m = 2: the sum is 1, but 2^k >= 4
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero] at heq
+    have h4 : 2 ^ 2 ≤ 2 ^ (j + 1) := Nat.pow_le_pow_right (by omega) (by omega)
+    simp at heq
+    omega
+  · -- m = 3: the sum is 1 + 2^k, and 1 + 2^k < 3^k
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+      Finset.sum_range_zero] at heq
+    have hlt := one_add_two_pow_lt (j + 1) (by omega)
+    simp at heq
+    omega
+
 end OpenProblems.ErdosMoser
