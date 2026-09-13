@@ -33,10 +33,11 @@ back to Goralčík and Koubek [GK], as both [BKSS] and [Chase] cite it. Two conv
 use: [BKSS] define $\mathrm{Sep}(n)$ over words of length *at most* $n$, while [DESW] and
 [Tran] use length *exactly* $n$. This note, the Lean code and the computation use length
 exactly $n$. The at-most maximum ranges over more pairs, so $\mathrm{sep}(n) \le
-\mathrm{Sep}(n)$, and the two functions can differ.
+\mathrm{Sep}(n)$, and the two functions differ: $\mathrm{Sep}(3) = 3$ ([BKSS] Proposition 14)
+while $\mathrm{sep}(3) = 2$ ([Tran] Table 1).
 
 **Bounds.** The lower bound $\mathrm{sep}(n) = \Omega(\log n)$ is classical ([GK], as [Chase]
-cites it; the equal-length form is [DESW] Theorem 1). The best refereed upper bound is Chase's
+cites it; the equal-length form is [DESW] Theorem 1). The best refereed upper bound we found is Chase's
 Theorem 1: any two distinct words in $\{0,1\}^n$ are separated by a DFA with
 $O(n^{1/3}\log^7 n)$ states [Chase]. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 4 -->
 An unrefereed preprint [Xu] claims an elementary proof of an $\tilde O(n^{1/3})$ bound; we do
@@ -79,7 +80,8 @@ scope of the one novelty statement we make. Section 7 lists what is open.
 File: `OpenProblemsLab/SeparatingWords.lean`. Toolchain `leanprover/lean4:v4.34.0-rc1`,
 Mathlib revision `d77ef0741c`. <!-- src: lean-toolchain; lake-manifest.json; computations/separating_words/axioms.txt line 2 -->
 Words are `List (Fin 2)`. Automata are Mathlib's `DFA α σ`, a structure with fields `step`,
-`start` and `accept : Set σ`.
+`start` and `accept : Set σ`. The code blocks in this note are quoted from the file with
+docstrings shortened and proofs omitted.
 
 ```lean
 /-- `M` separates `u` and `v` iff it accepts exactly one of them. -/
@@ -118,8 +120,10 @@ Forward: acceptance depends only on the final state, so equal final states canno
 Backward: take the accept set to be the singleton containing the state that $u$ reaches. The
 second theorem removes the `accept : Set` field, which is not decidable, so that statements
 about a fixed finite set of transition functions reduce to `foldl` computations that the
-kernel can evaluate. In Mathlib `M.eval w` is `w.foldl M.step M.start` by definition; the
-proof of the second theorem is the term `⟨M.step, M.start, hM⟩`.
+kernel can evaluate. In Mathlib `M.eval w` unfolds to `w.foldl M.step M.start` (`DFA.eval` is
+`M.evalFrom M.start` and `DFA.evalFrom` is `List.foldl M.step`), so the forward direction of the
+second theorem is the term `⟨M.step, M.start, hM⟩`; the backward direction takes the DFA
+`⟨δ, s, ∅⟩`.
 
 Together these say that `¬ SuffStates k n` holds exactly when there are two distinct words of
 length $n$ that every $k$-state transition function, from every start state, sends to the
@@ -224,10 +228,12 @@ strings that `bkss_identity.py` checks numerically (section 4.5). <!-- src: comp
 
 **Proof as formalized.** Let $f$ be the map of $xy$ and $g$ the map of $yx$ on the $k$ states.
 The two sides send $s$ to $f^{k-1}(g^k(f^{k-2+L}s))$ and $f^{k-1+L}(g^k(f^{k-2}s))$. The BKSS
-proof has three arguments: (i) $f^{k-1}$ is a constant map; (ii) every $f$-cycle is shorter
-than $k$, so every cycle length divides $L$ and $f^{a+L} = f^a$ once $a \ge k - 2$; (iii) $f$
-is a $k$-cycle, so $x$ and $y$ act as permutations and $(yx)^k = 1$, after which the two sides
-are the same word. BKSS choose among these by the $f$-cycle through $s.(xy)^{k-2}$. The private
+proof splits on the $f$-cycle through $s.(xy)^{k-2}$: (i) that state is on no cycle, and then
+$f^{k-1}$ is a constant map; (ii) it is on a cycle of length $m < k$, so every $f$-cycle is
+shorter than $k$ and has length dividing $L$, hence $f^{k-2+L}s = f^{k-2}s$, and
+$f^{k-1+L}q = f^{k-1}q$ for every state $q$ because $f^{k-1}q$ lies on a cycle; (iii) $m = k$,
+so $f$ is a $k$-cycle, $x$, $y$ and $yx$ act as permutations and $(yx)^k = 1$, after which the
+two sides are the same word. The private
 lemma `bkss_core` uses the same three arguments, chosen by a split that is simpler to state in
 Lean:
 
@@ -261,8 +267,9 @@ fixed 48-letter lists. <!-- src: OpenProblemsLab/SeparatingWords.lean lines 627-
 <!-- src: OpenProblemsLab/SeparatingWords.lean; computations/separating_words/axioms.txt lines 70-73 -->
 
 `suffStates_succ` embeds `Fin k` into `Fin (k + 1)` by `Fin.castSucc` and sends the new state
-to itself. `six_le_sep_48` is `lt_sep_of_not_suffStates not_suffStates_five_48`, the Lean form
-of $\mathrm{Sep}(48) > 5$ in [BKSS] Proposition 14, which they derive from Theorem 8.
+to itself. `six_le_sep_48` is `lt_sep_of_not_suffStates not_suffStates_five_48`, the equal-length
+form of $\mathrm{Sep}(48) > 5$ in [BKSS] Proposition 14, which they derive from Theorem 8. It
+implies their at-most statement, since $\mathrm{sep}(48) \le \mathrm{Sep}(48)$.
 
 ### 3.6 Stated, not proved
 
@@ -272,8 +279,9 @@ of $\mathrm{Sep}(48) > 5$ in [BKSS] Proposition 14, which they derive from Theor
 ### 3.7 Not in Lean
 
 * `SuffStates k (n + 1) → SuffStates k n` (prefix both words with one letter), equivalently
-  monotonicity of `sep` in $n$. Without it, neither $N(5) \le 47$ nor the implication from
-  `not_suffStates_five_48` to `not_suffStates_five_68` is formal.
+  monotonicity of `sep` in $n$ (given `suffStates_mono`). Without it $N(5) \le 47$ is not
+  formal, and `not_suffStates_five_68` cannot be derived from `not_suffStates_five_48`; it is
+  proved separately, from the block shift.
 * $N(k)$ itself.
 * `¬ SuffStates k (2L + 6(k - 1))` for general $k$. It would also need a proof that the two
   words differ for every $k$; only $k = 5$ is done.
@@ -326,10 +334,10 @@ Output of the first command, `run30.log`:
 $$\mathrm{sep}(1..30) = 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5.$$
 <!-- src: computations/separating_words/run30.log line 110 -->
 
-$N(1) = 0$, $N(2) = 3$, $N(3) = 9$ and $N(4) = 17$ are exact: at $n = 4$, $10$ and $18$ every
-canonical function on at most $k$ states was run on the surviving words, and none separates
-the pairs `0110 / 1010`, `1100000000 / 1111111100` and
-`111000000000000000 / 111111111111111000`. <!-- src: computations/separating_words/run30.log lines 9, 14, 25, 44 -->
+$N(1) = 0$, $N(2) = 3$, $N(3) = 9$ and $N(4) = 17$ are exact. $N(1) = 0$ because one state
+separates nothing. For $k = 2, 3, 4$, at $n = 4$, $10$ and $18$ respectively, every canonical
+function on at most $k$ states was run on the surviving words, and none separates the pairs
+`0110 / 1010`, `1100000000 / 1111111100` and `111000000000000000 / 111111111111111000`. <!-- src: computations/separating_words/run30.log lines 8-9, 13-14, 24-25, 43-44; the exhaustive final step is described in computations/separating_words/RESULTS.md lines 137-140 and 320-327 -->
 For $k = 5$ the search stopped at $n = 30$ because of memory, not because it found a hard pair:
 it reports $N(5) \ge 30$ after 639.3 s, with a certificate of 74 five-state transition
 functions saved as `cert_k5_n30.npy`. Total wall time 640.4 s. <!-- src: computations/separating_words/run30.log lines 75, 77, 111 -->
@@ -385,8 +393,8 @@ that were already in print or implied by print.
 
 ## 5. What is not new
 
-* **The mathematics of every formalized statement.** Accept-set elimination: [Tran] and
-  [BKSS] Fact 1. The $n + 2$ bound: [DESW] Proposition 4. $\mathrm{sep}(1) = 2$,
+* **The mathematics of every formalized statement.** Accept-set elimination: [Tran], and
+  the definition of separation that precedes [BKSS] Fact 1. The $n + 2$ bound: [DESW] Proposition 4. $\mathrm{sep}(1) = 2$,
   $\mathrm{sep}(4) = 3$: [Tran] Table 1. The block shift: [DESW] Theorem 1 and [BKSS]
   Proposition 5. The length-48 identity and $\mathrm{sep}(48) \ge 6$: [BKSS] Theorem 8 and
   Proposition 14. The Lean proof of Theorem 8 uses the BKSS arguments.
@@ -409,9 +417,11 @@ that were already in print or implied by print.
   same way: [BKSS] had published the refutation in 2017. Their Theorem 8 gives $N(5) \le 47$,
   and their Remark 7 records the exactness for $k \le 4$. The conjecture was retracted on
   2026-09-13 in commits `b8322c6` and `2cbb438`; the original text is kept in `RESULTS.md`
-  under a retraction notice. The evidence offered for it was that two-block and three-block
+  under a retraction notice. **As of this draft the retraction is local only:** the public
+  `main` is `582601d`, which contains `cbb5ed5` but neither retraction commit, so the public
+  repository still shows the false conjecture. The evidence offered for it was that two-block and three-block
   word families first collide at $n = 68$. That measured only those families: the collisions
-  are [BKSS] identities (3) and (4), and the length-48 identity lies in neither family. <!-- src: computations/separating_words/RESULTS.md lines 603-648 and 695; git log of commits cbb5ed5, b8322c6, 2cbb438 -->
+  are [BKSS] identities (3) and (4), and the length-48 identity lies in neither family. <!-- src: computations/separating_words/RESULTS.md lines 603-648 and 695; git log of commits cbb5ed5, b8322c6, 2cbb438; public main from `git ls-remote origin refs/heads/main` and `git merge-base --is-ancestor <commit> origin/main`, run 2026-09-13 -->
 
 ## 6. Related work and the scope of novelty
 
@@ -422,8 +432,11 @@ toolchain file and uses `Nat.lcmUpto`, which our Mathlib revision lacks). <!-- s
 
 * `dfa_evalFrom_zero_add_lcmUpto`: for `D : DFA Bool σ` with `Fintype.card σ ≤ stateBound` and
   `stateBound ≤ base`, reading `base + Nat.lcmUpto stateBound` zeros ends where `base` zeros
-  do. This is the unary identity of $T_k$ in DFA form. Our `iterate_eq_add_of_card_le` has the
-  weaker threshold $k \le a + 1$, but the fact was formal first in [Nicol-Lean].
+  do. This is the unary identity of $T_k$ in DFA form, for exponents at least $k$. [BKSS]
+  identity (1), $x^{k-1} = x^{k-1+\operatorname{lcm}(1,\dots,k)}$, is the exponent $k - 1$ case,
+  and Nicol's statement follows from it by multiplying both sides by a power of $x$. Our
+  `iterate_eq_add_of_card_le` needs only $k \le a + 1$, so it contains identity (1) itself, but
+  the unary fact was formal first in [Nicol-Lean].
 * `HasSeparatorOfSize.mono`: separability by at most $k$ states implies separability by at most
   $l \ge k$. Our `suffStates_mono` is the analogue for state sets of exactly `Fin k`.
 * `reversalTheorem7`: there are $c_0 > 0$ and $K$ such that for every $N \ge 2$ and every
@@ -432,12 +445,19 @@ toolchain file and uses `Nat.lcmUpto`, which our Mathlib revision lacks). <!-- s
   states. This is a formal separating-words lower bound, weaker than $\Omega(\log n)$. By
   accept-set elimination its pairs are two-letter identities of $T_N$, stated in separation
   form.
-* Also `eval_common_lcm_power_eq` (an lcm power of a word acting as the identity on a DFA's
-  transition image, under a permutation hypothesis) and `noNFASeparatorOfSize_asymmetry_fst`
-  (an NFA block-shift non-separation in one orientation, under unary transfer hypotheses).
+* Also `eval_common_lcm_power_eq` (if two words each permute a DFA's transition image after a
+  common prefix `base`, their `Nat.lcmUpto N`-th powers after `base` reach the same state) and
+  `noNFASeparatorOfSize_asymmetry_fst` (no NFA with at most `bound` states separates
+  $0^{\mathit{bound}}\,1\,0^{\mathit{tail}+\mathit{period}}$ from
+  $0^{\mathit{bound}+\mathit{period}}\,1\,0^{\mathit{tail}}$, under a hypothesis quantified over
+  every such NFA; the words have the shape of [BKSS] identity (4), but the statement is about
+  NFAs and conditional, so we do not count it as a formalization of that identity).
 
 According to the search log, the repository has no BKSS citation and no identity of the
-$(xy)^a(yx)^b$ shape, and the text of [Nicol] does not mention it. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 6b -->
+$(xy)^a(yx)^b$ shape, and the arXiv HTML of [Nicol] does not mention Lean or the repository
+(the paper cites BKSS once, for the link between lower bounds and identities). For this review,
+`grep -rniE 'Bulatov|BKSS|Karpova|Shur|Startsev|semigroup' --include=*.lean` on a fresh clone at
+`a4f77cb` returned no matches. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 6b -->
 
 **Other formal work.** Mathlib has the monoid of endofunctions (`Function.End`) and periodic
 point lemmas such as `minimalPeriod_le_card`, but no identities of $T_n$ and no word
@@ -452,8 +472,15 @@ a report on searches, not a priority claim:
 > formal-conjectures; the Lean Zulip public archive to 2026-08-25; Isabelle AFP entry names,
 > eight AFP abstracts and mirror code search; Rocq opam package names; lists of papers citing
 > BKSS; arXiv site search and the full text of five recent papers; OpenAlex full-text filters;
-> web searches), we found no earlier formalization of a BKSS identity, Theorem 8 in
-> particular, or of an identity of the shape $(xy)^a(yx)^b(xy)^c$.
+> web searches), we found no formalization outside this repository of [BKSS] Theorem 8 (their
+> identity (5)), of any identity of the shape $(xy)^a(yx)^b(xy)^c$, or of a length-48 pair of
+> binary words that no 5-state DFA separates.
+
+The statement is deliberately narrower than "no earlier formal BKSS identity". [BKSS] number
+the unary identity (1) and the block-shift identity (3), and both were formal before Theorem 8
+was added: in this repository (`iterate_eq_add_of_card_le` at $a = k - 1$ and
+`not_separates_block_shift`, commit `a9d82fb`, 2026-09-04) and, for the unary identity with
+exponents at least $k$, in [Nicol-Lean] (2026-08-31).
 
 <!-- src: computations/separating_words/PREPRINT-OUTLINE.md sections 6b ("What these searches support"), 6c, and section 8 item 1 -->
 
@@ -461,7 +488,7 @@ Limits of those searches, also from the log: GitHub code search did not index ei
 separating-words repository, so its zeros are weak; AFP and Rocq packages were checked by name
 (plus eight AFP abstracts); the arXiv API and Semantic Scholar keyword search returned HTTP 429
 and dblp served a bot check; the Zulip archive covers public streams only. We do **not** claim
-a first formal two-letter identity of $T_k$ ([Nicol-Lean] has one in separation form, and
+a first formal BKSS identity in general, a first formal two-letter identity of $T_k$ ([Nicol-Lean] has one in separation form, and
 this repository's `not_separates_block_shift` is another), a first formal unary lcm identity,
 or a first formal separating-words result of any kind.
 
@@ -469,7 +496,9 @@ or a first formal separating-words result of any kind.
 
 * **$N(5)$.** In the equal-length convention $40 \le N(5) \le 47$: the lower bound is [BKSS]
   Proposition 14, the upper bound is [BKSS] Theorem 8 with monotonicity. Equivalently, it is
-  open whether $\mathrm{sep}(n) = 5$ for $41 \le n \le 47$. <!-- src: computations/separating_words/RESULTS.md lines 139-142; computations/separating_words/PREPRINT-OUTLINE.md section 8 item 6 -->
+  open whether $\mathrm{sep}(n) = 5$ for $41 \le n \le 47$. "Open" here means that the searches
+  logged in `PREPRINT-OUTLINE.md` section 6 found no paper settling [BKSS] Conjecture 10 or
+  computing $N(5)$. <!-- src: computations/separating_words/RESULTS.md lines 139-142; computations/separating_words/PREPRINT-OUTLINE.md section 8 item 6 -->
 * **[BKSS] Conjecture 10:** identity (5) at $k = 5$, of length 48, is the shortest identity of
   $T_5$. It would give $N(5) = 47$: a pair of distinct words of equal length at most 47 that no
   5-state DFA separates would be a shorter identity. BKSS report a search, built from the short
@@ -492,7 +521,10 @@ Each entry says what was opened or read for this draft.
   24(3) (2017), #P3.35. doi:10.37236/6450. arXiv:1609.03199. [Read: arXiv source
   `ShortIdentities.tex`, Facts 1 to 3, Propositions 4 to 6 and 14, Remark 7, Theorem 8 with its
   proof, Conjecture 10, and the section 3 search remark; Crossref record for the journal
-  metadata.]
+  metadata. Review re-check: arXiv lists only v1 (11 Sep 2016); the E-JC PDF text of Remark 7,
+  Theorem 8 with its proof, Conjecture 10, Proposition 14 with its proof and the $T_5$ search
+  remark agrees with that source, with the same numbering of results and of identities (1) to
+  (5).]
 * **[Chase]** Z. Chase. Separating words and trace reconstruction. *STOC 2021*, 21-31.
   doi:10.1145/3406325.3451118. arXiv:2007.12097v3, titled there "A new upper bound for
   separating words". [Read: arXiv v3 PDF text of Theorem 1 and its reference [3]; Crossref
@@ -502,8 +534,9 @@ Each entry says what was opened or read for this draft.
   doi:10.1007/978-3-642-22600-7_12. arXiv:1103.4513v1. [Read: arXiv v1 PDF text of
   Propositions 1 and 4 and Theorem 1; Crossref record. The LNCS version was not read.]
 * **[GK]** P. Goralčík, V. Koubek. On discerning words by automata. *ICALP 1986*, Lecture Notes
-  in Computer Science 226, 116-122. doi:10.1007/3-540-16761-7_61. [Crossref record opened; the
-  paper was not read. Cited only for the origin of the problem and the logarithmic lower bound,
+  in Computer Science 226, 116-122. doi:10.1007/3-540-16761-7_61. [Crossref record opened
+  (title, authors, pages 116-122); the volume number 226 is taken from [Chase]'s reference [3];
+  the paper was not read. Cited only for the origin of the problem and the logarithmic lower bound,
   as [Chase] and [BKSS] cite it.]
 * **[Nicol]** J. Nicol. Further remarks on separating words. arXiv:2608.30928v1 (2026). [arXiv
   abstract page opened for this draft; the full-text check for mentions of Lean is in
