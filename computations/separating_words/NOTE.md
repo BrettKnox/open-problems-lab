@@ -509,8 +509,9 @@ or a first formal separating-words result of any kind.
 * **Formal gaps** listed in section 3.7, first among them antitonicity of `SuffStates` in $n$,
   which would make $N(5) \le 47$ formal once $N$ is defined.
 * **Artefact gaps.** Regenerate the certificate re-check and the census as log files.
-  `CsanyiDavid/separating_words` (C++, 2023) turned up in the search as possible prior
-  computation of small $S(n)$ and has not been read. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 6c and section 8 item 3 -->
+  `CsanyiDavid/separating_words` (C++, 2023), which turned up in the search as possible prior
+  computation of small $S(n)$, was checked: an automaton generator and a test, an empty
+  `main`, and no published values. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 6c and section 8 item 3 -->
 
 ## References
 

@@ -584,9 +584,12 @@ Mathlib and mathlib4 master Computability, cslib, formal-conjectures, the Lean Z
 archive to 2026-08-25, AFP entry names, eight AFP abstracts and mirror code search, Rocq opam
 package names, BKSS citation lists, arXiv site search and full text of five recent papers,
 OpenAlex full-text filters, the listed web searches), nothing outside this repository was
-found that formalizes any BKSS identity (Theorem 8 in particular), an identity of the
+found that formalizes BKSS Theorem 8 (their identity (5)), an identity of the
 (xy)^a (yx)^b (xy)^c shape, a length-48 pair that no 5-state DFA separates, or DESW's
-two-block DFA theorem. Limits: GitHub code search misses both known Lean separating-words
+two-block DFA theorem. This is not "no BKSS identity": BKSS's identity (1), the unary lcm
+identity, was already formal in Nicol's `dfa_evalFrom_zero_add_lcmUpto` (exponents >= k), and
+their identity (3), the block shift, in this repo's `not_separates_block_shift` (corrected
+2026-09-13 after the NOTE.md review). Limits: GitHub code search misses both known Lean separating-words
 repositories; AFP and Rocq were checked by name (plus eight AFP abstracts); the arXiv API,
 Semantic Scholar keyword search and dblp returned no results (HTTP 429, 429, bot check); the
 Zulip archive is a snapshot of public streams only. Nothing else was searched.
@@ -678,7 +681,9 @@ New searches, each with its result:
   2025-2026. None surfaced a formalization of a semigroup identity of T_n.
 * Not formal work, recorded because it turned up: CsanyiDavid/separating_words (C++,
   2023-11-28, "Calculate the S(n) function of the separating words problem for small n
-  values"; not read, relevant to C5 as possible prior computation); sttawm/separating-words
+  values"; read 2026-09-13 via `gh api`: 4 commits to 2023-12-27, files automata_gen.cc/.h,
+  a Catch2 test and a main.cc whose `main` only returns 0, no output, table or README, so no
+  computed S(n) values are published there and it does not preempt C5); sttawm/separating-words
   (2022, a PDF its README calls a flawed proof of a logarithmic bound).
 
 One Python one-liner (JSON parsing of Semantic Scholar output, well under a second) ran at
@@ -718,15 +723,16 @@ and the BKSS citation, and git history keeps the original.
    hypothesis (every c <= k divides L) fails for L = lcm(1..k-1). No transformation is
    enumerated; `decide` only checks c | 12 for c < 5 and the lengths and distinctness of the
    two fixed words.
-   Searched 2026-09-13 (sections 6b and 6c): no formalization of any BKSS identity, or of
-   any identity of the (xy)^a (yx)^b (xy)^c shape, turned up in the places listed there.
+   Searched 2026-09-13 (sections 6b and 6c): no formalization of BKSS Theorem 8 (identity
+   (5)), or of any identity of the (xy)^a (yx)^b (xy)^c shape, turned up in the places
+   listed there. BKSS identities (1) and (3) were already formal (Nicol; this repo).
    Two-letter identities of T_k in general were already formal: this repo's
    `not_separates_block_shift` (2026-09-04) and, in separation form, Nicol's
    `reversalTheorem7`. The same search found that prior Lean work,
    Nicol's `jn1z/FurtherRemarks` (2026-08-31: the unary identity of T_k for DFAs, lcm powers
    acting as the identity on a DFA's transition image, and a separating-words lower bound),
    which GitHub code search does not index. So `not_separates_bkss` may be described only as
-   "no earlier formalization of a BKSS identity found in these places", and the note must
+   "no earlier formalization of BKSS Theorem 8 found in these places", and the note must
    cite Nicol's repository as prior Lean formalization.
 2. Done 2026-09-13: `suffStates_succ`, `suffStates_mono`, `lt_sep_of_not_suffStates`, and
    `six_le_sep_48 : 6 ≤ sep 48`. Build: full `lake build`, exit 0, 2404 jobs (verifier
