@@ -111,14 +111,24 @@ priority claim.
 `not_separates_block_shift` (line 373), `not_suffStates_block_shift` (line 390),
 `not_suffStates_five_68` (line 412). *Literature:* DESW 2011 Theorem 1; BKSS 2017
 Proposition 5 proves this pair is the unique shortest uniform unbalanced identity.
+*Prior Lean (found 2026-09-13, section 6b):* Nicol's repository `jn1z/FurtherRemarks`
+(2026-08-31) already proves the unary lcm periodicity for DFAs
+(`dfa_evalFrom_zero_add_lcmUpto`, threshold base >= number of states, where
+`iterate_eq_add_of_card_le` has base >= k - 1) and a one-marker block-shift
+non-separation for NFAs. C4 is not the first formal lcm periodicity for automata; the
+two-block DFA statement `not_separates_block_shift` was not found there.
 **WEAKENED:** "5 states fail at length 68" is not the best known bound; BKSS Theorem 8
 gives 48. [Gap closed 2026-09-13: `suffStates_succ` (add an unreachable state),
 `suffStates_mono` and `lt_sep_of_not_suffStates` turn `¬ SuffStates k n` into `k < sep n`.]
 
 **C4b. BKSS Theorem 8, formal (added 2026-09-13).** `not_separates_bkss`,
 `not_suffStates_five_48`, `six_le_sep_48`. *Literature:* BKSS 2017 Theorem 8 and its proof;
-the Lean proof transcribes it. **Status: formalization only**, and not yet checked against a
-search for earlier formalizations of semigroup identities (section 8, item 1).
+the Lean proof transcribes it. **Status: formalization only.** Checked 2026-09-13 against a
+search for earlier formalizations of semigroup identities (section 6b): no formal BKSS
+identity and no formal binary identity of T_k found in the places listed there. The closest
+prior Lean is Nicol's `jn1z/FurtherRemarks` (unary lcm periodicity, an lcm power acting as
+the identity on a DFA's transition image, and a separating-words lower bound), which the
+note must cite.
 
 ### 3b. Certified computation (outside the kernel)
 
@@ -229,7 +239,10 @@ Each entry was checked at source. The method is in brackets.
   formalization.
 * **Nicol**, Further remarks on separating words, arXiv:2608.30928v1 (31 Aug 2026) [arXiv
   HTML]. O(d log n) for difference words with d runs, conjugates, NFA order and reversal.
-  No exact values, no table, no formalization. lcm appears only in an NFA construction.
+  No exact values, no table. lcm appears only in an NFA construction. Corrected
+  2026-09-13: the paper text does not mention a formalization, but its author's GitHub
+  repository `jn1z/FurtherRemarks` (created 2026-08-31) is a Lean formalization of its
+  Theorems 6 and 7 [repository files read; not built here]; see section 6b.
 * **Xu**, An elementary proof of the O~(n^{1/3}) bound for separating words,
   arXiv:2609.08191v1 (7 Sep 2026 per the arXiv listing) [PDF text]. Theorem 1:
   S(n) = O(n^{1/3} (log n)^{7/3}). Unrefereed. If it holds, it improves the log power in
@@ -333,9 +346,234 @@ What was searched, and what came back, including nothing:
   results (grep "separat": 4 unrelated comments). **No formalization of separating words
   found in these three places** (GitHub code search, formal-conjectures, local Mathlib).
   Nothing wider was searched (no Isabelle AFP, Coq/Rocq or Agda library search beyond the
-  web queries above), so no broader "first" claim is made.
+  web queries above), so no broader "first" claim is made. [2026-09-13: these GitHub queries
+  used `language:Lean` only, while GitHub tags Lean 4 files `language:"Lean 4"`, and the
+  code-search index turned out to contain neither this repository nor Nicol's Lean
+  separating-words repository. The bullet stays true of the queries it ran, but its zeros are
+  weak; see section 6b.]
 * **Not checkable:** Tran CIAA 2022 full text (closed), the DESW LNCS version (closed), and
   the Kuntewar et al. DCFS 2023 full text (not attempted).
+
+### 6b. Identity-formalization search (2026-09-13)
+
+Question from section 8, item 1: has any identity of the full transformation semigroup T_n,
+any BKSS identity, or a separating-words lower bound via identities been formalized in a
+proof assistant? Every query is listed with its result, including nothing. Tools: GitHub REST
+code search (`gh api -X GET search/code -f q=<query>`, 7 s apart, two batch scripts kept in
+the session scratchpad, not in the repo), GitHub repository search
+(`gh api -X GET search/repositories -f q=<query>`), `gh api` trees and raw contents, `curl`,
+ripgrep on the local Mathlib checkout (d77ef0741c), and a web-search tool whose results come
+back summarized by a model, so its "nothing found" is weak.
+
+**Found: prior Lean work by Nicol.** `github.com/jn1z/FurtherRemarks`; account name John
+Nicol (`gh api users/jn1z`); created 2026-08-31T16:07:43Z, one commit a4f77cb; description:
+supporting files for arXiv:2608.30928. Found by repository search `"separating words"` (121
+repositories, the only Lean one) and `"separating words" language:Lean` (1). Its README is
+titled "Lean formalization of Theorems 6 and 7". All 28 files were downloaded (8,440 Lean
+lines, `cat $(find . -name '*.lean') | wc -l`) and read in part:
+* `NondeterministicPaper.lean`, `dfa_evalFrom_zero_add_lcmUpto`: for `D : DFA Bool σ` with
+  `Fintype.card σ ≤ stateBound ≤ base`, reading `base + Nat.lcmUpto stateBound` zeros from
+  any state ends where `base` zeros do. This is the unary identity x^b = x^(b + lcm(1..k)) of
+  T_k for b >= k, in DFA form, four days before this repo's `iterate_eq_add_of_card_le`
+  (commit a9d82fb, 2026-09-04, threshold b >= k - 1).
+* `Nondeterministic.lean`, `noNFASeparatorOfSize_asymmetry_fst`: under unary pump and period
+  conditions, no NFA with at most `bound` states accepts `0^bound 1 0^(tail+period)` and
+  rejects `0^(bound+period) 1 0^tail` (one orientation, NFAs).
+* `ReversalsPaperCommonPower.lean`, `transitionImagePerm_pow_lcmUpto_eq_one`,
+  `evalFrom_repeatWord_lcmUpto_eq`, `eval_common_lcm_power_eq`: if a word permutes the image
+  of a DFA with at most N states, its `Nat.lcmUpto N`-th power is the identity on that image,
+  so two such words have indistinguishable lcm powers after a common prefix. A group-exponent
+  law used inside T_N, conditional on the permutation hypothesis.
+* `ReversalsPaper.lean`, `reversalTheorem7`: there are c0 > 0 and K such that for every
+  N >= 2 and every L >= N^(c0 N) there are distinct binary words of length L that no DFA with
+  at most N states separates, while their reversals have a separator with K * clog2(N + 2)
+  states. A formal separating-words lower bound, sep(L) > N once L >= N^(c0 N), weaker than
+  Omega(log n).
+* `DFA.lean`, `HasSeparatorOfSize.mono`: monotonicity in the state count.
+* `grep -rniE 'Bulatov|BKSS|Karpova|Shur|Startsev|Demaine|DESW|semigroup|T_k|identit'`: 7
+  lines, all "identity" in the permutation or list-bookkeeping sense. No BKSS citation, no
+  two-letter identity of the `(xy)^a (yx)^b` shape, no DESW two-block pair for DFAs.
+* `grep -rnwE 'sorry|axiom|native_decide|admit'`: no matches. The repository has no lakefile
+  or lean-toolchain, and `Nat.lcmUpto` is absent from the local Mathlib (which has
+  `Chebyshev.lcmUpto`), so it targets a newer Mathlib. **Not built here.**
+* The arXiv HTML of 2608.30928v1 (`curl`, then grep for lean, github, formaliz, proof
+  assistant, mechani): no mention of Lean or the repository outside arXiv's page chrome. It
+  cites BKSS once, for the link between lower bounds and identities in transformation
+  semigroups.
+
+The 2026-09-12 formalization bullet above was scoped to its queries and stays true of them,
+but those queries missed a Lean separating-words formalization that was already public.
+
+**GitHub code search control: failed.** `not_suffStates_five_68`, which is in the public
+`OpenProblemsLab/SeparatingWords.lean` of BrettKnox/open-problems-lab (`gh api .../contents`
+then `grep -c`: 1): total_count 0. `nondeterministicAsymmetryTheorem6` (in jn1z): 0.
+`repo:jn1z/FurtherRemarks lcm` and `repo:BrettKnox/open-problems-lab lcm`: 0, with
+incomplete_results true. `SuffStates`: 39, all brad-ross/apm. Neither formalization is in the
+index, so every code-search zero below is weak evidence.
+
+GitHub code search, Lean (`language:Lean` count / `language:"Lean 4"` count):
+* `"transformation semigroup"`: 0 / 6 (the-omega-institute/automath, 3 files;
+  paulklemstine/Lean `Catalog/Tropical/MagmaMonoid/Transformation.lean` in 3 copies, fetched:
+  a magma-monoid construction, no identity of T_n).
+* `"transformation monoid"`: 1 (yihuang/lean-cordix, effect tracking) / 45 (first 15 by path;
+  fetched wsollers/lra-lean `TransformationMonoid.lean`, 65 lines, defines the full
+  transformation monoid with instances and no theorems, and alok/cordis-lean
+  `Cordis/Transformation.lean`, effect independence).
+* `"full transformation"`: 1 (kim-em/hex-dev, unrelated) / 25 (the same repositories plus
+  unrelated paths).
+* `"semigroup identity"`: 3 (quantum channels) / 30 (first 15: heat, Markov and quantum
+  semigroups; TheLanguageGamer/R1Undecidable `SemigroupModel.lean`, fetched: word-problem
+  soundness, no identity of T_n).
+* `"semigroup identities"`: 0 / 2 (oflatt/lean-decomp, kaplan196883/QIQT-H; unrelated by
+  path).
+* `Bulatov`: 1 (GrigoryEvko/FX `PostCloneLattice.lean`, fetched: the Bulatov-Zhuk CSP
+  dichotomy, stated as not proven) / 25 (adrianioancozma/cubegraph and GrigoryEvko/FX, CSP).
+* `Karpova`: 0 / 2 (RadixExperiment slides). `Startsev`: 0 / 2 (VladimirReshetnikov/ProveIt,
+  Ramsey).
+* `"separating words" language:"Lean 4"`: 3 (crypto, tensor networks, trominoes, by path).
+  `"separating word" language:"Lean 4"`: 21 (first 15 by path: group theory, surfaces, tensor
+  networks; no automata). `"separating words" language:Lean`, rerun: 0.
+
+GitHub code search, other languages and all of GitHub:
+* Isabelle: `"transformation semigroup"` 5, all copies of AFP `Kleene_Algebra/Dioid.thy`
+  (fetched: a remark that near-semirings are influenced by partial transformation
+  semigroups); `"transformation monoid"` 7, copies of `Group_Theory.thy` (AFP
+  Jacobson_Basic_Algebra and HOL/New_Algebra; fetched: a comment on translations);
+  `"full transformation"` 2 (IsaFoL); `"semigroup identity"` 0; `"semigroup identities"` 0;
+  `"separating words"` 0. With `repo:isabelle-prover/mirror-afp-devel`:
+  `"semigroup identities"` 0, `"separating words"` 0, `"full transformation"` 0.
+* Coq (`language:Coq`): `"transformation semigroup"` 0; `"transformation monoid"` 1
+  (tushar-dadlani/theory, geometry); `"full transformation"` 4 (why3-semantics, VeLLVM,
+  yijing: unrelated by path); `"semigroup identity"` 3 (kim-em/proof `coq/groups.v`, fetched:
+  monoid unit axioms; two Principia-Fractalis files); `"separating words"` 0.
+  `language:"Rocq Prover"`: `"transformation semigroup"` 0, `"semigroup identity"` 3 (the
+  same files), `"separating words"` 0. `repo:math-comp/math-comp "transformation monoid"`: 0.
+* Agda: `"transformation semigroup"` 1, miking-lang/dppl-formalization
+  `FullTransformationSemigroup.agda` (fetched: commented-out code adapted from Pitts, Locally
+  Nameless Sets, POPL 2023, on actions of T_S for an infinite S; no identities of T_n);
+  `"transformation monoid"` 10 and `"full transformation"` 5 (that file plus unrelated
+  paths); `"semigroup identity"` 0; `"separating words"` 2
+  (avikj/metacircular-interaction-prototype, unrelated by path).
+* Mathlib on GitHub: `repo:leanprover-community/mathlib4 "transformation monoid"` 0,
+  `"semigroup identity"` 0.
+* No language filter: `"1609.03199"` 5 (photonics data files, a digit collision);
+  `"37236/6450"` 0; `"Karpova" "Startsev"` 45 (name lists); `"words separation"` 180,
+  `"shortest identity"` 91, `"short identities"` 238, `"separating words"` 12,185: the first
+  15 of each unrelated by path.
+
+GitHub repository search: `"transformation semigroup"` 4 and `"transformation semigroups"` 4
+(gap-packages/sgpdec, GAP; markuspf/idris-trans, Idris, empty apart from LICENSE and README,
+last push 2014-05-05; two Python packages); `transformation-semigroup` 5 (adds a TeX repo);
+`"semigroup identities"` 0; `separating words automata` 2 (a Java lexer;
+KaiyangTeng/Summer-Research, C++, separating three words by finite automata);
+`semigroup lean` 10 (numerical, Markov and C0 semigroups; lean-summer-research/lean-semigroup,
+file list read: Green's relations and Rees matrices; timharv4755-crypto/SemigroupsLean,
+empty); `semigroup isabelle` 1 (Hoare semigroups); `semigroup coq` 2 (numerical semigroups,
+inverse semigroups).
+
+Local Mathlib (ripgrep):
+* All of `Mathlib/`, pattern
+  `transformation (semigroup|monoid)|full transformation|semigroup identit|monoid identit|satisf(y|ies) the identity|separating word|separat(es|ion) (of )?words`:
+  1 line, `Algebra/NonAssoc/LieAdmissible/Defs.lean:15` (Lie-admissible, unrelated). The same
+  pattern plus `Krohn|aperiodic monoid|syntactic (semigroup|monoid)` over all of
+  `.lake/packages`: 0.
+* `Mathlib/Algebra/Group`: `Function.End` (`End.lean:48`, the monoid of maps α → α) and its
+  action lemmas; no identities.
+* `Mathlib/GroupTheory`: `lcm_cycleType` (`Perm/Cycle/Type.lean:181`) and `Exponent.lean`:
+  group facts about S_n, not identities of T_n.
+* `Mathlib/Computability`, pattern `semigroup|monoid|identit|separat|transformation|lcm|period`:
+  21 lines, none about identities or separation.
+* `Mathlib/Dynamics/PeriodicPts/Lemmas.lean`: `minimalPeriod_le_card` (line 79) and
+  `isPeriodicPt_factorial_card_of_mem_periodicPts` (line 83), reusable infrastructure.
+  `Chebyshev.lcmUpto` (`NumberTheory/Chebyshev.lean:213`) is lcm(1..n).
+
+formal-conjectures (pushed 2026-09-12T21:27:52Z): recursive tree, 1,733 paths, not
+truncated; grep `semigroup|monoid|transform|identit|separat|automat|DFA|word|variet`: 4 paths
+(two GCDMonoid files, `Computability/DFA.lean`, `MetricSeparated.lean`). Code search in the
+repo: `Semigroup` 2 (Erdős 481, affine-map semigroups; Erdős 435, numerical semigroups;
+fetched), `"Function.End"` 0, `separating` 1 (Erdős 789, subset sums), `transformation` 4
+(Green problem 19 on commuting transformations, Hilbert 5, square packing, LICENSE).
+
+Isabelle AFP: `https://www.isa-afp.org/topics/`, then the topic pages
+`computer-science/automata-and-formal-languages/` (81 entry links) and `mathematics/algebra/`
+(107): entry names read, none on transformation semigroups, semigroup identities or word
+separation. The nearest are Combinatorics_Words (with its Graph_Lemma and Lyndon entries),
+Two_Generated_Word_Monoids_Intersection, Myhill-Nerode, Functional-Automata,
+Finite_Automata_HF, Regular-Sets, Free-Groups and PSemigroupsConvolution. All entry names:
+`thys/` of isabelle-prover/mirror-afp-devel, 1,029 directories; grep
+`semigroup|monoid|transform|identit|word|automat|variet|universal_alg|equation|birkhoff|krohn`:
+30 names, none on these topics. The AFP search page is client-side (`/index.json`,
+`/search/index.json`, `/entries/index.html`: HTTP 404), so no AFP full-text search ran apart
+from the mirror code search above. Entry abstracts were not read.
+
+Rocq/Coq: `rocq-prover.org/packages` and `coq.inria.fr/opam/www/` both return the same
+80,543-byte page with no package names in the HTML. Instead, `released/packages` of
+rocq-prover/opam: 590 names; grep
+`semigroup|monoid|automat|transform|word|regular|lang|algebra|univers|variet|kleene|combi`
+gives coq-algebra, coq-automata, coq-coalgebras, coq-functional-algebra,
+coq-geocoq-algebraic, coq-geometric-algebra, coq-iris-heap-lang,
+coq-mathcomp-algebra-tactics, coq-mathcomp-algebra, coq-mathcomp-word, coq-pautomata,
+coq-reglang, coq-relation-algebra, coq-tree-automata, coq-universe-comparator and their
+rocq- renames. No name mentions semigroups, transformations or identities. Package contents
+were not searched.
+
+Citations of BKSS: Semantic Scholar API (`/graph/v1/paper/DOI:10.37236/6450/citations`):
+citationCount 5, the same five as on 2026-09-12. OpenAlex (`/works?filter=cites:W2520022270`):
+2 (the small-semigroups survey, twisted Brauer monoids). Crossref `is-referenced-by-count`:
+1. zbMATH API: the record, Zbl 1372.68156, was found; its citing documents were not
+retrieved. Google Scholar, fetched as a keyword search for the title: the summary listed 2
+results (Nicol 2026, Xu 2026) and not the BKSS record or its cited-by list, so no citation
+count from it. None of the citing papers is itself a formalization; Nicol's repository
+belongs to one of them and is not mentioned in it.
+
+arXiv: the API (`export.arxiv.org/api/query`) gave HTTP 301 over http and HTTP 429 "Rate
+exceeded." over https, so no API results. Site search, all fields:
+`"transformation semigroup" Lean` "produced no results"; `"separating words" Lean`: no
+results.
+
+Web searches (summarized results):
+1. `formalization "transformation semigroup" identities Lean OR Isabelle OR Coq`: no T_n
+   identities (a CMU ITP course page, Lean-Auto, constructive semigroups with apartness
+   arXiv:2008.11008).
+2. `"separating words" automata formalized Lean OR Isabelle OR Coq OR Agda`: grammar
+   formalizations (arXiv:2302.06420, arXiv:2602.12891) and DESW; nothing on separation.
+3. `"semigroup identities" formal verification proof assistant`: Stein, arXiv:1201.3943
+   (abstract read: two-variable identities, no proof assistant, not T_n); Litterick,
+   Vernitski and Woods, arXiv:2511.13304, Capturing properties of planar diagrams in Lean
+   proof assistant software (abstract read: orientation-preserving mappings formalized in
+   Lean; no identities in the abstract; full text not read).
+4. `"full transformation monoid" Lean OR Isabelle OR Coq formalization`: Alonzo monoid theory
+   arXiv:2312.05658 (defines transformation monoids in Alonzo; no identities).
+5. `Bulatov Karpova Shur Startsev "short identities" transformation semigroups`: BKSS itself
+   (arXiv, E-JC, dblp, author pages); nothing formal.
+6. `site:leanprover-community.github.io "transformation semigroup" OR "transformation monoid" OR "semigroup identity"`:
+   nothing from that domain.
+7. `Equational Theories Project Lean semigroup identities transformation semigroup finite`:
+   Tao's Equational Theories Project post (magma laws, twisting semigroups); nothing on T_n.
+8. `agda-algebras equational logic varieties identities Agda formalization semigroup`: the
+   Agda Universal Algebra Library (arXiv:2103.05581, arXiv:2103.09092; Birkhoff's HSP
+   theorem): general equational logic, no identities of T_n.
+9. `"identities" "full transformation semigroup" shortest identity T_n 2020 2024 2025`:
+   mathematics only (Identities in full transformation semigroups on academia.edu; Kotemanee
+   and Saengsura 2026; BKSS).
+10. `Isabelle OR Coq "transformation semigroups" formalised library Krohn-Rhodes mechanized`:
+    nothing formal.
+11. `"separating words problem" Lean 4 formalization github 2026`: nothing; it did not
+    surface jn1z/FurtherRemarks.
+12. `"identity" "transformation semigroup" "lcm" automata lower bound formally verified proof`:
+    BKSS and unrelated semigroup papers.
+13. `"John Nicol" "separating words" Lean`: the arXiv abstract page only.
+
+**What these searches support.** Prior Lean work exists in this lane: Nicol's repository
+(2026-08-31) formalizes the unary identity of T_k for DFAs, an lcm power acting as the
+identity on a DFA's transition image, an NFA block-shift non-separation, and a
+separating-words lower bound. In the places above (GitHub code and repository search, local
+Mathlib, formal-conjectures, AFP entry names and mirror code search, Rocq opam package
+names, BKSS citation lists, arXiv site search, the listed web searches), nothing was found
+that formalizes a two-letter identity of T_k, any BKSS identity (Theorem 8 in particular), a
+length-48 pair that no 5-state DFA separates, or DESW's two-block DFA theorem. GitHub code
+search misses both known Lean separating-words repositories, AFP and Rocq were checked by
+name only, and nothing else was searched.
 
 ## 7. Files that carried the false conjecture (corrected 2026-09-13)
 
@@ -370,10 +608,15 @@ and the BKSS citation, and git history keeps the original.
    It uses a new private period lemma instead of `iterate_eq_add_of_card_le`, whose
    hypothesis (every c <= k divides L) fails for L = lcm(1..k-1). No transformation is
    enumerated; `decide` only checks the lengths and distinctness of the two fixed words.
-   Still open for this item: the searches in section 6 looked for separating words, not for
-   semigroup identities or T_k, so they say nothing about whether a BKSS identity has been
-   formalized. Search for that directly (`T_n` identities, transformation semigroup
-   identities, in Lean, Isabelle AFP and Coq) before claiming it is new.
+   Searched 2026-09-13 (section 6b): no formalization of any BKSS identity, or of any
+   two-letter identity of T_k, turned up in GitHub code and repository search, local
+   Mathlib, formal-conjectures, AFP entry names and mirror code search, Rocq opam package
+   names, the BKSS citation lists or arXiv site search. The same search found prior Lean work
+   in this lane, Nicol's `jn1z/FurtherRemarks` (2026-08-31: the unary identity of T_k for
+   DFAs, lcm powers acting as the identity on a DFA's transition image, and a separating-words
+   lower bound), which GitHub code search does not index. So `not_separates_bkss` may be
+   described only as "not found in these places", and the note must cite Nicol's repository
+   as prior Lean formalization.
 2. Done 2026-09-13: `suffStates_succ`, `suffStates_mono`, `lt_sep_of_not_suffStates`, and
    `six_le_sep_48 : 6 ≤ sep 48`. Build: `lake build OpenProblemsLab.SeparatingWords`, exit 0,
    1047 jobs. Axioms: see `axioms.txt` (21 public theorems).
