@@ -35,6 +35,15 @@ for `n ≤ 40` and whose Theorem 8 gives `sep 48 ≥ 6`.
   `sep` *well defined*: without it the infimum is over an empty set and `sep n`
   would silently be the junk value `0`.
 * `two_le_sep` — `2 ≤ sep n` for `n ≥ 1`: one state cannot tell anything apart.
+* `not_separates_bkss`, `not_suffStates_five_48` (added 2026-09-13): Theorem 8
+  of Bulatov, Karpova, Shur and Startsev, whose mathematics this transcribes:
+  no `k`-state DFA separates `(01)^(k-2+L) (10)^k (01)^(k-1)` from
+  `(01)^(k-2) (10)^k (01)^(k-1+L)` when every `c < k` divides `L`. At `k = 5`,
+  `L = 12` these are distinct words of length 48, so 5 states do not suffice.
+* `suffStates_succ`, `suffStates_mono`, `lt_sep_of_not_suffStates` and
+  `six_le_sep_48` (added 2026-09-13): `SuffStates` is monotone in the number of
+  states, so a failure at `k` states gives `k < sep n`; in particular
+  `6 ≤ sep 48`.
 
 Attack lanes: exact values of `sep n` for small `n` by exhaustive/SAT search;
 improved constructions for special word classes.
@@ -426,9 +435,10 @@ theorem not_suffStates_block_shift {k L : ℕ} (hk : 1 ≤ k) (hL0 : 0 < L)
 `4 + 4 + 60 = 68`, so `N(5) ≤ 67`. True, and not tight. Bulatov, Karpova, Shur
 and Startsev (Electron. J. Combin. 24(3) (2017) #P3.35, Theorem 8) give a
 length-48 pair that no 5-state DFA separates, so `N(5) ≤ 47`, and their
-Proposition 14 (computer-assisted) gives `N(5) ≥ 40`. Not yet in Lean:
-`¬ SuffStates 5 48`, and the step from `¬ SuffStates k n` to `k < sep n`
-(it needs monotonicity of `SuffStates` in `k`).
+Proposition 14 (computer-assisted) gives `N(5) ≥ 40`. Both steps this
+docstring used to list as not yet in Lean are now below (2026-09-13):
+`not_suffStates_five_48` is their Theorem 8 at `k = 5`, and
+`lt_sep_of_not_suffStates` turns it into `six_le_sep_48`.
 
 Retracted 2026-09-13: this docstring used to bracket `N(5)` in `[30, 67]` and
 say the computations "conjecture `N(5) = 67` exactly". That conjecture is
@@ -439,5 +449,243 @@ theorem not_suffStates_five_68 : ¬ SuffStates 5 68 := by
     interval_cases c <;> decide
   simpa using not_suffStates_block_shift (k := 5) (L := 60) (by norm_num)
     (by norm_num) h
+
+/-! ### BKSS Theorem 8: an identity of `T_5` of length 48
+
+The mathematics in this section is due to Bulatov, Karpova, Shur and Startsev,
+*Lower bounds on words separation: are there short identities in
+transformation semigroups?*, Electron. J. Combin. 24(3) (2017) #P3.35,
+doi:10.37236/6450, [arXiv:1609.03199](https://arxiv.org/abs/1609.03199)
+(BKSS). Their Theorem 8: the full transformation semigroup `T_k` satisfies
+
+    (xy)^(k-2+lcm(k-1)) (yx)^k (xy)^(k-1)  =  (xy)^(k-2) (yx)^k (xy)^(k-1+lcm(k-1))
+
+where `lcm(k-1) = lcm(1, ..., k-1)`. By their Fact 1, an identity of `T_k` is
+exactly a pair that no `k`-state DFA separates. This section transcribes their
+proof into Lean.
+
+**Dictionary.** Letters: `x = 0`, `y = 1`, so `xy` is the list `[0, 1]` and
+`(xy)^n` is `(List.replicate n [0, 1]).flatten`. BKSS write `q.w` for the state
+reached from `q` by reading `w` left to right, which is `w.foldl δ q` here, and
+a DFA with start state `s` separates `u` and `v` iff `s.u ≠ s.v`, which is the
+condition of `exists_eval_ne_iff_exists_step`. Length: BKSS define the length
+of an identity as `max(|u|, |v|)`; here both sides have length exactly
+`2 lcm(1, ..., k-1) + 6(k-1)`. At `k = 5`, `lcm(1, 2, 3, 4) = 12` and
+`2·15 + 2·5 + 2·4 = 48`, so `¬ SuffStates 5 48` is their statement at `k = 5`
+with no change of length convention. These are the words checked numerically
+by `computations/separating_words/bkss_identity.py`.
+
+**Proof structure.** Write `f` for the map of `xy` and `g` for the map of `yx`.
+The two sides send `s` to `f^(k-1) (g^k (f^(k-2+L) s))` and
+`f^(k-1+L) (g^k (f^(k-2) s))`. BKSS split on the `xy`-cycle through
+`s.(xy)^(k-2)`: (i) that state is on no cycle, so `f^(k-1)` is a constant map;
+(ii) it is on a cycle of length `m < k`, so every cycle is shorter than `k`, all
+cycle lengths divide `L`, and `f^(k-1) = f^(k-1+L)`; (iii) `m = k`, so `f` is a
+`k`-cycle, `x` and `y` are permutations and `(yx)^k = 1`. `bkss_core` uses
+the same three arguments, selected by a split that is easier to state in Lean:
+either some state `q` has `k` distinct iterates `q, f q, ..., f^(k-1) q` (these
+are then all the states, and `f^k q = f^r q` with `r < k`: `r = 0` gives (iii),
+`r = k-1` gives (i), `1 ≤ r ≤ k-2` gives (ii)), or no state does, and every
+orbit repeats within its first `k` iterates, which gives (ii). `bkss_perm` is
+the step `(xy)^k = 1 → (yx)^k = 1` of (iii). No transformation is enumerated. -/
+
+/-- Reading `n` copies of a word `w` iterates the map that `w` induces. -/
+private theorem foldl_flatten_replicate {σ : Type*} (δ : σ → Fin 2 → σ)
+    (w : List (Fin 2)) (n : ℕ) (s : σ) :
+    (List.replicate n w).flatten.foldl δ s = (fun q => w.foldl δ q)^[n] s := by
+  induction n generalizing s with
+  | zero => rfl
+  | succ n ih => rw [List.replicate_succ, List.flatten_cons, List.foldl_append, ih,
+      Function.iterate_succ_apply]
+
+open Function in
+/-- Once the orbit of `x` returns after `c` steps from step `r`, every later
+point returns after any multiple `L` of `c`. -/
+private theorem iterate_add_eq_of_period {α : Type*} (f : α → α) (x : α)
+    {r c a L : ℕ} (h : f^[r + c] x = f^[r] x) (hc : c ∣ L) (hra : r ≤ a) :
+    f^[a + L] x = f^[a] x := by
+  obtain ⟨t, rfl⟩ := hc
+  have steps : ∀ t, f^[r + c * t] x = f^[r] x := by
+    intro t
+    induction t with
+    | zero => simp
+    | succ t ih =>
+      rw [show r + c * (t + 1) = c + (r + c * t) by ring, iterate_add_apply, ih,
+        ← iterate_add_apply, add_comm, h]
+  rw [show a + c * t = (a - r) + (r + c * t) by omega, iterate_add_apply, steps,
+    ← iterate_add_apply, show a - r + r = a by omega]
+
+open Function in
+/-- The case analysis of BKSS Theorem 8, for arbitrary maps `f` (standing for
+`xy`) and `g` (standing for `yx`) of a `k`-element set, given that `f^k = id`
+forces `g^k = id`. -/
+private theorem bkss_core {k L : ℕ} (hk : 2 ≤ k) (hL : ∀ c, 0 < c → c < k → c ∣ L)
+    (f g : Fin k → Fin k) (hg : f^[k] = id → g^[k] = id) (s : Fin k) :
+    f^[k - 1] (g^[k] (f^[k - 2 + L] s)) = f^[k - 1 + L] (g^[k] (f^[k - 2] s)) := by
+  by_cases hinj : ∃ q, Injective (fun t : Fin k => f^[t] q)
+  · obtain ⟨q, hq⟩ := hinj
+    have hsurj : Surjective (fun t : Fin k => f^[t] q) :=
+      Finite.injective_iff_surjective.mp hq
+    have horb : ∀ x, ∃ t : ℕ, f^[t] q = x := fun x => by
+      obtain ⟨t, ht⟩ := hsurj x
+      exact ⟨t, ht⟩
+    obtain ⟨⟨r, hr⟩, hrk⟩ := hsurj (f^[k] q)
+    simp only at hrk
+    rcases (show r = 0 ∨ r = k - 1 ∨ (1 ≤ r ∧ r ≤ k - 2) by omega) with
+      rfl | rfl | ⟨h1, h2⟩
+    · -- (iii) `f` is a `k`-cycle: `f^k = id`, hence `g^k = id`
+      have hfk : f^[k] = id := by
+        funext x
+        obtain ⟨t, rfl⟩ := horb x
+        rw [← iterate_add_apply, add_comm, iterate_add_apply, ← hrk]
+        rfl
+      rw [hg hfk]
+      simp only [id_eq, ← iterate_add_apply]
+      congr 1
+      omega
+    · -- (i) `f^(k-1)` is constant
+      have h1 : f^[k - 1 + 1] q = f^[k - 1] q := by
+        rw [Nat.sub_add_cancel (by omega : 1 ≤ k)]
+        exact hrk.symm
+      have hconst : ∀ x, f^[k - 1] x = f^[k - 1] q := by
+        intro x
+        obtain ⟨t, rfl⟩ := horb x
+        rw [← iterate_add_apply]
+        exact iterate_add_eq_of_period f q h1 (one_dvd t) le_rfl
+      rw [iterate_add_apply f (k - 1) L]
+      exact (hconst _).trans (hconst _).symm
+    · -- (ii) the only cycle has length `k - r < k`
+      have hper : f^[r + (k - r)] q = f^[r] q := by
+        rw [show r + (k - r) = k by omega]
+        exact hrk.symm
+      have hcL : (k - r) ∣ L := hL _ (by omega) (by omega)
+      have htail : ∀ x a, r ≤ a → f^[a + L] x = f^[a] x := by
+        intro x a ha
+        obtain ⟨t, rfl⟩ := horb x
+        simp only [← iterate_add_apply]
+        rw [show a + L + t = (a + t) + L by omega]
+        exact iterate_add_eq_of_period f q hper hcL (by omega)
+      rw [htail s (k - 2) (by omega), htail _ (k - 1) (by omega)]
+  · -- (ii) every orbit repeats within its first `k` iterates
+    have htail : ∀ x a, k - 2 ≤ a → f^[a + L] x = f^[a] x := by
+      intro x a ha
+      obtain ⟨t1, t2, heq, hne⟩ : ∃ t1 t2 : Fin k, f^[t1] x = f^[t2] x ∧ t1 ≠ t2 := by
+        by_contra hc
+        push Not at hc
+        exact hinj ⟨x, fun t1 t2 h => hc t1 t2 h⟩
+      rcases lt_or_gt_of_ne (fun h => hne (Fin.ext h)) with h | h
+      · refine iterate_add_eq_of_period f x (r := t1) (c := t2 - t1) ?_
+          (hL _ (by omega) (by omega)) (by omega)
+        rw [show (t1 : ℕ) + (t2 - t1) = t2 by omega]
+        exact heq.symm
+      · refine iterate_add_eq_of_period f x (r := t2) (c := t1 - t2) ?_
+          (hL _ (by omega) (by omega)) (by omega)
+        rw [show (t2 : ℕ) + (t1 - t2) = t1 by omega]
+        exact heq
+    rw [htail s (k - 2) le_rfl, htail _ (k - 1) (by omega)]
+
+open Function in
+/-- Case (iii) of BKSS Theorem 8: if `xy` acts as a map whose `k`-th power is
+the identity, so does `yx`. Reading `x` is then injective, hence a bijection,
+and it conjugates `xy` to `yx`. -/
+private theorem bkss_perm {k : ℕ} (hk : 1 ≤ k) (δ : Fin k → Fin 2 → Fin k)
+    (h : (fun q => ([0, 1] : List (Fin 2)).foldl δ q)^[k] = id) :
+    (fun q => ([1, 0] : List (Fin 2)).foldl δ q)^[k] = id := by
+  obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
+  have hsemi : Semiconj (fun q => δ q 0) (fun q => ([0, 1] : List (Fin 2)).foldl δ q)
+      (fun q => ([1, 0] : List (Fin 2)).foldl δ q) := fun _ => rfl
+  have hinj : Injective (fun q => δ q 0) := by
+    intro x y hxy
+    have e : ∀ z, (fun q => ([0, 1] : List (Fin 2)).foldl δ q)^[j + 1] z = z :=
+      fun z => congrFun h z
+    have hf : ([0, 1] : List (Fin 2)).foldl δ x = ([0, 1] : List (Fin 2)).foldl δ y :=
+      congrArg (fun z => δ z 1) hxy
+    rw [← e x, ← e y, iterate_succ_apply, iterate_succ_apply, hf]
+  have hsurj : Surjective (fun q => δ q 0) := Finite.injective_iff_surjective.mp hinj
+  funext z
+  obtain ⟨x, rfl⟩ := hsurj z
+  rw [← hsemi.iterate_right (j + 1) x, h]
+  rfl
+
+/-- **Bulatov, Karpova, Shur and Startsev, Theorem 8** (Electron. J. Combin.
+24(3) (2017) #P3.35, arXiv:1609.03199), with `x = 0` and `y = 1`: no `k`-state
+transition function separates `(01)^(k-2+L) (10)^k (01)^(k-1)` from
+`(01)^(k-2) (10)^k (01)^(k-1+L)` when every `c` with `0 < c < k` divides `L`
+(so `L = lcm(1, ..., k-1)` qualifies). Both words have length
+`2L + 6(k-1)`. The hypothesis `2 ≤ k` only keeps the natural-number
+subtractions `k - 2` and `k - 1` honest. The proof follows theirs; see the
+section docstring for the case correspondence. -/
+theorem not_separates_bkss {k L : ℕ} (hk : 2 ≤ k) (hL : ∀ c, 0 < c → c < k → c ∣ L)
+    (δ : Fin k → Fin 2 → Fin k) (s : Fin k) :
+    ((List.replicate (k - 2 + L) [0, 1]).flatten ++ (List.replicate k [1, 0]).flatten
+        ++ (List.replicate (k - 1) [0, 1]).flatten : List (Fin 2)).foldl δ s
+      = ((List.replicate (k - 2) [0, 1]).flatten ++ (List.replicate k [1, 0]).flatten
+        ++ (List.replicate (k - 1 + L) [0, 1]).flatten : List (Fin 2)).foldl δ s := by
+  simp only [List.foldl_append, foldl_flatten_replicate]
+  exact bkss_core hk hL _ _ (bkss_perm (by omega) δ) s
+
+/-- **5 states do not suffice at length 48**: BKSS Theorem 8 at `k = 5`,
+`L = lcm(1, 2, 3, 4) = 12`. No 5-state DFA separates
+`(01)^15 (10)^5 (01)^4` from `(01)^3 (10)^5 (01)^16`, two distinct words of
+length 48, so `N(5) ≤ 47`. This supersedes `not_suffStates_five_68` as the
+best lower bound in this file; the mathematics is BKSS's. The three `decide`
+calls only check the lengths and the distinctness of two fixed 48-letter
+lists; nothing enumerates automata. -/
+theorem not_suffStates_five_48 : ¬ SuffStates 5 48 := by
+  intro h
+  have hL : ∀ c, 0 < c → c < 5 → c ∣ 12 := by
+    intro c hc h5
+    interval_cases c <;> decide
+  obtain ⟨M, hM⟩ := h
+    ((List.replicate 15 [0, 1]).flatten ++ (List.replicate 5 [1, 0]).flatten
+      ++ (List.replicate 4 [0, 1]).flatten)
+    ((List.replicate 3 [0, 1]).flatten ++ (List.replicate 5 [1, 0]).flatten
+      ++ (List.replicate 16 [0, 1]).flatten)
+    (by decide) (by decide) (by decide)
+  exact eval_ne_of_separates hM
+    (not_separates_bkss (k := 5) (L := 12) (by norm_num) hL M.step M.start)
+
+/-! ### More states never hurt, so a failure at `k` states bounds `sep` -/
+
+/-- A `k`-state separator is also a `(k + 1)`-state separator: add one state
+that the run never reaches. -/
+theorem suffStates_succ {k n : ℕ} (h : SuffStates k n) : SuffStates (k + 1) n := by
+  intro u v hu hv huv
+  obtain ⟨M, hM⟩ := h u v hu hv huv
+  rw [exists_separates_iff_exists_eval_ne, exists_eval_ne_iff_exists_step]
+  let δ : Fin (k + 1) → Fin 2 → Fin (k + 1) := fun q a =>
+    if hq : q.val < k then Fin.castSucc (M.step ⟨q, hq⟩ a) else q
+  have key : ∀ (w : List (Fin 2)) (p : Fin k),
+      w.foldl δ p.castSucc = (w.foldl M.step p).castSucc := by
+    intro w
+    induction w with
+    | nil => intro p; rfl
+    | cons a w ih =>
+      intro p
+      simp only [List.foldl_cons, δ, Fin.val_castSucc, Fin.is_lt, dite_true, Fin.eta]
+      exact ih _
+  refine ⟨δ, M.start.castSucc, ?_⟩
+  rw [key, key]
+  exact fun hEq => eval_ne_of_separates hM (Fin.castSucc_injective k hEq)
+
+/-- `SuffStates k n` is monotone in `k`. -/
+theorem suffStates_mono {k k' n : ℕ} (hk : k ≤ k') (h : SuffStates k n) :
+    SuffStates k' n := by
+  induction hk with
+  | refl => exact h
+  | step _ ih => exact suffStates_succ ih
+
+/-- If `k` states do not suffice at length `n`, then `k < sep n`. -/
+theorem lt_sep_of_not_suffStates {k n : ℕ} (h : ¬ SuffStates k n) : k < sep n := by
+  by_contra hle
+  push Not at hle
+  have hmem0 : sep n ∈ {k | SuffStates k n} := Nat.sInf_mem ⟨n + 2, suffStates_add_two n⟩
+  have hmem : SuffStates (sep n) n := hmem0
+  exact h (suffStates_mono hle hmem)
+
+/-- **`6 ≤ sep 48`**, from BKSS Theorem 8 (`not_suffStates_five_48`). BKSS
+state the same fact as `Sep(48) > 5` in Proposition 14, in their convention of
+words of length at most `n`. -/
+theorem six_le_sep_48 : 6 ≤ sep 48 := lt_sep_of_not_suffStates not_suffStates_five_48
 
 end OpenProblems.SeparatingWords

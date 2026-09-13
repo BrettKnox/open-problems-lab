@@ -112,9 +112,13 @@ priority claim.
 `not_suffStates_five_68` (line 412). *Literature:* DESW 2011 Theorem 1; BKSS 2017
 Proposition 5 proves this pair is the unique shortest uniform unbalanced identity.
 **WEAKENED:** "5 states fail at length 68" is not the best known bound; BKSS Theorem 8
-gives 48. **Gap:** no Lean lemma turns `¬ SuffStates k n` into `k < sep n`. That needs
-monotonicity of `SuffStates` in k (add a dead state), and no such lemma is in the file,
-so the Lean file does not yet state `6 <= sep 68`.
+gives 48. [Gap closed 2026-09-13: `suffStates_succ` (add an unreachable state),
+`suffStates_mono` and `lt_sep_of_not_suffStates` turn `¬ SuffStates k n` into `k < sep n`.]
+
+**C4b. BKSS Theorem 8, formal (added 2026-09-13).** `not_separates_bkss`,
+`not_suffStates_five_48`, `six_le_sep_48`. *Literature:* BKSS 2017 Theorem 8 and its proof;
+the Lean proof transcribes it. **Status: formalization only**, and not yet checked against a
+search for earlier formalizations of semigroup identities (section 8, item 1).
 
 ### 3b. Certified computation (outside the kernel)
 
@@ -249,8 +253,10 @@ it. Corrected in RESULTS.md on 2026-09-13.
 | sep(1) = 2, sep(4) = 3 | proved (Lean, kernel `decide`) | `sep_one`, `sep_four` |
 | no k-state DFA separates 1^a 0^(b+L) / 1^(a+L) 0^b (a, b >= k-1, lcm(1..k) divides L) | proved (Lean); DESW Thm 1 | `not_separates_block_shift` |
 | ¬ SuffStates 5 68 | proved (Lean); true, not tight | `not_suffStates_five_68` |
-| 6 <= sep 68 | **not in Lean** (needs k-monotonicity) | none |
-| ¬ SuffStates 5 48 | **not in Lean**; published (BKSS Thm 8) | section 8, item 1 |
+| k-monotonicity of SuffStates; ¬ SuffStates k n → k < sep n | proved (Lean) | `suffStates_succ`, `suffStates_mono`, `lt_sep_of_not_suffStates` |
+| no k-state DFA separates (01)^(k-2+L) (10)^k (01)^(k-1) / (01)^(k-2) (10)^k (01)^(k-1+L) (c ∣ L for c < k) | proved (Lean), following BKSS's proof of their Thm 8 | `not_separates_bkss` |
+| ¬ SuffStates 5 48 | proved (Lean); published (BKSS Thm 8) | `not_suffStates_five_48` |
+| 6 <= sep 48 | proved (Lean); published (BKSS Thm 8, Prop 14) | `six_le_sep_48` |
 | sep(n) for n <= 18 | certified computation here; published (Tran 2023) | `run30.log`, `verify.log` |
 | sep(n) = 5 for 18 <= n <= 30 | certified computation here (exhaustive, certificate); implied by BKSS Prop 14 | `run30.log`, `cert_k5_n30.npy` |
 | sep(n) <= 5 for n <= 40 | published claim (BKSS Prop 14, computer-assisted); not checked here past n = 30 | BKSS 2017 |
@@ -356,15 +362,21 @@ and the BKSS citation, and git history keeps the original.
 
 ## 8. Before the next step
 
-1. Formalize BKSS Theorem 8 at k = 5: `¬ SuffStates 5 48`. The proof is a case split on
-   the xy-cycle length and reuses `iterate_eq_add_of_card_le`. It would replace
-   `not_suffStates_five_68` as the headline Lean result. The searches in section 6 looked
-   for separating words, not for semigroup identities or T_k, so they say nothing about
-   whether a BKSS identity has been formalized. Search for that directly (`T_n` identities,
-   transformation semigroup identities, in Lean, Isabelle AFP and Coq) before claiming it
-   is new.
-2. Add `SuffStates k n → SuffStates (k+1) n` and derive `k < sep n` from
-   `¬ SuffStates k n`, so the Lean file can state `6 <= sep 48`.
+1. Done 2026-09-13: BKSS Theorem 8 in Lean. `not_separates_bkss` (every k >= 2, any L
+   divisible by 1..k-1) and `not_suffStates_five_48` (k = 5, L = 12). The proof uses
+   BKSS's three arguments (f^(k-1) constant; all xy-cycles shorter than k; xy a k-cycle, so
+   (yx)^k = 1), selected by a split on whether some state has k distinct xy-iterates rather
+   than on the cycle through s.(xy)^(k-2); the section docstring gives the correspondence.
+   It uses a new private period lemma instead of `iterate_eq_add_of_card_le`, whose
+   hypothesis (every c <= k divides L) fails for L = lcm(1..k-1). No transformation is
+   enumerated; `decide` only checks the lengths and distinctness of the two fixed words.
+   Still open for this item: the searches in section 6 looked for separating words, not for
+   semigroup identities or T_k, so they say nothing about whether a BKSS identity has been
+   formalized. Search for that directly (`T_n` identities, transformation semigroup
+   identities, in Lean, Isabelle AFP and Coq) before claiming it is new.
+2. Done 2026-09-13: `suffStates_succ`, `suffStates_mono`, `lt_sep_of_not_suffStates`, and
+   `six_le_sep_48 : 6 ≤ sep 48`. Build: `lake build OpenProblemsLab.SeparatingWords`, exit 0,
+   1047 jobs. Axioms: see `axioms.txt` (21 public theorems).
 3. Regenerate the census, the family scan, and the certificate re-check as log files, so
    C5 and C6 cite artefacts.
 4. Done 2026-09-13: `#print axioms` for every public theorem, saved as

@@ -200,8 +200,12 @@ theorem in the file is saved in
 Classical.choice and Quot.sound). Searches of GitHub code, formal-conjectures and
 the local Mathlib found no earlier formalization of this lower bound; that is the scope of the
 search, not a priority claim (this paragraph used to say "the first formalization of the
-separating-words lower bound"). Not yet in Lean: `¬ SuffStates 5 48`, and the step from
-`¬ SuffStates k n` to `k < sep n`.
+separating-words lower bound"). Added 2026-09-13: `not_separates_bkss` transcribes the proof
+of BKSS Theorem 8 (the mathematics is theirs), `not_suffStates_five_48` is its k = 5
+instance (**5 states do not suffice at length 48**), and `suffStates_mono` with
+`lt_sep_of_not_suffStates` gives `six_le_sep_48`: sep(48) >= 6 in Lean. No search for earlier
+formalizations of transformation-semigroup identities has been run, so no novelty is claimed
+for these.
 
 ### 3. Erdős–Gyárfás
 
