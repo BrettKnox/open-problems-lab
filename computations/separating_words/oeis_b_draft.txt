@@ -1,4 +1,9 @@
 # b-file draft for the separating-words sequence, n = 1..30
+# a(1..18): agrees with Tran (2023), Table 1. a(19..30): exhaustive search in
+# open-problems-lab; these values, and a(n) = 5 through n = 40, also follow from
+# Bulatov, Karpova, Shur and Startsev, Electron. J. Combin. 24(3) (2017) #P3.35,
+# Proposition 14 (Sep(15) = ... = Sep(40) = 5 over words of length at most n),
+# with a(18) = 5 and monotonicity.
 1 2
 2 2
 3 2

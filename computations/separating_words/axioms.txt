@@ -1,0 +1,40 @@
+# #print axioms for every public theorem in OpenProblemsLab/SeparatingWords.lean
+# run 2026-09-13 (2026-09-13T03:37Z), Lean leanprover/lean4:v4.34.0-rc1, mathlib d77ef0741c
+# after: lake build OpenProblemsLab.SeparatingWords   (exit 0, 1047 jobs)
+# command: lake env lean SWAxioms.lean   (file content below, then output)
+#   import OpenProblemsLab.SeparatingWords
+#   
+#   open OpenProblems.SeparatingWords
+#   
+#   #print axioms eval_ne_of_separates
+#   #print axioms exists_separates_iff_exists_eval_ne
+#   #print axioms posDFA_evalFrom_val
+#   #print axioms suffStates_add_two
+#   #print axioms sep_le
+#   #print axioms two_le_sep
+#   #print axioms exists_eval_ne_iff_exists_step
+#   #print axioms suffStates_three_four
+#   #print axioms not_suffStates_two_four
+#   #print axioms sep_one
+#   #print axioms sep_four
+#   #print axioms iterate_eq_add_of_card_le
+#   #print axioms not_separates_block_shift
+#   #print axioms not_suffStates_block_shift
+#   #print axioms not_suffStates_five_68
+
+'OpenProblems.SeparatingWords.eval_ne_of_separates' depends on axioms: [propext]
+'OpenProblems.SeparatingWords.exists_separates_iff_exists_eval_ne' depends on axioms: [propext]
+'OpenProblems.SeparatingWords.posDFA_evalFrom_val' depends on axioms: [propext, Quot.sound]
+'OpenProblems.SeparatingWords.suffStates_add_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.sep_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.two_le_sep' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.exists_eval_ne_iff_exists_step' does not depend on any axioms
+'OpenProblems.SeparatingWords.suffStates_three_four' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.not_suffStates_two_four' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.sep_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.sep_four' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.iterate_eq_add_of_card_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.not_separates_block_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.not_suffStates_block_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OpenProblems.SeparatingWords.not_suffStates_five_68' depends on axioms: [propext, Classical.choice, Quot.sound]
+# exit=0

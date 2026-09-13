@@ -1,0 +1,11 @@
+# python bkss_identity.py   run 2026-09-13T01:49Z
+k=5, L=lcm(1..4)=12, |u|=|v|=48
+u = 010101010101010101010101010101101010101001010101
+v = 010101101010101001010101010101010101010101010101
+(1) canonical <=5-state functions (166,152) separating: 0
+(2) random raw 5-state (function, start) pairs separating: 0 of 1,000,000
+(3) control L=11 (length 46): <=5-state functions separating: 56382
+(4) control: random 6-state functions separating the length-48 pair: 199 of 200,000
+(5) control: DESW n=18 pair, <=4-state separators 0, <=5-state separators 9738
+=> sep(48) >= 6, so N(5) <= 47; the prediction N(5) = 67 is false
+exit=0

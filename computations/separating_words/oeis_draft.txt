@@ -23,15 +23,28 @@ a(n) first reaches 3, 4, 5 at n = 4, 10, 18. Extremal pairs at the jumps
 include 0110/1010 (n=4), 1^2 0^8 / 1^8 0^2 (n=10), 1^3 0^15 / 1^15 0^3
 (n=18).
 round(sqrt(n+3)) agrees with a(n) for all n <= 27 but fails at n = 28, where
-a(28) = 5 while round(sqrt(31)) = 6.
+a(28) = 5 while round(sqrt(31)) = 6 (this also follows from Bulatov et al.,
+below).
 Values for n <= 18 agree with Table 1 (D_exists) of Tran (2023). Values for
-n = 19..30 computed by exhaustive search over canonical transition functions
-(accept states are irrelevant: a k-state separating DFA exists iff some
-k-state transition function sends the two words to different end states).
+n = 19..40 follow from Proposition 14 of Bulatov, Karpova, Shur and Startsev
+(2017), which gives Sep(15) = ... = Sep(40) = 5 with Sep taken over words of
+length at most n, together with a(18) = 5 and a(n+1) >= a(n) (runs on u and
+v that end in the same state still do after reading a common letter b, so any
+automaton separating ub from vb separates u from v). The terms n = 19..30 were
+also computed
+independently by exhaustive search over canonical transition functions (accept
+states are irrelevant: a k-state separating DFA exists iff some k-state
+transition function sends the two words to different end states).
+Theorem 8 of Bulatov et al. gives two distinct words of length 48 that no
+5-state DFA separates, so a(48) >= 6; the least n with a(n) = 6 lies in
+41..48.
 
 REFERENCES
 P. Goralcik and V. Koubek, On discerning words by automata, ICALP 1986,
 LNCS 226, 116-122.
+A. A. Bulatov, O. Karpova, A. M. Shur and K. Startsev, Lower bounds on words
+separation: are there short identities in transformation semigroups?,
+Electron. J. Combin. 24(3) (2017), #P3.35, doi:10.37236/6450.
 
 LINKS
 E. D. Demaine, S. Eisenstat, J. Shallit and D. A. Wilson, <a
@@ -58,5 +71,6 @@ KEYWORD
 nonn,hard,more
 
 OFFSET-NOTE
-a(n) >= 5 is exact through n = 30; the search stopped at a memory wall, not
-at a hard pair.
+a(n) = 5 for 18 <= n <= 30 by the exhaustive search here (it stopped at a
+memory wall at n = 30, not at a hard pair), and for 18 <= n <= 40 by
+Bulatov et al., Proposition 14.

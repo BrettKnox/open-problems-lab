@@ -19,6 +19,12 @@ per length, so it can be pushed to lengths exhaustive search will never reach.
 A collision inside it proves `N(5) < n` outright -- an upper bound, to set
 against the verified lower bound `N(5) >= 30`.
 
+Retracted 2026-09-13: these families do not find N(5).  Their first
+collisions at k = 5 (n = 68) are identities (3) and (4) of Bulatov, Karpova,
+Shur and Startsev (E-JC 24(3) (2017) #P3.35).  Their Theorem 8 identity, of
+length 48, lies in neither family and gives N(5) <= 47 (bkss_identity.py).
+The conjecture N(5) = 67 that this scan was taken to support is false.
+
 The family also admits a much better algorithm than running each word.  Let
 `g(q) = delta(q, 0)`.  The end state of `1^a 0^(n-a)` is `g^(n-a)(s_a)`, where
 `s_a` is the state after `1^a`.  Sweeping `m = n - a` upward while iterating
@@ -193,14 +199,18 @@ def gates() -> None:
           "(N(3)=9, N(4)=17)")
 
     # (F) the Demaine-Eisenstat-Shallit-Wilson bound N(k) <= 2k-3+lcm(1..k)
-    # is EXACT on every value exhaustive search knows
+    # equals every value exhaustive search knows (k <= 4).  It is NOT tight at
+    # k = 5: Bulatov-Karpova-Shur-Startsev (E-JC 24(3) (2017) #P3.35,
+    # Theorem 8) give a length-48 pair no 5-state DFA separates, checked by
+    # bkss_identity.py, so N(5) <= 47.  This gate used to print "predicts
+    # N(5) = 67"; that conjecture was false (retracted 2026-09-13).
     from math import lcm
     known = {1: 0, 2: 3, 3: 9, 4: 17}
     for k, v in known.items():
         pred = 2 * k - 3 + lcm(*range(1, k + 1)) if k > 1 else 0
         assert pred == v, (k, pred, v)
-    print("  ok   (F) N(k) = 2k-3+lcm(1..k) reproduces N(1..4) = 0,3,9,17 "
-          "exactly; predicts N(5) = 67")
+    print("  ok   (F) 2k-3+lcm(1..k) equals N(1..4) = 0,3,9,17; not tight at "
+          "k=5 (bound 67, BKSS Theorem 8 gives N(5) <= 47)")
 
     # (G) the three-block family agrees with running the words directly
     T = S.icdfa_upto(4)

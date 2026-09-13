@@ -31,7 +31,7 @@ FC = [formal-conjectures](https://github.com/google-deepmind/formal-conjectures)
 | # | Problem | Tier | Lean file | Last substantial progress | Attack lane |
 |---|---------|------|-----------|---------------------------|-------------|
 | 1 | **Integer complexity** ‖2ⁿ‖ = 2n | A | [IntegerComplexity.lean](OpenProblemsLab/IntegerComplexity.lean) | Altman–Arias de Reyna 2026 ([2111.00671](https://arxiv.org/abs/2111.00671)); search to 2¹²⁶ (He, [2308.10301](https://arxiv.org/abs/2308.10301)) | **In progress — see [Results](#results).** Extend Altman k≤48 stability + He's search. ~2 researchers worldwide |
-| 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn; exact values n ≤ 18 (Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)) | **In progress — see [Results](#results).** Extend the exact table; log n vs n^⅓ gap wide open |
+| 2 | **Separating words** | A | [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) | Chase, STOC 2021: O(n^⅓ log⁷ n); 2025 improvement claim withdrawn; exact values n ≤ 18 (Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)); sep(n) = 5 for 18 ≤ n ≤ 40 and sep(48) ≥ 6 (Bulatov, Karpova, Shur, Startsev, [E-JC 2017](https://arxiv.org/abs/1609.03199)) | **In progress — see [Results](#results).** Formalize the BKSS length-48 identity; N(5) in [40, 47] open; log n vs n^⅓ gap wide open |
 | 3 | **Erdős–Gyárfás** (min deg 3 ⟹ 2ᵏ-cycle) | A | [ErdosGyarfas.lean](OpenProblemsLab/ErdosGyarfas.lean) | General: ≥ 32 (Balaji 2026, unrefereed SAT); cubic: ≥ 30 (Markström 2004); cubic bipartite: ≥ 60 (Tranquilli, [2608.02675](https://arxiv.org/abs/2608.02675)) | **In progress — see [Results](#results).** Extend the cubic record; independently verify the unrefereed general record |
 | 4 | **EP [#414](https://www.erdosproblems.com/414)**: n ↦ n+τ(n) trajectories merge? | A | [TauTrajectories.lean](OpenProblemsLab/TauTrajectories.lean) | Erdős–Graham 1980; nothing since | **In progress — see [Results](#results).** Zero competition. Census + parity structure |
 | 5 | **Superpermutations**, L(6) = 872? | A | [Superpermutations.lean](OpenProblemsLab/Superpermutations.lean) | Houston 872 (2014); Houston–Egan–anon lower bound 867 (2019); dormant since 2021 | **See [Results](#results).** Direct SAT ruled out (barrier documented); needs a Chaffin/TSP-style encoding |
@@ -104,7 +104,8 @@ that needs the defect machinery rather than enumeration. Iraids et al. tabulated
 ### 2. Separating words
 
 In [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean). No `sorry`; standard axioms
-only.
+only (`#print axioms` for every public theorem, saved 2026-09-13 in
+[axioms.txt](computations/separating_words/axioms.txt)).
 
 - **The accept set is irrelevant** (`exists_separates_iff_exists_eval_ne`): a k-state DFA
   separating u from v exists exactly when some k-state *transition function* sends them to
@@ -125,15 +126,20 @@ n      1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 ... 30
 sep(n) 2 2 2 3 3 3 3 3 3  4  4  4  4  4  4  4  4  5  5 ...  5
 ```
 
-For **n ≤ 18 this reproduces the one published table**, Tran, [AFL 2023](https://arxiv.org/abs/2309.02766)
+For **n ≤ 18 this reproduces Tran's published table**, [AFL 2023](https://arxiv.org/abs/2309.02766)
 (EPTCS 386, Table 1, D∃(n)), term for term and under the same convention — an earlier version
-of this README wrongly said no such table existed. **n = 19..30 extends it** by 12 terms, and
-the sequence is not in OEIS.
+of this README wrongly said no such table existed. **n = 19..30 is not new either**
+(corrected 2026-09-13). Bulatov, Karpova, Shur and Startsev
+([E-JC 24(3) #P3.35, 2017](https://doi.org/10.37236/6450),
+[arXiv:1609.03199](https://arxiv.org/abs/1609.03199)), Proposition 14, give
+Sep(15) = ... = Sep(40) = 5 and Sep(48) > 5, with Sep taken over words of length at most n.
+With sep(18) = 5 and monotonicity that gives sep(n) = 5 for 18 ≤ n ≤ 40 in the equal-length
+convention. An earlier version of this README said n = 19..30 "extends" the published table;
+it is an independent, certificate-backed reproduction. The sequence is still not in OEIS.
 
-The extension immediately earns its keep. The first 27 terms agree exactly with
-**round(√(n+3))**, which would predict sep(28) = 6; the exhaustive value is **sep(28) = 5**.
-So the tempting square-root law dies at the first term past the published table — a reminder
-of how little of this function's shape is pinned down.
+The first 27 terms agree exactly with **round(√(n+3))**, which would predict sep(28) = 6; the
+exhaustive value is **sep(28) = 5**. BKSS Proposition 14 already implies this, so it is a
+consistency check, not a finding.
 
 Validation: the accept-set reduction is checked *exhaustively* against the literal definition
 (every transition function, start state, and accept set — 4,194,304 DFAs at k = 4) rather
@@ -142,46 +148,60 @@ pair is re-derived from the literal definition (sep(18) > 4 required enumerating
 DFAs); and four deliberate corruptions were each caught by the gates. Values for n ≤ 6 were
 also reproduced by a separate from-scratch brute force.
 
-`sep(n) ≥ 5` is exact through n = 30; the search stopped at a 9 GiB memory wall, not at a hard
-pair, so where the next jump lies is unknown.
+sep(n) = 5 is computed here through n = 30; the search stopped at a 9 GiB memory wall, not at
+a hard pair. In print, sep(n) = 5 through n = 40 and sep(48) ≥ 6 (BKSS Proposition 14 and
+Theorem 8), so the next jump lies in 41..48.
 
 **Exact values in Lean, kernel only** (`sep_one`, `sep_four` — no `native_decide`): sep(1) = 2
 and sep(4) = 3, the function's first jump. The lower half is the machine-checked fact that
 `0110` vs `1010` defeats every two-state automaton; the upper half kernel-searches all 3-state
 transition functions for all 256 pairs of length-4 words, through a second reduction lemma
 (`exists_eval_ne_iff_exists_step`) that eliminates the non-decidable `Set`-valued accept
-field. As far as we could determine, the first formally verified separating-words values. An
+field. Searches of GitHub code, DeepMind's formal-conjectures and the local Mathlib turned up
+no earlier formal separating-words values; that is the scope of the search, not a priority
+claim (this sentence used to say "the first formally verified separating-words values"). An
 OEIS submission package for the sequence is drafted in
 [computations/separating_words/](computations/separating_words/) (submission is a user
 action).
 
-**A sharp conjecture for where 5 states run out.** Inverting the question - `N(k)` = the
-largest n for which k states still separate everything - exhaustive search gives
-N(1..4) = 0, 3, 9, 17 and stalls at N(5) >= 30 (n = 31 needs ~17 GiB). But *witnessing* is
-far cheaper than *verifying*: the known witnesses are two-block words `1^a 0^(n-a)`, a
-family of only n+1 members per length.
+**Retracted 2026-09-13: the conjecture N(k) = 2k-3+lcm(1..k), i.e. N(5) = 67, is false.**
+Inverting the question, `N(k)` is the largest n for which k states still separate everything;
+exhaustive search gives N(1..4) = 0, 3, 9, 17 and stalls at N(5) >= 30 (n = 31 needs
+~17 GiB). Searching the two-block family `1^a 0^(n-a)` re-derived **Theorem 1 of
+Demaine-Eisenstat-Shallit-Wilson** ([1103.4513](https://arxiv.org/abs/1103.4513), 2011):
+shifting a block by L = lcm(1..k) is invisible to a k-state DFA, giving
+N(k) <= 2k-3+lcm(1..k). This README then claimed as new that the bound is exact on k = 1..4,
+and conjectured it exact for every k, so N(5) = 67.
 
-Searching it and asking why it works re-derives **Theorem 1 of Demaine-Eisenstat-Shallit-
-Wilson** ([1103.4513](https://arxiv.org/abs/1103.4513), 2011) - shifting a block by
-L = lcm(1..k) is invisible to a k-state DFA, giving N(k) <= 2k-3+lcm(1..k). That result is
-theirs, found here only after re-deriving it. **What is new is that it is exact wherever
-anything is known**: it reproduces 0, 3, 9, 17 for k = 1..4, witnesses included. Hence the
-conjecture **N(k) = 2k-3+lcm(1..k)**, i.e. **N(5) = 67** - sep(n) = 5 for exactly
-18 <= n <= 67, with sep(68) = 6.
+Both halves were wrong. The exactness on k <= 4 is not new: it follows from Tran's Table 1
+together with DESW Theorem 1, and Bulatov, Karpova, Shur and Startsev
+([E-JC 24(3) #P3.35, 2017](https://doi.org/10.37236/6450)), Remark 7, record that these
+identities are the shortest for k <= 4. The conjecture is false: their Theorem 8 gives an
+identity of T_k of length 2·lcm(1..k-1) + 6(k-1), which at k = 5 is two distinct words of
+length 48 that no 5-state DFA separates, so sep(48) >= 6 and N(5) <= 47.
+[bkss_identity.py](computations/separating_words/bkss_identity.py) checks the pair
+independently of their proof (`python bkss_identity.py`, log in
+[bkss_identity.log](computations/separating_words/bkss_identity.log)): 0 of 166,152 canonical
+transition functions on at most 5 states separate it, while the controls do separate. Their
+Proposition 14 gives N(5) >= 40, and their Conjecture 10 implies N(5) = 47. The length-48
+pair lies outside both block families this repo scanned, so "both families first collide at
+exactly n = 68" said nothing about N(5). The full record, original text included, is in the
+SW-5 section of [RESULTS.md](computations/separating_words/RESULTS.md).
 
-**And the theorem is now formalized.** [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean)
-proves `iterate_eq_add_of_card_le` — iterating any endofunction of a k-element type is
-eventually periodic with preperiod ≤ k−1 and period ≤ k, so `f^[a] = f^[a+L]` for a ≥ k−1
-whenever L is a common multiple of 1..k — and derives `not_separates_block_shift`, the DESW
-theorem itself: no k-state transition function separates `1^a 0^(b+L)` from `1^(a+L) 0^b`.
-The concrete instance `not_suffStates_five_68` says **5 states do not suffice at length 68**.
-All axiom-clean. As far as we can determine this is the first formalization of the
-separating-words lower bound.
-
-N(5) <= 67 is proved. Both the two-block and the three-block families first collide at
-*exactly* n = 68, and exhaustive search confirms the prediction for the 13 lengths
-18 <= n <= 30 - beyond the n <= 18 the formula was fitted on. Closing 31 <= n <= 67 needs
-an argument that extremal pairs are always of this periodic type, not more compute.
+**What survives.** [SeparatingWords.lean](OpenProblemsLab/SeparatingWords.lean) proves
+`iterate_eq_add_of_card_le` (iterating any endofunction of a k-element type is eventually
+periodic with preperiod ≤ k−1 and period ≤ k, so `f^[a] = f^[a+L]` for a ≥ k−1 whenever L is
+a common multiple of 1..k) and derives `not_separates_block_shift`, the DESW theorem itself:
+no k-state transition function separates `1^a 0^(b+L)` from `1^(a+L) 0^b`. The instance
+`not_suffStates_five_68` (**5 states do not suffice at length 68**, so N(5) <= 67) is still a
+true theorem; it is not tight. All axiom-clean: `#print axioms` output for every public
+theorem in the file is saved in
+[axioms.txt](computations/separating_words/axioms.txt) (nothing beyond propext,
+Classical.choice and Quot.sound). Searches of GitHub code, formal-conjectures and
+the local Mathlib found no earlier formalization of this lower bound; that is the scope of the
+search, not a priority claim (this paragraph used to say "the first formalization of the
+separating-words lower bound"). Not yet in Lean: `¬ SuffStates 5 48`, and the step from
+`¬ SuffStates k n` to `k < sep n`.
 
 ### 3. Erdős–Gyárfás
 

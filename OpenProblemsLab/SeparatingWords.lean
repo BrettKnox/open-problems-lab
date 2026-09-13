@@ -10,12 +10,17 @@ import Mathlib.Tactic.IntervalCases
 
 `sep n` is the least number of DFA states sufficient to distinguish any two
 distinct binary words of length `n` (some DFA of that size accepts one and
-rejects the other). Known: `sep n = Ω(log n)` (folklore) and
-`sep n = O(n^{1/3} log^7 n)` (Chase, STOC 2021). The conjecture is that
-`O(log n)` states suffice.
+rejects the other). Known: `sep n = Ω(log n)` (Goralčík and Koubek, ICALP
+1986) and `sep n = O(n^{1/3} log^7 n)` (Chase, STOC 2021). The conjecture is
+that `O(log n)` states suffice.
 
 Status 2026-08-19: OPEN. A claimed `O(log² n)` improvement (arXiv:2503.23184)
 was withdrawn in April 2025. Quiet since Chase. Not in formal-conjectures.
+
+Exact small values are in print (added 2026-09-13): Tran (AFL 2023, Table 1)
+for `n ≤ 18`, and Bulatov, Karpova, Shur and Startsev (Electron. J. Combin.
+24(3) (2017) #P3.35, arXiv:1609.03199), whose Proposition 14 gives `sep n ≤ 5`
+for `n ≤ 40` and whose Theorem 8 gives `sep 48 ≥ 6`.
 
 ## What is proved here
 
@@ -278,7 +283,7 @@ theorem sep_four : sep 4 = 3 := by
 
 /-! ### The block-shift obstruction (Demaine-Eisenstat-Shallit-Wilson)
 
-The classical `Ω(log n)` lower bound rests on one observation: a `k`-state
+The equal-length `Ω(log n)` lower bound rests on one observation: a `k`-state
 automaton cannot see a block whose length changes by `lcm(1, ..., k)`.
 Iterating any endofunction of a `k`-element type is eventually periodic with
 preperiod `≤ k - 1` and period `≤ k`, so once a run is `k - 1` letters into a
@@ -287,9 +292,19 @@ block, the block's length matters only modulo that period.
 `iterate_eq_add_of_card_le` is that fact, and `not_separates_block_shift` is
 Theorem 1 of Demaine, Eisenstat, Shallit and Wilson
 ([arXiv:1103.4513](https://arxiv.org/abs/1103.4513), 2011), which follows from
-it. The computations in `computations/separating_words` find that the bound it
-gives is exact wherever exhaustive search reaches, which is the content of the
-`N(k) = 2k - 3 + lcm(1, ..., k)` conjecture recorded there. -/
+it. It gives `N(k) ≤ 2k - 3 + lcm(1, ..., k)`, where `N(k)` is the largest `n`
+with `SuffStates k n`.
+
+**Correction, 2026-09-13.** This docstring used to say the bound is exact
+wherever exhaustive search reaches and record the conjecture
+`N(k) = 2k - 3 + lcm(1, ..., k)`. That conjecture is false. Bulatov, Karpova,
+Shur and Startsev (Electron. J. Combin. 24(3) (2017) #P3.35, doi:10.37236/6450,
+[arXiv:1609.03199](https://arxiv.org/abs/1609.03199)), Theorem 8, give an
+identity of `T_k` of length `2 lcm(1, ..., k-1) + 6(k-1)`: at `k = 5`, two
+distinct words of length 48 that no 5-state DFA separates, so `N(5) ≤ 47`, not
+67. Their Remark 7 already records that the `lcm(1, ..., k) + 2k - 2`
+identities are the shortest for `k ≤ 4`. The theorems below are still true;
+the bound they give is not tight at `k = 5`. -/
 
 open Function in
 /-- If two iterates of `f` agree at `x`, the orbit of `x` is periodic from
@@ -385,8 +400,11 @@ theorem not_separates_block_shift {k a b L : ℕ}
     foldl_replicate, foldl_replicate, ← h1, ← h0]
 
 /-- The bound it gives: `k` states never suffice at length `2(k-1) + L`, so
-`N(k) ≤ 2k - 3 + lcm(1, …, k)`. With `L = lcm(1, …, k)` this is
-`N(1..4) = 0, 3, 9, 17` exactly, and predicts `N(5) = 67`. -/
+`N(k) ≤ 2k - 3 + lcm(1, …, k)`. With `L = lcm(1, …, k)` this equals
+`N(1..4) = 0, 3, 9, 17` (Tran 2023, Table 1; Bulatov, Karpova, Shur and
+Startsev 2017, Remark 7). It is not tight at `k = 5`: it gives `N(5) ≤ 67`,
+and their Theorem 8 gives `N(5) ≤ 47`. (This docstring used to say the bound
+"predicts `N(5) = 67`"; retracted 2026-09-13.) -/
 theorem not_suffStates_block_shift {k L : ℕ} (hk : 1 ≤ k) (hL0 : 0 < L)
     (hL : ∀ c, 0 < c → c ≤ k → c ∣ L) :
     ¬ SuffStates k ((k - 1) + (k - 1) + L) := by
@@ -404,11 +422,17 @@ theorem not_suffStates_block_shift {k L : ℕ} (hk : 1 ≤ k) (hL0 : 0 < L)
   exact (eval_ne_of_separates hM)
     (not_separates_block_shift hak hak hL M.step M.start)
 
-/-- The case that matters now: **5 states do not suffice at length 68**, since
-`lcm(1, …, 5) = 60` and `4 + 4 + 60 = 68`. Combined with the exhaustive
-verification that 5 states *do* suffice for every length up to 30, this
-brackets the crossover: `N(5)` lies in `[30, 67]`, and the computations
-conjecture `N(5) = 67` exactly. -/
+/-- **5 states do not suffice at length 68**, since `lcm(1, …, 5) = 60` and
+`4 + 4 + 60 = 68`, so `N(5) ≤ 67`. True, and not tight. Bulatov, Karpova, Shur
+and Startsev (Electron. J. Combin. 24(3) (2017) #P3.35, Theorem 8) give a
+length-48 pair that no 5-state DFA separates, so `N(5) ≤ 47`, and their
+Proposition 14 (computer-assisted) gives `N(5) ≥ 40`. Not yet in Lean:
+`¬ SuffStates 5 48`, and the step from `¬ SuffStates k n` to `k < sep n`
+(it needs monotonicity of `SuffStates` in `k`).
+
+Retracted 2026-09-13: this docstring used to bracket `N(5)` in `[30, 67]` and
+say the computations "conjecture `N(5) = 67` exactly". That conjecture is
+false (BKSS Theorem 8). -/
 theorem not_suffStates_five_68 : ¬ SuffStates 5 68 := by
   have h : ∀ c, 0 < c → c ≤ 5 → c ∣ 60 := by
     intro c hc h5

@@ -4,14 +4,22 @@ Exact values of the separating-words function `sep(n)`: the least number of DFA
 states that always suffices to distinguish two distinct binary words of length
 `n`.
 
-**Status of the numbers.** `n <= 18` **reproduces** the only published table
-found (Tran, AFL 2023; see
+**Status of the numbers.** `n <= 18` **reproduces** Tran's published table
+(AFL 2023; see
 [Comparison to the literature](#comparison-to-the-literature)). `n = 19..30`
-appears to be **new**: no table beyond `n = 18` exists in the literature we
-could find, and the sequence is not in OEIS. That is an extension of a small
-exhaustive computation, not progress on the open problem. The gap between the
-`Omega(log n)` lower bound and Chase's `O~(n^{1/3})` upper bound is untouched,
-and nothing here is a step toward closing it.
+is **implied by the literature too**: Bulatov, Karpova, Shur and Startsev
+(Electron. J. Combin. 24(3) (2017) #P3.35, doi:10.37236/6450), Proposition 14,
+give `Sep(15) = ... = Sep(40) = 5` over words of length at most `n`, so
+`sep(n) = 5` for `18 <= n <= 40`. This line used to say `n = 19..30` "appears
+to be **new**"; that was wrong (corrected 2026-09-13). What is here is an
+independent, certificate-backed reproduction. The sequence is not in OEIS. The
+gap between the `Omega(log n)` lower bound and Chase's `O~(n^{1/3})` upper
+bound is untouched, and nothing here is a step toward closing it.
+
+**Retraction, 2026-09-13.** The SW-5 conjecture at the end of this file,
+`N(k) = 2k - 3 + lcm(1..k)` and so `N(5) = 67`, is **false**: BKSS Theorem 8
+gives a length-48 pair that no 5-state DFA separates, so `N(5) <= 47`. The
+SW-5 section keeps the original text, with the retraction on top.
 
 Run date: 2026-08-20.
 
@@ -105,7 +113,7 @@ Equivalently, in the compact form `N(k) = max { n : sep(n) <= k }`:
 
 | k | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
-| **N(k)** | 0 | 3 | 9 | 17 | **>= 30** |
+| **N(k)** | 0 | 3 | 9 | 17 | **>= 30** here; 40..47 in print |
 | gap `N(k)-N(k-1)` |  | 3 | 6 | 8 | >= 13 |
 
 `N(1) = 0` is the statement that a one-state DFA accepts everything or nothing.
@@ -113,7 +121,8 @@ Equivalently, in the compact form `N(k) = max { n : sep(n) <= k }`:
 respectively, *every* canonical transition function on at most 2, 3, 4 states
 was run against the surviving words and none separates them. `N(5) >= 30` is a
 search bound: the `k = 5` run was stopped by memory at `n = 30`, not by
-finding a hard pair.
+finding a hard pair. In print (added 2026-09-13): `40 <= N(5) <= 47`, from
+BKSS Proposition 14 and Theorem 8; `N(1..4)` also follows from Tran's Table 1.
 
 ### The `round(sqrt(n))` near-miss, and why `n = 28` was worth computing
 
@@ -123,9 +132,11 @@ shifted by 3): runs of length 6 and 8 at the values 3 and 4 are exactly what
 for our prefix returns A000194. The prediction is `sep(28) = 6`.
 
 **`sep(28) = 5`.** The run of fives is at least 13 long, not 10, so the
-square-root law breaks at the first term past the published table. That is a
-small thing, but it is the concrete payoff of extending it: on `n <= 27` alone
-the data is perfectly consistent with a formula that is wrong.
+square-root law breaks at the first term past Tran's table. This used to be
+called "the concrete payoff of extending it". It is not a payoff: BKSS
+Proposition 14 (2017) already gives `sep(n) = 5` through `n = 40`, which
+implies the failure at 28 (corrected 2026-09-13). It remains true that on
+`n <= 27` alone the data is consistent with a formula that is wrong.
 
 ### Hardest pairs
 
@@ -175,7 +186,10 @@ functions, so these lists are complete.
 So at both `n = 10` and `n = 18` the extremal set is exactly two
 complementation orbits (complementing both words is an alphabet relabelling,
 so it preserves `minK`), one of shape `1^a 0^b` vs `1^b 0^a` and one of shape
-"a single 1 in two different positions".
+"a single 1 in two different positions". At these two lengths the orbits are
+identities (3) and (4) of Bulatov, Karpova, Shur and Startsev (2017, their
+Propositions 5 and 6); the `n = 4` list contains other shapes (added
+2026-09-13).
 
 **Reversal is not a symmetry, at the extremal pairs.** This is the phenomenon
 Demaine–Eisenstat–Shallit–Wilson study, and it shows up in the census:
@@ -197,7 +211,7 @@ whole table could have been *guessed* in 16 seconds from `O(n^2)` pairs; what
 the exhaustive search adds is turning the guess into a value, since a family
 scan can only ever give lower bounds. Pushed further, the families still cap
 at `minK = 5` through `n = 34`, which is suggestive of `N(5) > 34` and no
-more.
+more. (BKSS Proposition 14 proves `N(5) >= 40`; added 2026-09-13.)
 
 ### Timing
 
@@ -219,7 +233,8 @@ Clean doubling per level, as it must be: the work is a constant number of
 passes over `2^n` words. `n = 31` would need ~17 GiB and ~13 min, `n = 32`
 ~34 GiB, past this machine. Reaching `sep`'s next increase would need
 `N(5)+1` to be within a few of 30, and the gaps (3, 6, 8, >= 13) give no reason
-to expect that.
+to expect that. In print it lies in `41..48` (BKSS Proposition 14 and
+Theorem 8; added 2026-09-13).
 
 ## Method
 
@@ -411,7 +426,24 @@ table.
 
 ## Comparison to the literature
 
-**`n <= 18`: MATCHES published values. `n >= 19`: no published values found.**
+**`n <= 18`: MATCHES Tran's table. `19 <= n <= 30`: implied by BKSS
+Proposition 14.** This heading used to say "`n >= 19`: no published values
+found"; the BKSS paper was missed until 2026-09-12 (corrected 2026-09-13).
+
+* **Bulatov, Karpova, Shur, Startsev, "Lower bounds on words separation: are
+  there short identities in transformation semigroups?"**, Electron. J.
+  Combin. 24(3) (2017) #P3.35
+  ([doi:10.37236/6450](https://doi.org/10.37236/6450),
+  [arXiv:1609.03199](https://arxiv.org/abs/1609.03199)). Fact 1: `u` and `v`
+  satisfy the identity of `T_k` iff no `k`-state DFA separates them. Their
+  `Sep(n)` is taken over words of length **at most** `n`. Proposition 14:
+  `Sep(15) = ... = Sep(40) = 5` and `Sep(48) > 5`, so `sep(n) = 5` for
+  `18 <= n <= 40` in our convention; this covers every term computed here past
+  `n = 18`. Remark 7: the `lcm(1..k) + 2k - 2` identities are the shortest for
+  `k <= 4` (so `N(1..4)` is in print). Proposition 5: the DESW pair is the
+  unique shortest uniform unbalanced identity. Theorem 8: an identity of length
+  `2 lcm(1..k-1) + 6(k-1)`, 48 at `k = 5`, checked here by `bkss_identity.py`.
+  Conjecture 10 would give `N(5) = 47`.
 
 * **Tran, "Separating Words from Every Start State with Horner Automata",
   AFL 2023, EPTCS 386, 243–252**
@@ -454,11 +486,16 @@ table.
   (A000194 and relatives); the full-text queries `separating words`,
   `separating words automaton` and `smallest DFA distinguish` return nothing
   about DFA separation. **No A-number matches**, so there is no term-by-term
-  OEIS comparison to make. The sequence looks submittable.
+  OEIS comparison to make. The sequence looks submittable, but a submission
+  must cite BKSS Proposition 14, which already gives the values through
+  `n = 40` (added 2026-09-13; `oeis_draft.txt` now does).
 * **Bounds, for context, none of which this touches:** Goralčík–Koubek 1986
   (`o(n)`), Robson 1989 (`O(n^{2/5} log^{3/5} n)`), Chase, STOC 2021
   (`O~(n^{1/3})`, [arXiv:2007.12097](https://arxiv.org/abs/2007.12097)),
-  lower bound `Omega(log n)` (DESW 2011). A claimed `O(log^2 n)` improvement,
+  lower bound `Omega(log n)` (Goralčík and Koubek 1986, as DESW Proposition 1
+  attributes it; DESW Theorem 1 is the equal-length version). This bullet used
+  to attribute the lower bound to DESW 2011 (corrected 2026-09-13). A claimed
+  `O(log^2 n)` improvement,
   [arXiv:2503.23184](https://arxiv.org/abs/2503.23184), was **withdrawn** by
   its author in April 2025.
 * **No SAT-based computation of `sep(n)` was found**; Tran's is an exhaustive
@@ -469,13 +506,21 @@ table.
 
 ### So what is actually new here
 
-Modest, and worth stating plainly:
+Less than this list first claimed (corrected 2026-09-13; the original items
+are kept, struck where wrong):
 
-1. **`sep(n)` for `n = 19..30`** (12 terms), with the `n <= 18` values
-   independently reproduced rather than assumed.
+1. ~~**`sep(n)` for `n = 19..30`** (12 terms)~~ **Not new:** implied by BKSS
+   Proposition 14 (2017). What is here is an independent, certificate-backed
+   reproduction of `n <= 30`, with the `n <= 18` values also reproduced rather
+   than assumed.
 2. **`N(4) = 17` and `N(5) >= 30`** as the compact form of the table.
+   `N(4) = 17` is in print (Tran's Table 1; BKSS Remark 7), and BKSS give
+   `40 <= N(5) <= 47`.
 3. **A census of the extremal pairs** at the lengths where `sep` increases
-   (above). No published table of these exists.
+   (above). ~~No published table of these exists.~~ At `n = 10` and `n = 18`
+   the two orbits are BKSS identities (3) and (4). Only the completeness of the
+   lists at `n = 4, 10, 18` was not seen in Tran, DESW or BKSS, and the census
+   output lives only in this file, not in a log.
 4. **Machine-checkable certificates**: the upper bounds are re-verifiable in
    one pass from a saved file, and the lower bounds are single pairs whose
    hardness any independent implementation can confirm in milliseconds.
@@ -486,8 +531,9 @@ much further: each additional `n` doubles both time and memory.
 
 ## Caveats
 
-* **Search bound, not a value.** `N(5)` is only pinned from below. `sep(n)`
-  for `n > 30` is not computed. The family probe reaching `n = 34` without
+* **Search bound, not a value.** Here `N(5)` is only pinned from below.
+  `sep(n)` for `n > 30` is not computed. In print, BKSS give
+  `40 <= N(5) <= 47` (added 2026-09-13). The family probe reaching `n = 34` without
   passing 5 is suggestive, nothing more: it searches `O(n^2)` pairs out of
   `4^n`, so it can only ever produce lower bounds on `sep`.
 * **Signature hashes can collide.** Collision groups proposed by the 64-bit
@@ -499,8 +545,9 @@ much further: each additional `n` doubles both time and memory.
   over-large certificate can only fail to prove an upper bound, never assert a
   false one.
 * **Single machine, single-threaded, one implementation.** The external check
-  on `n <= 18` (Tran) is real; `n = 19..30` rests on this code plus its gates,
-  reproduced only here.
+  on `n <= 18` (Tran) is real. `n = 19..30` was computed only by this code plus
+  its gates, but it does not rest on this code alone: BKSS Proposition 14
+  (computer-assisted, 2017) implies the same values (added 2026-09-13).
 * `icdfa_cache/` (~72 MiB at `k = 6`) and the `.npy` certificates are
   regenerated by the commands below and need not be committed.
 
@@ -534,7 +581,51 @@ A fast sanity pass, a few seconds:
 python separate.py --nmax 20 --kmax 5 --verify
 ```
 
-## SW-5: N(k), and a sharp conjecture for where 5 states run out
+## SW-5: N(k), and a conjecture for where 5 states run out (RETRACTED 2026-09-13)
+
+> **Retracted 2026-09-13. The conjecture in this section is false.**
+> Bulatov, Karpova, Shur and Startsev, *Lower bounds on words separation: are
+> there short identities in transformation semigroups?*, Electron. J. Combin.
+> 24(3) (2017) #P3.35, [doi:10.37236/6450](https://doi.org/10.37236/6450),
+> [arXiv:1609.03199](https://arxiv.org/abs/1609.03199), Theorem 8: `T_k`
+> satisfies an identity of length `2 lcm(1..k-1) + 6(k-1)`. At `k = 5` that is
+> two distinct binary words of length 48 that no 5-state DFA separates:
+>
+> ```
+> u = 010101010101010101010101010101101010101001010101   (01)^15 (10)^5 (01)^4
+> v = 010101101010101001010101010101010101010101010101   (01)^3  (10)^5 (01)^16
+> ```
+>
+> so `sep(48) >= 6` and `N(5) <= 47`, not 67. Checked independently of their
+> proof by `python bkss_identity.py` (log `bkss_identity.log`): 0 of 166,152
+> canonical transition functions on at most 5 states separate the pair, and 0
+> of 1,000,000 random raw (function, start state) pairs do. Controls: 56,382
+> functions separate the `L = 11` variant, and 199 of 200,000 random 6-state
+> functions separate the length-48 pair.
+>
+> The same paper already had the rest. Remark 7: the `lcm(1..k) + 2k - 2`
+> identities are the shortest for `k <= 4`, which is the "exact wherever
+> anything is known" observation this section claimed as new. It also follows
+> from Tran's Table 1 together with DESW Theorem 1. Proposition 5: the DESW pair
+> is the unique shortest uniform unbalanced identity. Proposition 14:
+> `Sep(15) = ... = Sep(40) = 5` and `Sep(48) > 5`, over words of length at most
+> `n`, which implies every `n = 19..30` value in this file and gives
+> `N(5) >= 40`. Conjecture 10 (identity (5) is the shortest identity of `T_5`)
+> would give `N(5) = 47`.
+>
+> **What was wrong with the evidence.** The two-block and three-block scans
+> measured where those two families first collide; the collisions at `n = 68`
+> are BKSS identities (3) and (4). The length-48 identity is in neither family,
+> so "both first collide at exactly `n = 68`" says nothing about `N(5)`. Four
+> matching values were read as a law, and the counterexample was already in
+> print.
+>
+> **What survives.** `N(5) <= 67` and the Lean theorems
+> `not_separates_block_shift` (DESW Theorem 1) and `not_suffStates_five_68` are
+> true, just not tight. The exhaustive `N(1..4)` and `sep(n)` for `n <= 30`
+> stand, as reproductions of published values.
+>
+> The original text follows, with inline markers where it is wrong.
 
 `N(k)` is the largest `n` such that some `k`-state DFA separates every pair of
 distinct binary words of length `n` -- the inverse view of `sep`. Exhaustive
@@ -550,7 +641,7 @@ pushed far past exhaustive range. `blocks.py` evaluates it in
 `O(#functions * n)` by iterating the `0`-map once and indexing into it, rather
 than running each word.
 
-### The construction is known; the tightness is the news
+### The construction is known; ~~the tightness is the news~~ the tightness is not news either (retracted 2026-09-13)
 
 Searching the two-block family and asking *why* it works recovers a theorem
 already in the literature -- **Theorem 1 of Demaine, Eisenstat, Shallit and
@@ -564,10 +655,14 @@ invisible. That gives
 
 This was re-derived here before the source was found; it is theirs, and the
 asymptotic content (the classical `Omega(log n)` lower bound on `sep`) is
-theirs too.
+theirs too. [Corrected 2026-09-13: DESW Theorem 1 is the equal-length form;
+for words of unrestricted length the `Omega(log n)` lower bound goes back to
+Goralčík and Koubek 1986, as DESW Proposition 1 attributes it.]
 
-What does not appear in the literature is that **the bound is exact wherever
-anything is known**:
+~~What does not appear in the literature is that **the bound is exact wherever
+anything is known**:~~ [Retracted 2026-09-13: it does appear, as BKSS Remark 7,
+and it also follows from Tran's Table 1 with DESW Theorem 1. The bound is exact
+for `k <= 4` only.]
 
 | k | 2k-3+lcm(1..k) | N(k), exhaustive |
 |---|---|---|
@@ -575,36 +670,45 @@ anything is known**:
 | 2 | 3 | 3 |
 | 3 | 9 | 9 |
 | 4 | 17 | 17 |
-| 5 | **67** | `>= 30`, `<= 67` |
+| 5 | **67** (not tight) | `>= 30`, `<= 67` here; `40..47` in print (BKSS Proposition 14, Theorem 8) |
 
 Four for four, witnesses included: the construction's pair at `k = 3` is
 exactly `1^2 0^8 / 1^8 0^2`, and at `k = 4` exactly `1^3 0^15 / 1^15 0^3` --
 the same pairs exhaustive search finds. That suggests
 
-> **Conjecture.** `N(k) = 2k - 3 + lcm(1, ..., k)`, equivalently `sep(n) = 5`
+> **Conjecture. [FALSE, retracted 2026-09-13: BKSS Theorem 8 gives
+> `N(5) <= 47`.]** `N(k) = 2k - 3 + lcm(1, ..., k)`, equivalently `sep(n) = 5`
 > for exactly `18 <= n <= 67`, with `sep(68) = 6`.
 
-### Evidence for N(5) = 67
+### Evidence offered for N(5) = 67 (retracted 2026-09-13)
 
 * The upper bound `N(5) <= 67` is **proved** (the DESW pair at `n = 68` is
   `1^4 0^64 / 1^64 0^4`; `min_states` independently confirms it needs 6
-  states).
+  states). [Still true; not tight.]
 * The two-block family's first collision is at **exactly** `n = 68` -- nothing
-  earlier, scanned from `n = 20`.
+  earlier, scanned from `n = 20`. [True of the family, and irrelevant to
+  `N(5)`: this collision is BKSS identity (3).]
 * The three-block family `1^a 0^b 1^c` also first collides at **exactly**
   `n = 68`, at `1^3 0^1 1^64` vs `1^63 0^1 1^4` -- again two indices differing
-  by `L = 60`. Scanned over every `(a, b, c)` for `n <= 71`.
+  by `L = 60`. Scanned over every `(a, b, c)` for `n <= 71`. [True of the
+  family: this is BKSS identity (4). The length-48 identity has more than three
+  blocks.]
 * Exhaustive search over **all** words confirms no collision at all for
   `n <= 30`, so the prediction `sep(n) = 5` is verified for the 13 lengths
-  `18 <= n <= 30` -- beyond the `n <= 18` the formula was fitted on.
+  `18 <= n <= 30` -- beyond the `n <= 18` the formula was fitted on. [True, and
+  already implied by BKSS Proposition 14.]
 
-The gap `31 <= n <= 67` is what would have to be closed to prove `N(5) = 67`,
+~~The gap `31 <= n <= 67` is what would have to be closed to prove `N(5) = 67`,
 and the memory wall makes that unreachable by the exhaustive route. Closing it
 needs an argument that the extremal pairs are always of this periodic type,
-which is the open content of the conjecture rather than a computation.
+which is the open content of the conjecture rather than a computation.~~
+[Retracted 2026-09-13. What is open is `41 <= n <= 47`: BKSS give
+`40 <= N(5) <= 47` and conjecture `N(5) = 47`.]
 
 Gates (`python blocks.py --verify`): the family reproduces both known
 witnesses; those witnesses need strictly more than `k` states via an
 independent `min_states` path; the fast two-block and three-block sweeps agree
 with `batch_states` on the same words; no collision at `n = 9` for `k = 3, 4`
-(negative control, since `N(3) = 9`); and the formula reproduces `N(1..4)`.
+(negative control, since `N(3) = 9`); and the formula reproduces `N(1..4)`
+(gate (F), whose message used to add "predicts N(5) = 67" and now says the
+bound is not tight at `k = 5`).
