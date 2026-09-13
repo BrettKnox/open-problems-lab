@@ -143,7 +143,7 @@ log artefact:** the census output exists only inside RESULTS.md and must be rege
 a log before it can be cited.
 
 Related work on certificates for this kind of claim: Kupferman, Lavee and Sickert (ATVA
-2021, section 4) generate game-based certificates for DFA state bounds, including separation
+2021; abstract read, full text not) generate game-based certificates for DFA state bounds, including separation
 by a DFA of a given size. The certificates here are simpler (a list of transition functions
 whose joint signature is injective, and single unseparable pairs); the note should say how
 they relate.
@@ -358,9 +358,11 @@ and the BKSS citation, and git history keeps the original.
 
 1. Formalize BKSS Theorem 8 at k = 5: `¬ SuffStates 5 48`. The proof is a case split on
    the xy-cycle length and reuses `iterate_eq_add_of_card_le`. It would replace
-   `not_suffStates_five_68` as the headline Lean result. No formal statement of any BKSS
-   identity turned up in GitHub code search, formal-conjectures or the local Mathlib;
-   nothing beyond those three was searched, so claim no more than that.
+   `not_suffStates_five_68` as the headline Lean result. The searches in section 6 looked
+   for separating words, not for semigroup identities or T_k, so they say nothing about
+   whether a BKSS identity has been formalized. Search for that directly (`T_n` identities,
+   transformation semigroup identities, in Lean, Isabelle AFP and Coq) before claiming it
+   is new.
 2. Add `SuffStates k n → SuffStates (k+1) n` and derive `k < sep n` from
    `¬ SuffStates k n`, so the Lean file can state `6 <= sep 48`.
 3. Regenerate the census, the family scan, and the certificate re-check as log files, so

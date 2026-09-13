@@ -499,10 +499,10 @@ found"; the BKSS paper was missed until 2026-09-12 (corrected 2026-09-13).
   [arXiv:2503.23184](https://arxiv.org/abs/2503.23184), was **withdrawn** by
   its author in April 2025.
 * **No SAT-based computation of `sep(n)` was found**; Tran's is an exhaustive
-  C++ search and this one is exhaustive numpy. The README's attack lane says
-  "exact small-n values via SAT (no published table exists)": the second half
-  of that is **wrong** and should be corrected: a table for `n <= 18` was
-  published in 2023.
+  C++ search and this one is exhaustive numpy. The README's attack lane used
+  to say "exact small-n values via SAT (no published table exists)". The
+  second half was **wrong**, since a table for `n <= 18` was published in
+  2023, and the README no longer says it (corrected 2026-09-13).
 
 ### So what is actually new here
 

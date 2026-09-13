@@ -30,7 +30,8 @@ n = 19..40 follow from Proposition 14 of Bulatov, Karpova, Shur and Startsev
 (2017), which gives Sep(15) = ... = Sep(40) = 5 with Sep taken over words of
 length at most n, together with a(18) = 5 and a(n+1) >= a(n) (runs on u and
 v that end in the same state still do after reading a common letter b, so any
-automaton separating ub from vb separates u from v). The terms n = 19..30 were
+transition function sending ub and vb to different states sends u and v to
+different states). The terms n = 19..30 were
 also computed
 independently by exhaustive search over canonical transition functions (accept
 states are irrelevant: a k-state separating DFA exists iff some k-state
