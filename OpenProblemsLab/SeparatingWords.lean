@@ -627,10 +627,12 @@ theorem not_separates_bkss {k L : ℕ} (hk : 2 ≤ k) (hL : ∀ c, 0 < c → c <
 /-- **5 states do not suffice at length 48**: BKSS Theorem 8 at `k = 5`,
 `L = lcm(1, 2, 3, 4) = 12`. No 5-state DFA separates
 `(01)^15 (10)^5 (01)^4` from `(01)^3 (10)^5 (01)^16`, two distinct words of
-length 48, so `N(5) ≤ 47`. This supersedes `not_suffStates_five_68` as the
-best lower bound in this file; the mathematics is BKSS's. The three `decide`
-calls only check the lengths and the distinctness of two fixed 48-letter
-lists; nothing enumerates automata. -/
+length 48; the mathematics is BKSS's. The step to `N(5) ≤ 47`, and to
+`not_suffStates_five_68` as a corollary, also uses that `SuffStates k (n + 1)`
+implies `SuffStates k n` (prefix both words with one letter), which is not
+proved in this file. The `decide` calls only check `c ∣ 12` for `c < 5` and
+the lengths and distinctness of two fixed 48-letter lists; nothing enumerates
+automata. -/
 theorem not_suffStates_five_48 : ¬ SuffStates 5 48 := by
   intro h
   have hL : ∀ c, 0 < c → c < 5 → c ∣ 12 := by

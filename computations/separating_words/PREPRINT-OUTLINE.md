@@ -80,7 +80,7 @@ numbers as of commit a9d82fb; the 2026-09-13 docstring corrections shift them in
 tree). Build status: GitHub Actions CI (`leanprover/lean-action`) passed on a9d82fb
 (`gh run list`, run created 2026-09-04T21:36:42Z, conclusion success). After the 2026-09-13
 docstring-only edits: `lake build OpenProblemsLab.SeparatingWords` locally, exit 0, 1047 jobs.
-`#print axioms` for all 15 public theorems is saved in
+`#print axioms` for all public theorems (15; 21 after the 2026-09-13 BKSS additions) is saved in
 `C:/Users/bman0/Code/OpenProblemsLab/computations/separating_words/axioms.txt`
 (`lake env lean SWAxioms.lean`, file content recorded in the header): every theorem depends
 only on propext, Classical.choice and Quot.sound or a subset; none on sorryAx or
@@ -607,7 +607,8 @@ and the BKSS citation, and git history keeps the original.
    than on the cycle through s.(xy)^(k-2); the section docstring gives the correspondence.
    It uses a new private period lemma instead of `iterate_eq_add_of_card_le`, whose
    hypothesis (every c <= k divides L) fails for L = lcm(1..k-1). No transformation is
-   enumerated; `decide` only checks the lengths and distinctness of the two fixed words.
+   enumerated; `decide` only checks c | 12 for c < 5 and the lengths and distinctness of the
+   two fixed words.
    Searched 2026-09-13 (section 6b): no formalization of any BKSS identity, or of any
    two-letter identity of T_k, turned up in GitHub code and repository search, local
    Mathlib, formal-conjectures, AFP entry names and mirror code search, Rocq opam package
@@ -618,8 +619,10 @@ and the BKSS citation, and git history keeps the original.
    described only as "not found in these places", and the note must cite Nicol's repository
    as prior Lean formalization.
 2. Done 2026-09-13: `suffStates_succ`, `suffStates_mono`, `lt_sep_of_not_suffStates`, and
-   `six_le_sep_48 : 6 ≤ sep 48`. Build: `lake build OpenProblemsLab.SeparatingWords`, exit 0,
-   1047 jobs. Axioms: see `axioms.txt` (21 public theorems).
+   `six_le_sep_48 : 6 ≤ sep 48`. Build: full `lake build`, exit 0, 2404 jobs (verifier
+   re-run; the exit code is recorded by the batch file itself, because the first wrapper,
+   `cmd /c start /wait`, returns 0 whatever the job returns). Axioms: see `axioms.txt`
+   (21 public theorems).
 3. Regenerate the census, the family scan, and the certificate re-check as log files, so
    C5 and C6 cite artefacts.
 4. Done 2026-09-13: `#print axioms` for every public theorem, saved as

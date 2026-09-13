@@ -27,12 +27,16 @@ arguments, selected by a slightly different case split that the section
 docstring maps onto theirs; the mathematics is theirs):
 `not_separates_bkss` for every `k >= 2`, `not_suffStates_five_48` at `k = 5`,
 and, through the monotonicity lemmas `suffStates_succ` and `suffStates_mono`,
-`six_le_sep_48`, i.e. `sep(48) >= 6`. Commands: `lake build
-OpenProblemsLab.SeparatingWords` (exit 0, 1047 jobs) and `lake env lean
-SWAxioms.lean` (all 21 public theorems depend only on propext,
-Classical.choice and Quot.sound or a subset; output appended to
-`axioms.txt`). No search for earlier formalizations of identities in
-transformation semigroups has been run, so no novelty is claimed for this.
+`six_le_sep_48`, i.e. `sep(48) >= 6`. Commands, at BelowNormal priority:
+full `lake build` (exit 0, 2404 jobs; the exit code is recorded by a batch
+file's `%ERRORLEVEL%`, because `cmd /c start /wait` returns 0 whatever the job
+returns) and `lake env lean SWAxioms.lean` (all 21 public theorems depend
+only on propext, Classical.choice and Quot.sound or a subset; output appended
+to `axioms.txt`). A search for earlier formalizations of identities in
+transformation semigroups (`PREPRINT-OUTLINE.md` section 6b) found no formal
+BKSS identity in the places it lists, and found earlier Lean work by Nicol
+(`jn1z/FurtherRemarks`, 2026-08-31) on the unary identity and a
+separating-words lower bound. No novelty is claimed for this.
 
 Run date: 2026-08-20.
 
@@ -637,8 +641,10 @@ python separate.py --nmax 20 --kmax 5 --verify
 >
 > **What survives.** `N(5) <= 67` and the Lean theorems
 > `not_separates_block_shift` (DESW Theorem 1) and `not_suffStates_five_68` are
-> true, just not tight. The tighter `N(5) <= 47` is now in Lean too, as
-> `not_suffStates_five_48` (BKSS Theorem 8, their proof; added 2026-09-13). The exhaustive `N(1..4)` and `sep(n)` for `n <= 30`
+> true, just not tight. `not_suffStates_five_48` (`¬ SuffStates 5 48`, BKSS
+> Theorem 8, their proof; added 2026-09-13) is in Lean too; the step from it to
+> `N(5) <= 47` also needs `SuffStates k (n+1) -> SuffStates k n`, which is not
+> in Lean. The exhaustive `N(1..4)` and `sep(n)` for `n <= 30`
 > stand, as reproductions of published values.
 >
 > The original text follows, with inline markers where it is wrong.

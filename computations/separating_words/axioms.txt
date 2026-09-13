@@ -72,3 +72,8 @@
 'OpenProblems.SeparatingWords.lt_sep_of_not_suffStates' depends on axioms: [propext, Classical.choice, Quot.sound]
 'OpenProblems.SeparatingWords.six_le_sep_48' depends on axioms: [propext, Classical.choice, Quot.sound]
 # exit=0
+
+# ---- re-run 2026-09-13 by the verifier, after docstring-only edits to SeparatingWords.lean ----
+# command: lake env lean SWAxioms.lean (same 21 #print axioms lines), BelowNormal priority,
+#   exit code from a batch file %ERRORLEVEL% (cmd /c start /wait alone returns 0 whatever lean returns)
+# result: exit=0, 8.4 s; all 21 lines identical to the block above (diff empty)
