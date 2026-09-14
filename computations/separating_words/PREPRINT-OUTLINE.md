@@ -159,9 +159,10 @@ RESULTS.md, but no log of it is in the repo.
 "Every extremal pair"), command `python separate.py --kmax 4 --census 18`. **WEAKENED:** at
 n = 10 and n = 18 the two families found are BKSS identities (3) and (4) (their
 Propositions 5 and 6). The n = 4 census (8 pairs) contains other shapes and is not covered
-by that sentence. What is left is completeness of the lists at these three lengths. **No
-log artefact:** the census output exists only inside RESULTS.md and must be regenerated into
-a log before it can be cited.
+by that sentence. What is left is completeness of the lists at these three lengths. Log:
+`C:/Users/bman0/Code/OpenProblemsLab/computations/separating_words/census.log` (2026-09-14;
+`--kmax 2 --census 4`, `--kmax 3 --census 10`, `--kmax 4 --census 18`, each exit 0): 8, 4 and
+4 pairs, identical to the RESULTS.md lists.
 
 Related work on certificates for this kind of claim: Kupferman, Lavee and Sickert (ATVA
 2021; abstract read, full text not) generate game-based certificates for DFA state bounds, including separation
@@ -182,8 +183,11 @@ they relate.
 **Dropped as contributions** (kept as record, cite only as checks):
 
 * SW-5 family scans: "2-block and 3-block families first collide at exactly n = 68",
-  `C:/Users/bman0/Code/OpenProblemsLab/computations/separating_words/blocks.py`, no log
-  artefact. The 2-block collision is DESW/BKSS identity (3). The 3-block collision
+  `C:/Users/bman0/Code/OpenProblemsLab/computations/separating_words/blocks.py`, log
+  `C:/Users/bman0/Code/OpenProblemsLab/computations/separating_words/blocks_scan.log`
+  (2026-09-14; `python blocks.py --k 5 --nmin 20 --nmax 71` and the same with `--three`:
+  no collision for 20 <= n <= 67 in either family, first collision at n = 68 in both, each
+  pair needing 6 states by `min_states`). The 2-block collision is DESW/BKSS identity (3). The 3-block collision
   `1^3 0 1^64 / 1^63 0 1^4` is BKSS identity (4). The shorter identity at 48 lies outside both
   families. This scan measured where two families collide, not N(5).
 * The N(k) formula and "N(5) = 67": false (section 0). Retracted in the repo 2026-09-13.
@@ -283,7 +287,7 @@ it. Corrected in RESULTS.md on 2026-09-13.
 | sep(48) >= 6, so N(5) <= 47 | published theorem (BKSS Thm 8); computed check here | `bkss_identity.py`, `bkss_identity.log` |
 | N(1..4) = 0, 3, 9, 17, equal to 2k - 3 + lcm(1..k) | computed here; published (BKSS Remark 7; also Tran Table 1 with DESW Thm 1) | `run30.log` lines 9-44 |
 | sep(n) non-decreasing in n | short proof in RESULTS.md "Method 4"; empirical gate (F); **not in Lean** | `verify.log` |
-| extremal pair lists at n = 4, 10, 18 are complete | computed here; **no log artefact** | RESULTS.md census section |
+| extremal pair lists at n = 4, 10, 18 are complete | computed here | `census.log` |
 | 40 <= N(5) <= 47 | published (BKSS) | BKSS Prop 14, Thm 8 |
 | N(5) = 47 | **conjecture (BKSS Conjecture 10 implies it)** | BKSS 2017 |
 | N(k) = 2k - 3 + lcm(1..k) | **false at k = 5**; retracted 2026-09-13 | `bkss_identity.log` |
@@ -739,8 +743,10 @@ and the BKSS citation, and git history keeps the original.
    re-run; the exit code is recorded by the batch file itself, because the first wrapper,
    `cmd /c start /wait`, returns 0 whatever the job returns). Axioms: see `axioms.txt`
    (21 public theorems).
-3. Regenerate the census, the family scan, and the certificate re-check as log files, so
-   C5 and C6 cite artefacts.
+3. Done 2026-09-14 for the census and the family scans: `census.log` (C6), `families.log`
+   (`separate.py --families 30` and `--families 34`), `blocks_scan.log` (two-block and
+   three-block scans). Still to do: the certificate re-check as a log file, so C5 cites an
+   artefact.
 4. Done 2026-09-13: `#print axioms` for every public theorem, saved as
    `C:/Users/bman0/Code/OpenProblemsLab/computations/separating_words/axioms.txt`.
 5. Venue decided: a formalization note (section 1), not a combinatorics result.

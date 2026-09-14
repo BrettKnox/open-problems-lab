@@ -1,0 +1,89 @@
+# command: python separate.py --families 30 --kmax 5
+# cwd: computations/separating_words
+# launched: cmd /c start "" /belownormal /wait /b cmd /c <batch file>; the exit code below is the batch file's %ERRORLEVEL% after python, because start /wait returns 0 regardless
+# date: start 2026-09-14T10:21:47-04:00, end 2026-09-14T10:22:12-04:00
+# git commit: fc43c5687e3212e8cecd26a540fb1f097abc31ed (no uncommitted changes to computations/separating_words/*.py)
+# python: 3.14.3   numpy: 1.26.3   (C:\Python314\python.exe)
+# machine: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics, 27.8 GiB RAM, Microsoft Windows 11 Pro 10.0.26200
+# free RAM at start: 11.58 GiB
+# peak memory: 0.04 GiB (PeakWorkingSet64 of the python process, sampled every 1 s; priority class seen: BelowNormal)
+# wall time: 24.7 s (includes interpreter start and imports)
+# exit code: 0
+#
+n=2   hardest in the two families: minK = 2   10 / 01
+n=3   hardest in the two families: minK = 2   100 / 110
+n=4   hardest in the two families: minK = 3   1000 / 1110
+n=5   hardest in the two families: minK = 3   10000 / 00100
+n=6   hardest in the two families: minK = 3   100000 / 111110
+n=7   hardest in the two families: minK = 3   1000000 / 0010000
+n=8   hardest in the two families: minK = 3   10000000 / 11111110
+n=9   hardest in the two families: minK = 3   100000000 / 001000000
+n=10  hardest in the two families: minK = 4   1100000000 / 1111111100
+n=11  hardest in the two families: minK = 4   01000000000 / 00000001000
+n=12  hardest in the two families: minK = 4   111000000000 / 111111111000
+n=13  hardest in the two families: minK = 4   0100000000000 / 0000000100000
+n=14  hardest in the two families: minK = 4   11110000000000 / 11111111110000
+n=15  hardest in the two families: minK = 4   010000000000000 / 000000010000000
+n=16  hardest in the two families: minK = 4   1100000000000000 / 1111111111111100
+n=17  hardest in the two families: minK = 4   01000000000000000 / 00000001000000000
+n=18  hardest in the two families: minK = 5   111000000000000000 / 111111111111111000
+n=19  hardest in the two families: minK = 5   0010000000000000000 / 0000000000000010000
+n=20  hardest in the two families: minK = 5   11110000000000000000 / 11111111111111110000
+n=21  hardest in the two families: minK = 5   001000000000000000000 / 000000000000001000000
+n=22  hardest in the two families: minK = 5   1111100000000000000000 / 1111111111111111100000
+n=23  hardest in the two families: minK = 5   00100000000000000000000 / 00000000000000100000000
+n=24  hardest in the two families: minK = 5   111111000000000000000000 / 111111111111111111000000
+n=25  hardest in the two families: minK = 5   0010000000000000000000000 / 0000000000000010000000000
+n=26  hardest in the two families: minK = 5   11111110000000000000000000 / 11111111111111111110000000
+n=27  hardest in the two families: minK = 5   001000000000000000000000000 / 000000000000001000000000000
+n=28  hardest in the two families: minK = 5   1111111100000000000000000000 / 1111111111111111111100000000
+n=29  hardest in the two families: minK = 5   00100000000000000000000000000 / 00000000000000100000000000000
+n=30  hardest in the two families: minK = 5   111000000000000000000000000000 / 111111111111111111111111111000
+[23.4s]
+
+# command: python separate.py --families 34 --kmax 5
+# cwd: computations/separating_words
+# launched: cmd /c start "" /belownormal /wait /b cmd /c <batch file>; the exit code below is the batch file's %ERRORLEVEL% after python, because start /wait returns 0 regardless
+# date: start 2026-09-14T10:22:16-04:00, end 2026-09-14T10:23:00-04:00
+# git commit: fc43c5687e3212e8cecd26a540fb1f097abc31ed (no uncommitted changes to computations/separating_words/*.py)
+# python: 3.14.3   numpy: 1.26.3   (C:\Python314\python.exe)
+# machine: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics, 27.8 GiB RAM, Microsoft Windows 11 Pro 10.0.26200
+# free RAM at start: 11.68 GiB
+# peak memory: 0.04 GiB (PeakWorkingSet64 of the python process, sampled every 1 s; priority class seen: BelowNormal)
+# wall time: 44.1 s (includes interpreter start and imports)
+# exit code: 0
+#
+n=2   hardest in the two families: minK = 2   10 / 01
+n=3   hardest in the two families: minK = 2   100 / 110
+n=4   hardest in the two families: minK = 3   1000 / 1110
+n=5   hardest in the two families: minK = 3   10000 / 00100
+n=6   hardest in the two families: minK = 3   100000 / 111110
+n=7   hardest in the two families: minK = 3   1000000 / 0010000
+n=8   hardest in the two families: minK = 3   10000000 / 11111110
+n=9   hardest in the two families: minK = 3   100000000 / 001000000
+n=10  hardest in the two families: minK = 4   1100000000 / 1111111100
+n=11  hardest in the two families: minK = 4   01000000000 / 00000001000
+n=12  hardest in the two families: minK = 4   111000000000 / 111111111000
+n=13  hardest in the two families: minK = 4   0100000000000 / 0000000100000
+n=14  hardest in the two families: minK = 4   11110000000000 / 11111111110000
+n=15  hardest in the two families: minK = 4   010000000000000 / 000000010000000
+n=16  hardest in the two families: minK = 4   1100000000000000 / 1111111111111100
+n=17  hardest in the two families: minK = 4   01000000000000000 / 00000001000000000
+n=18  hardest in the two families: minK = 5   111000000000000000 / 111111111111111000
+n=19  hardest in the two families: minK = 5   0010000000000000000 / 0000000000000010000
+n=20  hardest in the two families: minK = 5   11110000000000000000 / 11111111111111110000
+n=21  hardest in the two families: minK = 5   001000000000000000000 / 000000000000001000000
+n=22  hardest in the two families: minK = 5   1111100000000000000000 / 1111111111111111100000
+n=23  hardest in the two families: minK = 5   00100000000000000000000 / 00000000000000100000000
+n=24  hardest in the two families: minK = 5   111111000000000000000000 / 111111111111111111000000
+n=25  hardest in the two families: minK = 5   0010000000000000000000000 / 0000000000000010000000000
+n=26  hardest in the two families: minK = 5   11111110000000000000000000 / 11111111111111111110000000
+n=27  hardest in the two families: minK = 5   001000000000000000000000000 / 000000000000001000000000000
+n=28  hardest in the two families: minK = 5   1111111100000000000000000000 / 1111111111111111111100000000
+n=29  hardest in the two families: minK = 5   00100000000000000000000000000 / 00000000000000100000000000000
+n=30  hardest in the two families: minK = 5   111000000000000000000000000000 / 111111111111111111111111111000
+n=31  hardest in the two families: minK = 5   0010000000000000000000000000000 / 0000000000000010000000000000000
+n=32  hardest in the two families: minK = 5   11110000000000000000000000000000 / 11111111111111111111111111110000
+n=33  hardest in the two families: minK = 5   001000000000000000000000000000000 / 000000000000001000000000000000000
+n=34  hardest in the two families: minK = 5   1111100000000000000000000000000000 / 1111111111111111111111111111100000
+[42.3s]

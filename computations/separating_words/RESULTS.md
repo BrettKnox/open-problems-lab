@@ -43,10 +43,15 @@ Run date: 2026-08-20.
 ## What was run
 
 ```
-python separate.py --nmax 30 --kmax 5 --save-cert cert_k5_n30.npy
+python separate.py --nmax 30 --kmax 5 --seed 7 --save-cert cert_k5_n30.npy
 python separate.py --check-cert cert_k5_n30.npy --nmax 30
 python separate.py --verify --deep --negative-control --nmax 18 --kmax 5
 ```
+
+The first command used to be listed without `--seed 7` (corrected
+2026-09-14). `run30.log` records no seed, but `seed_probe_n22.log` shows that
+`--seed 7` reproduces its certificate sizes at `n = 18..22` (45, 47, 49, 52,
+55 functions) and the default seed 20260820 does not (44, 46, 49, 51, 54).
 
 Abridged output of the first (the full log is `run30.log`):
 
@@ -103,7 +108,7 @@ exhaustive and carry no randomness at all.
 | RAM | 27.8 GiB |
 | OS | Windows 11 Pro 10.0.26200 |
 | Python | 3.14.3 (CPython, 64-bit) |
-| numpy | 2.5.0 |
+| numpy | 2.5.0 for the 2026-08-20 runs; 1.26.3 for the logs dated 2026-09-14 (their headers record it) |
 | Threads used | 1 (numpy gathers and elementwise ops only; nothing here is parallel) |
 
 Peak memory is one `uint64` signature hash per word of length `n`, plus a
@@ -173,7 +178,10 @@ works, since `minK(uw,vw) >= minK(u,v)` and `sep(n)` caps it from above.
 ### Every extremal pair, at each length where `sep` increases
 
 `--census` refines the surviving words by **all** canonical transition
-functions, so these lists are complete.
+functions, so these lists are complete. Log: `census.log` (2026-09-14, commands
+`python separate.py --kmax 2 --census 4`, `--kmax 3 --census 10` and
+`--kmax 4 --census 18`, each exit 0); its three lists are identical to the ones
+below.
 
 **`n = 4`, not separable by 2 states, 8 pairs:**
 
@@ -223,12 +231,15 @@ The two-block pairs, by contrast, are self-reversing up to swapping `u` and
 
 `--families` scans only `1^a 0^b` vs `1^b 0^a` and "single 1 at position `i`
 vs position `j`": `O(n^2)` pairs instead of `4^n`. For **every** `n` from 2 to
-30 the hardest pair inside those two families attains `sep(n)` exactly. So the
-whole table could have been *guessed* in 16 seconds from `O(n^2)` pairs; what
-the exhaustive search adds is turning the guess into a value, since a family
-scan can only ever give lower bounds. Pushed further, the families still cap
-at `minK = 5` through `n = 34`, which is suggestive of `N(5) > 34` and no
-more. (BKSS Proposition 14 proves `N(5) >= 40`; added 2026-09-13.)
+30 the hardest pair inside those two families attains `sep(n)` exactly (log
+`families.log`, `python separate.py --families 30 --kmax 5`). So the whole
+table could have been *guessed* in 23.4 seconds from `O(n^2)` pairs (the log's
+figure, at BelowNormal priority beside a CPU-heavy job; this line used to say
+16 seconds, from an unlogged run, corrected 2026-09-14); what the exhaustive
+search adds is turning the guess into a value, since a family scan can only
+ever give lower bounds. Pushed further, the families still cap at `minK = 5`
+through `n = 34` (same log, `--families 34`, 42.3 s), which is suggestive of
+`N(5) > 34` and no more. (BKSS Proposition 14 proves `N(5) >= 40`; added 2026-09-13.)
 
 ### Timing
 
@@ -538,8 +549,8 @@ are kept, struck where wrong):
 3. **A census of the extremal pairs** at the lengths where `sep` increases
    (above). ~~No published table of these exists.~~ At `n = 10` and `n = 18`
    the two orbits are BKSS identities (3) and (4). Only the completeness of the
-   lists at `n = 4, 10, 18` was not seen in Tran, DESW or BKSS, and the census
-   output lives only in this file, not in a log.
+   lists at `n = 4, 10, 18` was not seen in Tran, DESW or BKSS; the census
+   output is logged in `census.log` (2026-09-14).
 4. **Machine-checkable certificates**: the upper bounds are re-verifiable in
    one pass from a saved file, and the lower bounds are single pairs whose
    hardness any independent implementation can confirm in milliseconds.
@@ -575,8 +586,9 @@ much further: each additional `n` doubles both time and memory.
 ```
 cd computations/separating_words
 
-# the full table (~11 min, ~9 GiB at n = 30)
-python separate.py --nmax 30 --kmax 5 --save-cert cert_k5_n30.npy
+# the full table (~11 min, ~9 GiB at n = 30); --seed 7 rebuilds the committed
+# 74-function certificate (seed_probe_n22.log), the default seed builds a different one
+python separate.py --nmax 30 --kmax 5 --seed 7 --save-cert cert_k5_n30.npy
 
 # re-verify the upper bound from the certificate alone, no search
 python separate.py --check-cert cert_k5_n30.npy --nmax 30
@@ -587,11 +599,18 @@ python separate.py --verify --deep --negative-control --nmax 18 --kmax 5
 # one pair, with the witness automaton and the literal all-DFA reference
 python separate.py --pair 111000000000000000 111111111111111000 --brute
 
-# every pair that no <= k-state DFA separates, at a given length
+# every pair that no <= k-state DFA separates, at a given length (census.log)
+python separate.py --kmax 2 --census 4
+python separate.py --kmax 3 --census 10
 python separate.py --kmax 4 --census 18
 
-# structured hard-pair families (O(n^2) pairs, seconds)
+# structured hard-pair families (O(n^2) pairs, under a minute; families.log)
+python separate.py --families 30 --kmax 5
 python separate.py --families 34 --kmax 5
+
+# SW-5 two-block and three-block scans (about 5 and 7 min; blocks_scan.log)
+python blocks.py --k 5 --nmin 20 --nmax 71
+python blocks.py --k 5 --nmin 20 --nmax 71 --three
 ```
 
 A fast sanity pass, a few seconds:
@@ -706,15 +725,21 @@ the same pairs exhaustive search finds. That suggests
 
 * The upper bound `N(5) <= 67` is **proved** (the DESW pair at `n = 68` is
   `1^4 0^64 / 1^64 0^4`; `min_states` independently confirms it needs 6
-  states). [Still true; not tight.]
+  states). [Still true; not tight. Log: `blocks_scan.log`, added 2026-09-14.]
 * The two-block family's first collision is at **exactly** `n = 68` -- nothing
   earlier, scanned from `n = 20`. [True of the family, and irrelevant to
-  `N(5)`: this collision is BKSS identity (3).]
+  `N(5)`: this collision is BKSS identity (3). Log: `blocks_scan.log`,
+  `python blocks.py --k 5 --nmin 20 --nmax 71`, 2026-09-14: first collision at
+  `n = 68`, `1^4 0^64 / 1^64 0^4`, 6 states by `min_states`.]
 * The three-block family `1^a 0^b 1^c` also first collides at **exactly**
   `n = 68`, at `1^3 0^1 1^64` vs `1^63 0^1 1^4` -- again two indices differing
   by `L = 60`. Scanned over every `(a, b, c)` for `n <= 71`. [True of the
   family: this is BKSS identity (4). The length-48 identity has more than three
-  blocks.]
+  blocks. Log: `blocks_scan.log`,
+  `python blocks.py --k 5 --nmin 20 --nmax 71 --three`, 2026-09-14: no
+  collision for `20 <= n <= 67`, first at `n = 68` with the same pair, 6 states
+  by `min_states`. The scan stops at the first collision, so the logged range
+  is `20 <= n <= 68`, not `n <= 71`.]
 * Exhaustive search over **all** words confirms no collision at all for
   `n <= 30`, so the prediction `sep(n) = 5` is verified for the 13 lengths
   `18 <= n <= 30` -- beyond the `n <= 18` the formula was fitted on. [True, and

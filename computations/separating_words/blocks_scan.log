@@ -1,0 +1,46 @@
+# command: python blocks.py --k 5 --nmin 20 --nmax 71
+# cwd: computations/separating_words
+# launched: cmd /c start "" /belownormal /wait /b cmd /c <batch file>; the exit code below is the batch file's %ERRORLEVEL% after python, because start /wait returns 0 regardless
+# date: start 2026-09-14T10:23:04-04:00, end 2026-09-14T10:28:08-04:00
+# git commit: fc43c5687e3212e8cecd26a540fb1f097abc31ed (no uncommitted changes to computations/separating_words/*.py)
+# python: 3.14.3   numpy: 1.26.3   (C:\Python314\python.exe)
+# machine: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics, 27.8 GiB RAM, Microsoft Windows 11 Pro 10.0.26200
+# free RAM at start: 10.81 GiB
+# peak memory: 0.15 GiB (PeakWorkingSet64 of the python process, sampled every 1 s; priority class seen: BelowNormal)
+# wall time: 304.8 s (includes interpreter start and imports)
+# exit code: 0
+#
+k = 5: 166,152 canonical transition functions with <= 5 states
+  n = 20: no two-block collision  [6s]
+  n = 30: no two-block collision  [58s]
+  n = 40: no two-block collision  [116s]
+  n = 50: no two-block collision  [178s]
+  n = 60: no two-block collision  [246s]
+
+collision at n=68: 11110000000000000000000000000000000000000000000000000000000000000000 / 11111111111111111111111111111111111111111111111111111111111111110000
+min_states cross-check: needs 6 states (> 5 required)
+=> N(5) < 68
+total 292s
+
+# command: python blocks.py --k 5 --nmin 20 --nmax 71 --three
+# cwd: computations/separating_words
+# launched: cmd /c start "" /belownormal /wait /b cmd /c <batch file>; the exit code below is the batch file's %ERRORLEVEL% after python, because start /wait returns 0 regardless
+# date: start 2026-09-14T10:28:12-04:00, end 2026-09-14T10:34:56-04:00
+# git commit: fc43c5687e3212e8cecd26a540fb1f097abc31ed (no uncommitted changes to computations/separating_words/*.py)
+# python: 3.14.3   numpy: 1.26.3   (C:\Python314\python.exe)
+# machine: AMD Ryzen 7 7840HS w/ Radeon 780M Graphics, 27.8 GiB RAM, Microsoft Windows 11 Pro 10.0.26200
+# free RAM at start: 8.22 GiB
+# peak memory: 0.64 GiB (PeakWorkingSet64 of the python process, sampled every 1 s; priority class seen: BelowNormal)
+# wall time: 404.3 s (includes interpreter start and imports)
+# exit code: 0
+#
+k = 5: 166,152 canonical transition functions with <= 5 states; three-block words 1^a 0^b 1^c, a,b,c >= 1
+  n = 20: no three-block collision  [1s]
+  n = 30: no three-block collision  [29s]
+  n = 40: no three-block collision  [78s]
+  n = 50: no three-block collision  [157s]
+  n = 60: no three-block collision  [265s]
+
+three-block collision at n=68: 1^3 0^1 1^64 / 1^63 0^1 1^4
+min_states cross-check: needs 6 states (> 5 required)
+total 403s
