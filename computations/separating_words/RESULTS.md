@@ -100,6 +100,16 @@ witness pairs, in 649.4 s. Both certificates were then re-verified at `n = 30`
 from file (276.2 s and 279.3 s). The `N(k)` lower bounds for `k <= 4` are
 exhaustive and carry no randomness at all.
 
+Artefact status (2026-09-14): the 74-function certificate is `--seed 7`
+(`seed_probe_n22.log`), so the 75-function one is the default seed 20260820.
+Only `cert_k5_n30.npy` was ever committed; the 75-function file is not in the
+repository. Neither the 649.4 s run, nor the two re-checks, nor a regeneration
+has a log yet: on 2026-09-14 free RAM stayed under 12 GiB for the 3 h retry
+window (1.29 GiB at the last check) while another job held the machine, so no
+~9 GiB job was started. Commands to run when it can be:
+`python separate.py --check-cert cert_k5_n30.npy --nmax 30` and
+`python separate.py --nmax 30 --kmax 5 --save-cert cert_k5_n30_seed20260820.npy`.
+
 ## Machine
 
 | | |

@@ -46,7 +46,7 @@ not use it.
 **What is known exactly.**
 
 * [Tran], Table 1, computed by exhaustive search: $D_\exists(n)$ for $1 \le n \le 18$ is
-  `2 2 2 3 3 3 3 3 3 4 4 4 4 4 4 4 4 5`. <!-- src: computations/separating_words/RESULTS.md lines 488-491 -->
+  `2 2 2 3 3 3 3 3 3 4 4 4 4 4 4 4 4 5`. <!-- src: computations/separating_words/RESULTS.md lines 498-501 -->
   Tran's $D_\exists$ uses separation by end states from a common start state over two distinct
   strings of length $n$, so it is $\mathrm{sep}$ in the equal-length convention.
 * [BKSS] Proposition 14 (computer-assisted): $\mathrm{Sep}(15) = \dots = \mathrm{Sep}(40) = 5$
@@ -64,7 +64,7 @@ not use it.
   $k \le 4$. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 0 -->
 
 Write $N(k) = \max\{n : \mathrm{sep}(n) \le k\}$. Then $N(1), \dots, N(4) = 0, 3, 9, 17$ and
-$40 \le N(5) \le 47$. <!-- src: computations/separating_words/RESULTS.md lines 136-147 -->
+$40 \le N(5) \le 47$. <!-- src: computations/separating_words/RESULTS.md lines 146-157 -->
 The upper bound uses monotonicity: if a transition function sends $u$ and $v$ to the same
 state, it sends $ub$ and $vb$ to the same state, so $\mathrm{sep}(n+1) \ge \mathrm{sep}(n)$
 (proof in `RESULTS.md`, Method 4; **not in Lean**).
@@ -324,8 +324,8 @@ python separate.py --verify --deep --negative-control --nmax 18 --kmax 5
 ```
 
 Machine: AMD Ryzen 7 7840HS, 27.8 GiB RAM, Windows 11, CPython 3.14.3, numpy 2.5.0, one
-thread. <!-- src: computations/separating_words/RESULTS.md lines 105-112 -->
-Peak memory is about 9 GiB at $n = 30$ and doubles with each further $n$. <!-- src: computations/separating_words/RESULTS.md lines 114-116 -->
+thread. <!-- src: computations/separating_words/RESULTS.md lines 115-122 -->
+Peak memory is about 9 GiB at $n = 30$ and doubles with each further $n$. <!-- src: computations/separating_words/RESULTS.md lines 124-126 -->
 
 ### 4.2 Values
 
@@ -337,7 +337,7 @@ $$\mathrm{sep}(1..30) = 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5,
 $N(1) = 0$, $N(2) = 3$, $N(3) = 9$ and $N(4) = 17$ are exact. $N(1) = 0$ because one state
 separates nothing. For $k = 2, 3, 4$, at $n = 4$, $10$ and $18$ respectively, every canonical
 function on at most $k$ states was run on the surviving words, and none separates the pairs
-`0110 / 1010`, `1100000000 / 1111111100` and `111000000000000000 / 111111111111111000`. <!-- src: computations/separating_words/run30.log lines 8-9, 13-14, 24-25, 43-44; the exhaustive final step is described in computations/separating_words/RESULTS.md lines 142-145 and 331-338 -->
+`0110 / 1010`, `1100000000 / 1111111100` and `111000000000000000 / 111111111111111000`. <!-- src: computations/separating_words/run30.log lines 8-9, 13-14, 24-25, 43-44; the exhaustive final step is described in computations/separating_words/RESULTS.md lines 152-155 and 341-348 -->
 For $k = 5$ the search stopped at $n = 30$ because of memory, not because it found a hard pair:
 it reports $N(5) \ge 30$ after 639.3 s, with a certificate of 74 five-state transition
 functions saved as `cert_k5_n30.npy`. Total wall time 640.4 s. <!-- src: computations/separating_words/run30.log lines 75, 77, 111 -->
@@ -386,7 +386,7 @@ This is a sanity check. The proof is the Lean theorem of section 3.4.
 
 ### 4.6 Comparison with the literature
 
-The first 18 terms of section 4.2 equal the $D_\exists$ row of [Tran] Table 1 term by term. <!-- src: computations/separating_words/RESULTS.md lines 488-493; computations/separating_words/run30.log line 110 -->
+The first 18 terms of section 4.2 equal the $D_\exists$ row of [Tran] Table 1 term by term. <!-- src: computations/separating_words/RESULTS.md lines 498-503; computations/separating_words/run30.log line 110 -->
 Terms 19 to 30 follow from [BKSS] Proposition 14 with $\mathrm{sep}(18) = 5$ and monotonicity. <!-- src: computations/separating_words/RESULTS.md lines 10-13 -->
 So section 4 reproduces, in the equal-length convention and with a saved certificate, values
 that were already in print or implied by print.
@@ -407,7 +407,7 @@ that were already in print or implied by print.
   $k \le 4$, that is $N(1..4) = 0, 3, 9, 17$, is [BKSS] Remark 7, and also follows from [Tran]
   Table 1 with [DESW] Theorem 1. The bounds $40 \le N(5) \le 47$ are [BKSS]. The observation
   that $\operatorname{round}(\sqrt{n+3})$ matches $\mathrm{sep}(n)$ up to $n = 27$ and fails at
-  $n = 28$ is implied by [BKSS] Proposition 14. <!-- src: computations/separating_words/RESULTS.md lines 151-161 and 540-556 -->
+  $n = 28$ is implied by [BKSS] Proposition 14. <!-- src: computations/separating_words/RESULTS.md lines 161-171 and 550-566 -->
 * **The extremal-pair census** at $n = 10$ and $n = 18$ consists of [BKSS] identities (3) and
   (4). The complete lists (8, 4 and 4 pairs at $n = 4, 10, 18$) are computed, not claimed as
   new. <!-- src: computations/separating_words/census.log (python separate.py --kmax 2 --census 4; --kmax 3 --census 10; --kmax 4 --census 18) -->
@@ -421,7 +421,7 @@ that were already in print or implied by print.
   `main` is `582601d`, which contains `cbb5ed5` but neither retraction commit, so the public
   repository still shows the false conjecture. The evidence offered for it was that two-block and three-block
   word families first collide at $n = 68$. That measured only those families: the collisions
-  are [BKSS] identities (3) and (4), and the length-48 identity lies in neither family. <!-- src: computations/separating_words/RESULTS.md lines 622-667 and 714; git log of commits cbb5ed5, b8322c6, 2cbb438; public main from `git ls-remote origin refs/heads/main` and `git merge-base --is-ancestor <commit> origin/main`, run 2026-09-13 -->
+  are [BKSS] identities (3) and (4), and the length-48 identity lies in neither family. <!-- src: computations/separating_words/RESULTS.md lines 632-677 and 724; git log of commits cbb5ed5, b8322c6, 2cbb438; public main from `git ls-remote origin refs/heads/main` and `git merge-base --is-ancestor <commit> origin/main`, run 2026-09-13 -->
 
 ## 6. Related work and the scope of novelty
 
@@ -498,14 +498,14 @@ or a first formal separating-words result of any kind.
   Proposition 14, the upper bound is [BKSS] Theorem 8 with monotonicity. Equivalently, it is
   open whether $\mathrm{sep}(n) = 5$ for $41 \le n \le 47$. "Open" here means that the searches
   logged in `PREPRINT-OUTLINE.md` section 6 found no paper settling [BKSS] Conjecture 10 or
-  computing $N(5)$. <!-- src: computations/separating_words/RESULTS.md lines 144-147; computations/separating_words/PREPRINT-OUTLINE.md section 8 item 6 -->
+  computing $N(5)$. <!-- src: computations/separating_words/RESULTS.md lines 154-157; computations/separating_words/PREPRINT-OUTLINE.md section 8 item 6 -->
 * **[BKSS] Conjecture 10:** identity (5) at $k = 5$, of length 48, is the shortest identity of
   $T_5$. It would give $N(5) = 47$: a pair of distinct words of equal length at most 47 that no
   5-state DFA separates would be a shorter identity. BKSS report a search, built from the short
   positive identities of $S_5$ they list, that found exactly this one identity of $T_5$; that
   supports the conjecture but does not prove it. <!-- src: computations/separating_words/PREPRINT-OUTLINE.md section 0 -->
 * **Out of reach for the method of section 4.** $n = 31$ would need about 17 GiB, and each
-  further $n$ doubles time and memory, so $n = 41$ is far past this machine. <!-- src: computations/separating_words/RESULTS.md lines 260-262 -->
+  further $n$ doubles time and memory, so $n = 41$ is far past this machine. <!-- src: computations/separating_words/RESULTS.md lines 270-272 -->
 * **Formal gaps** listed in section 3.7, first among them antitonicity of `SuffStates` in $n$,
   which would make $N(5) \le 47$ formal once $N$ is defined.
 * **Artefact gaps.** Regenerate the certificate re-check as a log file.
