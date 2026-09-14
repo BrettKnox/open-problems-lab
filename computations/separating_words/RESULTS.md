@@ -104,9 +104,9 @@ Artefact status (2026-09-14): the 74-function certificate is `--seed 7`
 (`seed_probe_n22.log`), so the 75-function one is the default seed 20260820.
 Only `cert_k5_n30.npy` was ever committed; the 75-function file is not in the
 repository. Neither the 649.4 s run, nor the two re-checks, nor a regeneration
-has a log yet: on 2026-09-14 free RAM stayed under 12 GiB for the 3 h retry
-window (1.29 GiB at the last check) while another job held the machine, so no
-~9 GiB job was started. Commands to run when it can be:
+has a log yet: free RAM (Win32_OperatingSystem FreePhysicalMemory, 91 polls 120 s apart, 10:22 to 13:20; gate output not committed)
+was 0.61 to 11.37 GiB, under the 12 GiB rule, beside another job. A check-cert started at 10:18:57 by a faulty first
+runner was stopped before it printed anything, so it has no result either. Commands to run when RAM allows:
 `python separate.py --check-cert cert_k5_n30.npy --nmax 30` and
 `python separate.py --nmax 30 --kmax 5 --save-cert cert_k5_n30_seed20260820.npy`.
 
