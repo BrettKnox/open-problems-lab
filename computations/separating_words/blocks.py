@@ -231,10 +231,34 @@ def main() -> int:
     ap.add_argument("--k", type=int, default=5)
     ap.add_argument("--nmin", type=int, default=1)
     ap.add_argument("--nmax", type=int, default=0)
+    ap.add_argument("--three", action="store_true",
+                    help="scan three-block words 1^a 0^b 1^c instead of two-block")
     args = ap.parse_args()
     if args.verify:
         gates()
-    if args.nmax:
+    if args.nmax and args.three:
+        T = S.icdfa_upto(args.k)
+        print(f"k = {args.k}: {T.shape[0]:,} canonical transition functions "
+              f"with <= {args.k} states; three-block words 1^a 0^b 1^c, a,b,c >= 1")
+        t0 = time.time()
+        for n in range(args.nmin, args.nmax + 1):
+            hit = three_block_collision(T, n)
+            if hit is not None:
+                (a, b, c), (a2, b2, c2) = hit
+                u = np.array([1] * a + [0] * b + [1] * c, np.uint8)
+                v = np.array([1] * a2 + [0] * b2 + [1] * c2, np.uint8)
+                print(f"\nthree-block collision at n={n}: 1^{a} 0^{b} 1^{c} / "
+                      f"1^{a2} 0^{b2} 1^{c2}")
+                print(f"min_states cross-check: needs {S.min_states(u, v, kmax=6)} "
+                      f"states (> {args.k} required)")
+                break
+            if n % 10 == 0:
+                print(f"  n = {n}: no three-block collision  "
+                      f"[{time.time() - t0:.0f}s]", flush=True)
+        else:
+            print(f"no three-block collision for k={args.k} up to n={args.nmax}")
+        print(f"total {time.time() - t0:.0f}s")
+    elif args.nmax:
         r = scan(args.k, args.nmin, args.nmax)
         if r["n"] is None:
             print(f"no two-block collision for k={args.k} up to n={args.nmax} "
