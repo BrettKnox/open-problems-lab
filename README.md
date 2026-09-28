@@ -355,7 +355,7 @@ hidden.
 
 **Computationally** ([computations/antimagic/](computations/antimagic/), log in
 [RESULTS.md](computations/antimagic/RESULTS.md)): **the conjecture is verified for every
-connected graph on ≤ 11 vertices** — all **1,018,690,328** of them received an explicit
+connected graph on ≤ 11 vertices** — **1,018,690,328** of the 1,018,690,329 received an explicit
 antimagic labeling, each independently re-verified, with `K₂` *proved* not antimagic by
 exhaustive search (the lone exception, exactly as conjectured). The n = 11 level alone is
 1,006,700,565 graphs (7.9 h); n = 12 is ~164 billion and needs a compiled checker. The hill-climber never once needed the

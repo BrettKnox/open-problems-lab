@@ -33,7 +33,7 @@ quarter of a second.
 It is evidence *for* the conjecture on the subcase where doubt is
 concentrated, and it is consistent with the exhaustive sweep, where the
 hill-climber found labelings for all 1,018,690,328 connected graphs on ≤ 11
-vertices without the exact solver ever being needed.
+vertices other than K₂ without the exact solver ever being needed.
 
 It is **not** a proof, and the absence of hard instances is not the absence of
 counterexamples: the search is heuristic-first, so it can only report that

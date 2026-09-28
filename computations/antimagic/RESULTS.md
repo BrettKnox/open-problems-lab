@@ -6,9 +6,9 @@ Machine: Ryzen 7 7840HS, Python 3.14, single-threaded; graphs from geng
 ## Headline
 
 **The Hartsfield–Ringel conjecture is verified for every connected graph on
-at most 11 vertices.** All 1,018,690,328 connected graphs on 1–11 vertices
+at most 11 vertices.** Of the 1,018,690,329 connected graphs on 1–11 vertices
 (counts match OEIS A001349: 1, 1, 2, 6, 21, 112, 853, 11117, 261080,
-11716571, 1006700565) were given an explicit antimagic labeling, each one re-checked by an
+11716571, 1006700565), 1,018,690,328 were given an explicit antimagic labeling, each one re-checked by an
 independent verifier (bijection onto {1..m} plus pairwise-distinct vertex
 sums, recomputed from scratch) — except `K₂`, which the exact search **proves
 not antimagic** by exhaustion, exactly as the conjecture's lone exception
@@ -16,7 +16,7 @@ requires.
 
 | n | connected graphs | verified antimagic | time |
 |---|---|---|---|
-| 1–7 | 996 | 996 (K₂ refuted) | < 1 s |
+| 1–7 | 996 | 995 (K₂ refuted) | < 1 s |
 | 8 | 11,117 | 11,117 | 0.2 s |
 | 9 | 261,080 | 261,080 | 5.0 s |
 | 10 | 11,716,571 | 11,716,571 | 272 s |

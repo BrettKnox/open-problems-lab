@@ -4,7 +4,7 @@ The Hartsfield-Ringel conjecture is settled for dense and regular graphs; the
 acknowledged hard end is sparse trees, specifically those with many degree-2
 vertices (long paths hanging off a few branch points). Our exhaustive sweep to
 11 vertices never once needed the exact solver -- the hill-climber found a
-labeling for all 1,018,690,328 connected graphs -- so "hard" instances, if
+labeling for all 1,018,690,328 connected graphs other than K2 -- so "hard" instances, if
 they exist, are not small.
 
 This probes the structured families directly and measures *effort* rather than
